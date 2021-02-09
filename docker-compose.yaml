@@ -1,0 +1,20 @@
+version: '3'
+volumes:
+  mysql:
+
+services:
+  php:
+    image: php:7.0.33-apache
+    ports:
+      - "80:80"
+    volumes:
+      - ./src:/var/www/html
+  sql:
+    image: mariadb
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+    volumes:
+      - mysql:/var/lib/mysql
+    ports:
+       - "3306:3306"
