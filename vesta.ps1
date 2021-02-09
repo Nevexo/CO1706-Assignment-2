@@ -9,6 +9,9 @@ $Client.Credentials = New-Object System.Net.NetworkCredential($Username, $Passwo
 
 $files = Get-ChildItem $SourceDirectory
 
+$Confirm = Read-Host "Files on Vesta will be overwritten, confirm? [y/N]"
+if ($Confirm -ne "y") {exit}
+
 Write-Host "Uploading source to Vesta..."
 
 foreach ($file in $files) {
