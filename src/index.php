@@ -75,14 +75,61 @@ if (isset($_SESSION['User'])) $user = unserialize($_SESSION['User']);
       </div>
     </div>
   </nav>
-<?php
-  require "./php/database.php";
 
-  $result = $pdo->query("SELECT * FROM tracks;")->fetchAll(PDO::FETCH_ASSOC);
+  <!-- Offers Carousel -->
 
-  foreach ($result as $entry) {
-    //echo $entry['name'] . "<br>";
-  }
-?>
+  <?php
+    require_once "php/offers.php";
+
+    $offers = Offers::getAllOffers();
+  ?>
+
+  <div id="carouselIndicators" class="carousel slide" data-ride="carousel">
+    <ol class="carousel-indicators">
+      <?php
+        // Carousel position indicators
+        for ($i=0; $i < count($offers); $i++) {
+          if ($i == 0) {
+            // Set first indicator to active
+            echo '<li data-target="#carouselIndicators" data-slide-to="'. $i .'" class="active"></li>';
+          } else {
+            // Subsequent indicators will be activated at a later time.
+            echo '<li data-target="#carouselIndicators" data-slide-to="'. $i .'"></li>';
+          }
+        }
+      ?>
+    </ol>
+    <div class="carousel-inner">
+      <?php
+        // Add a carousel item for every offer in $offers (populated above from Offers::getAllOffers)
+        for ($i=0; $i < count($offers); $i++) {
+          echo $i;
+          if ($i == 0) {
+            // The first element should be active
+            echo '<div class="carousel-item active">';
+          }else {
+            // Subsequent elements will be activated automatically.
+            echo '<div class="carousel-item">';
+          }
+
+          // Add image/meta to the carousel
+          echo '<img class="d-block w-100" src="'. $offers[$i]->ImagePath .'" alt="' . $offers[$i]->Name . '">';
+          echo '<div class="carousel-caption d-none d-md-block text-dark">';
+          echo '<h5>' . $offers[$i]->Name . '</h5><p>' . $offers[$i]->Description . '</p>';
+          // Closing tags
+          echo '</div></div>';
+        }
+      ?>
+    </div>
+    <a class="carousel-control-prev" href="#carouselIndicators" role="button" data-slide="prev">
+      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      <span class="sr-only">Previous</span>
+    </a>
+    <a class="carousel-control-next" href="#carouselIndicators" role="button" data-slide="next">
+      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      <span class="sr-only">Next</span>
+    </a>
+  </div>
+<!--TODO: Add cards for all levels with more detail (include price!)-->
 </body>
 </html>
