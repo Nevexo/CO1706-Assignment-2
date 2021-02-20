@@ -9,10 +9,10 @@ All files for this project are stored in the src/ directory and tracked with Git
 
 ## Assignment Progress
 - [x] App Connects to MySQL Database
-- [ ] Authentication
-  - [ ] Session Tracking
-  - [ ] Password Hashing
-  - [ ] User Greeting on Pages
+- [x] Authentication
+  - [x] Session Tracking
+  - [x] Password Hashing
+  - [x] User Greeting on Pages
 - [ ] Pages
   - [ ] Home Page
     - [ ] Special Subscription Rates
@@ -22,11 +22,11 @@ All files for this project are stored in the src/ directory and tracked with Git
     - [ ] Users can Play Tracks (HTML5 Audio)
     - [ ] Users can Browse by Genre
     - [ ] Users can Browse by Artist/Album
-  - [ ] Registration
-    - [ ] Name
-    - [ ] Password (See `Authentication`)
-    - [ ] Pricing Plan (Listed in MySQL)
-    - [ ] No duplicate usernames 
+  - [x] Registration
+    - [x] Name
+    - [x] Password (See `Authentication`)
+    - [x] Pricing Plan (Listed in MySQL)
+    - [x] No duplicate usernames 
   - [ ] Track Page
     - [ ] Allow user to review track
     - [ ] Show Average Rating
@@ -36,7 +36,7 @@ All files for this project are stored in the src/ directory and tracked with Git
 - [ ] Input validation
 - [ ] Pass W3 Validation
 - [ ] Recommendation System - Suggest tracks the user might like based on their ratings of other tracks.
-- [ ] Custom 404 Page (src/pages/404.html)
+- [x] Custom 404 Page (src/pages/404.html)
 
 ## Scripts Included
 This project was built using Docker containers matching the specifications of UCLan's Vesta System.
