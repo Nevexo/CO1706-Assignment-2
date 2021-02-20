@@ -4,7 +4,7 @@ volumes:
 
 services:
   php:
-    image: php:7.0.33-apache
+    build: php-image
     ports:
       - "80:80"
     volumes:
@@ -14,7 +14,9 @@ services:
     restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: musicstream
     volumes:
       - mysql:/var/lib/mysql
+      - ./sql-init:/docker-entrypoint-initdb.d
     ports:
        - "3306:3306"
