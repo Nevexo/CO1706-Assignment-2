@@ -1,5 +1,6 @@
-<!-- Variables used by other PHP files -->
 <?php
+// Global variables for all scripts
+
 // Database Configuration
 $DATABASE_HOST = 'sql';
 $DATABASE_USERNAME = 'root';
