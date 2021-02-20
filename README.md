@@ -8,7 +8,7 @@ All files for this project are stored in the src/ directory and tracked with Git
 - Vesta URL: https://vesta.uclan.ac.uk/~CPFleming/assignment-2/
 
 ## Assignment Progress
-- [ ] App Connects to MySQL Database
+- [x] App Connects to MySQL Database
 - [ ] Authentication
   - [ ] Session Tracking
   - [ ] Password Hashing
