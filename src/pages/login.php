@@ -2,6 +2,12 @@
 session_start();
 require_once "../php/auth.php";
 
+if (isset($_SESSION['User'])) {
+  // The user is already logged in, send them to the home page.
+  header('Location: /');
+  die();
+}
+
 if (isset($_POST['username'])) {
   // The form has been submitted, attempt to login.
   try {
