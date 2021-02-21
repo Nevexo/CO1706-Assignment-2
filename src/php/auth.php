@@ -4,9 +4,9 @@ require_once 'vars.php';
 require_once 'database.php';
 
 class User {
-  public int $Id = 0;
-  public string $Username = '';
-  public int $PricingPlanId = 0;
+  public $Id = 0;
+  public $Username = '';
+  public $PricingPlanId = 0;
 
   function __construct(int $Id, string $Username, int $PricingPlanId) {
     $this->Id = $Id;

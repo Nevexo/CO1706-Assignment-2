@@ -3,11 +3,11 @@
 require_once "database.php";
 
 class PricingPlan {
-  public int $Id = 0;
-  public string $Name = "";
-  public string $Description = "";
-  public float $Price = 0;
-  public string $ImagePath = "";
+  public $Id = 0;
+  public $Name = "";
+  public $Description = "";
+  public $Price = 0;
+  public $ImagePath = "";
 
   public function __construct($Id, $Title, $Description, $Price, $ImagePath)
   {
