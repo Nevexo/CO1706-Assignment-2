@@ -130,6 +130,23 @@ if (isset($_SESSION['User'])) $user = unserialize($_SESSION['User']);
       <span class="sr-only">Next</span>
     </a>
   </div>
+
+  <!-- Jumbotron showing a random track or recommended track (if signed in -->
+  <!--  TODO: Show track from recommendation engine if user is logged in-->
+<!--  <div class="jumbotron">-->
+<!--    <div class="row">-->
+<!--      <div class="col-md-2">-->
+<!--        <img src="images/getabraded.jpg" class="img-thumbnail img-fluid">-->
+<!--      </div>-->
+<!--      <div class="col-md-10">-->
+<!--        <span class="lead font-italic">Track of The Day</span>-->
+<!--        <h1 class="display-4">8 Binary Digits</h1>-->
+<!--        <span class="lead">Deceased Rod3nt | Get Abraded</span>-->
+<!--        <p class="text-muted font-italic">Login to see recommended tracks for you</p>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--  </div>-->
+
 <!--TODO: Add cards for all levels with more detail (include price!)-->
 </body>
 </html>
