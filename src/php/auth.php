@@ -1,17 +1,20 @@
 <?php
 // Authentication functions & classes
 require_once 'vars.php';
+require_once 'offers.php';
 require_once 'database.php';
 
 class User {
   public $Id = 0;
   public $Username = '';
   public $PricingPlanId = 0;
+  public $PricingPlan;
 
   function __construct(int $Id, string $Username, int $PricingPlanId) {
     $this->Id = $Id;
     $this->Username = $Username;
     $this->PricingPlanId = $PricingPlanId;
+    $this->PricingPlan = Offers::getOffer($PricingPlanId);
   }
 
   public function delete($Password) {

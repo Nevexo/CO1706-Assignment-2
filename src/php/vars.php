@@ -9,4 +9,3 @@ $DATABASE_SCHEMA_NAME = 'musicstream';
 
 // Application Configuration
 $PASSWORD_MIN_LENGTH = 3;
-?>

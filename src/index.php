@@ -1,6 +1,7 @@
 <?php
 session_start();
 require_once 'php/auth.php';
+require_once 'php/offers.php';
 if (isset($_SESSION['User'])) $user = unserialize($_SESSION['User']);
 ?>
 
@@ -59,15 +60,15 @@ if (isset($_SESSION['User'])) $user = unserialize($_SESSION['User']);
           if (isset($_SESSION['User'])) {
             echo '<li class="nav-item dropdown">';
             echo '<a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown">';
-            echo $user->Username . '</a>';
+            echo $user->Username . ' <span class="badge badge-secondary">' . $user->PricingPlan->Name . '</span></a>';
             echo '<div class="dropdown-menu dropdown-menu-right">';
             echo '<a class="dropdown-item disabled" href="#">Settings</a>';
             echo '<a class="dropdown-item" href="/php/logout.php">Logout</a>';
             echo '</div></li>';
           } else {
             echo '<li class="navbar-item"><div class="btn-group" role="group">
-                  <button type="button" onclick="location.href=`pages/register.php`" class="btn btn-outline-warning">Login</button>';
-            echo '<button type="button" onclick="location.href=`pages/register.php`" class="btn btn-warning">Register</button>
+                  <a href="pages/login.php" class="btn btn-outline-warning">Login</a>';
+            echo '<a href="pages/register.php" class="btn btn-warning">Register</a>
                   </div></li>';
           }
         ?>
@@ -79,8 +80,6 @@ if (isset($_SESSION['User'])) $user = unserialize($_SESSION['User']);
   <!-- Offers Carousel -->
 
   <?php
-    require_once "php/offers.php";
-
     $offers = Offers::getAllOffers();
   ?>
 
@@ -115,8 +114,16 @@ if (isset($_SESSION['User'])) $user = unserialize($_SESSION['User']);
           // Add image/meta to the carousel
           echo '<img class="d-block w-100" src="'. $offers[$i]->ImagePath .'" alt="' . $offers[$i]->Name . '">';
           echo '<div class="carousel-caption d-none d-md-block text-dark">';
-          echo '<h5>' . $offers[$i]->Name . '</h5><p>' . $offers[$i]->Description . '</p>';
           echo '<h5>' . $offers[$i]->Name . '</h5><p>' . $offers[$i]->Description . ' - £' . $offers[$i]->Price . '/mo</p>';
+          if (!isset($_SESSION['User'])) {
+            // Show register button if the user isn't logged in.
+            echo '<p><a class="btn btn-primary" href="pages/register.php?setOfferId=' . $offers[$i]->Id . '">Register Now</a></p>';
+          } else {
+            // Show switch to this plan button if the user is logged in.
+            if ($user->PricingPlanId != $offers[$i]->Id) {
+              echo '<p><a class="btn btn-secondary" href="pages/register.php?setOfferId=' . $offers[$i]->Id . '">Switch to This Plan</a></p>';
+            }
+          }
           // Closing tags
           echo '</div></div>';
         }
@@ -144,6 +151,40 @@ if (isset($_SESSION['User'])) $user = unserialize($_SESSION['User']);
 <!--        <h1 class="display-4">8 Binary Digits</h1>-->
 <!--        <span class="lead">Deceased Rod3nt | Get Abraded</span>-->
 <!--        <p class="text-muted font-italic">Login to see recommended tracks for you</p>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--  </div>-->
+<!--  <div class="row">-->
+<!--    <div class="col-md-3 card">-->
+<!--      <img class="card-img-top" src="images/offers/SilverOffer.png" alt="Card image cap">-->
+<!--      <div class="card-body">-->
+<!--        <h5 class="card-title">Silver Offer</h5>-->
+<!--        <p class="card-text">Silver level subscribers receive unlimited usage with ad support</p>-->
+<!--        <a href="#" class="btn btn-warning">Register Now</a>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--    <div class="col-md card">-->
+<!--      <img class="card-img-top" src="images/offers/SilverOffer.png" alt="Card image cap">-->
+<!--      <div class="card-body">-->
+<!--        <h5 class="card-title">Silver Offer</h5>-->
+<!--        <p class="card-text">Silver level subscribers receive unlimited usage with ad support</p>-->
+<!--        <a href="#" class="btn btn-warning">Register Now</a>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--    <div class="col-md card">-->
+<!--      <img class="card-img-top" src="images/offers/SilverOffer.png" alt="Card image cap">-->
+<!--      <div class="card-body">-->
+<!--        <h5 class="card-title">Silver Offer</h5>-->
+<!--        <p class="card-text">Silver level subscribers receive unlimited usage with ad support</p>-->
+<!--        <a href="#" class="btn btn-warning">Register Now</a>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--    <div class="col-md card">-->
+<!--      <img class="card-img-top" src="images/offers/SilverOffer.png" alt="Card image cap">-->
+<!--      <div class="card-body">-->
+<!--        <h5 class="card-title">Silver Offer</h5>-->
+<!--        <p class="card-text">Silver level subscribers receive unlimited usage with ad support</p>-->
+<!--        <a href="#" class="btn btn-warning">Register Now</a>-->
 <!--      </div>-->
 <!--    </div>-->
 <!--  </div>-->

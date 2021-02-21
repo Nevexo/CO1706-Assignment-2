@@ -19,8 +19,10 @@ class PricingPlan {
   }
 }
 
-class Offers {
-  static function dataToPricingPlan($offer) {
+class Offers
+{
+  static function dataToPricingPlan($offer)
+  {
     // Convert object from SQL into PricingPlan object.
     return new PricingPlan(
       $offer['offer_id'],
@@ -46,5 +48,17 @@ class Offers {
     }
 
     return $PricingPlans;
+  }
+
+  public static function getOffer($offerId)
+  {
+    // Get a specific pricing plan from the database
+    global $pdo;
+
+    $query = $pdo->prepare("SELECT * FROM offers WHERE offer_id = ?");
+    $result = $query->execute([$offerId]);
+    if ($result == false) return null;
+
+    return self::dataToPricingPlan($query->fetch(PDO::FETCH_ASSOC));
   }
 }
