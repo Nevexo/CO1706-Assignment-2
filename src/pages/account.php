@@ -10,7 +10,15 @@ if (isset($_SESSION['User'])) $user = unserialize($_SESSION['User']);
 
 // Handle POST requests from the forms on this page
 if (isset($_POST['offerSelection'])) {
-  // TODO: handle pricing plan change
+  try {
+    $newUserObject = $user->changePricingPlan($_POST['offerSelection']);
+    $_SESSION['User'] = serialize($newUserObject);
+    header('Location: ?changePlanResult=success');
+    die();
+  } catch (Exception $e) {
+    header('Location ?changePlanResult=' . $e->getMessage());
+    die();
+  }
 }
 
 if (isset($_POST['newPassword'])) {
@@ -172,6 +180,20 @@ if (isset($_POST['newPassword'])) {
     }
 
     document.getElementById("passwordChangeAlert").innerHTML = `<div class="alert alert-danger">${message}</div>`;
+  }
+
+  if (params.has("changePlanResult")) {
+    const message = params.get("changePlanResult")
+    let html = "";
+
+    if (message === "success") {
+      html = '<div class="alert alert-success">Changed plan successfully!</div>';
+    } else {
+      html = `<div class="alert alert-danger">Failed to update pricing plan, error: ${message}</div>`;
+    }
+
+    document.getElementById("pricingPlanAlert").innerHTML = html;
+
   }
 </script>
 </html>

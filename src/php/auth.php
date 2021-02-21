@@ -17,6 +17,26 @@ class User {
     $this->PricingPlan = Offers::getOffer($PricingPlanId);
   }
 
+  public function changePricingPlan($NewPlanId) {
+    // Update the pricing plan for this user
+    global $pdo;
+
+    $newPlan = Offers::getOffer($NewPlanId);
+    if ($newPlan == null) throw new Exception("InvalidPlan");
+
+    // Update the database
+    $query = $pdo->prepare("UPDATE users SET offer_id = ? WHERE id = ?");
+    $result = $query->execute([$NewPlanId, $this->Id]);
+
+    if (!$result) throw new Exception("AccountUpdateFailed");
+
+    // Update this user object
+    $this->PricingPlanId = $NewPlanId;
+    $this->PricingPlan = $newPlan;
+
+    return $this;
+  }
+
   function confirmPassword($Password) {
     // Check a password is valid
     global $pdo;
