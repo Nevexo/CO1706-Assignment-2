@@ -65,10 +65,10 @@ if (isset($_SESSION['User'])) $user = unserialize($_SESSION['User']);
             echo '<a class="dropdown-item" href="/php/logout.php">Logout</a>';
             echo '</div></li>';
           } else {
-            echo '<li class="navbar-item"><a href="pages/login.php">
-                  <button type="button" class="btn btn-outline-warning">Login</button></a></li>';
-            echo '<li class="navbar-item"><a href="pages/register.php">
-                  <button type="button" class="btn btn-warning">Register</button></a></li>';
+            echo '<li class="navbar-item"><div class="btn-group" role="group">
+                  <button type="button" onclick="location.href=`pages/register.php`" class="btn btn-outline-warning">Login</button>';
+            echo '<button type="button" onclick="location.href=`pages/register.php`" class="btn btn-warning">Register</button>
+                  </div></li>';
           }
         ?>
         </ul>
