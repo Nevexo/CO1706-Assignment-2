@@ -70,7 +70,7 @@ if (isset($_POST['username'])) {
       <p class="lead">Welcome to EcksMusic! Please login below.</p>
       <p>Don't have an account? <a href="/pages/register.php">Create one now!</a></p>
       <hr class="my-4">
-      <p id="login-status-message" style="color: darkred;"></p>
+      <span id="alertBox"></span>
       <form method="post" action="#">
         <div class="form-group">
           <label for="username">Username</label>
@@ -103,7 +103,7 @@ if (isset($_POST['username'])) {
           message = "An unknown error occurred while logging in, please try again."
       }
 
-      document.getElementById("login-status-message").innerText = message;
+      document.getElementById("alertBox").innerHTML = `<div class="alert alert-danger">${message}</div>`;
     }
   </script>
 </footer>

@@ -71,8 +71,7 @@ if (isset($_POST['username'])) {
     <p class="lead">Welcome to EcksMusic! Create your account below.</p>
     <p>Already got an account? <a href="/pages/login.php">Login now!</a></p>
     <hr class="my-4">
-    <p id="register-status-message" style="color: darkred;"></p>
-
+    <span id="alertBox"></span>
     <form method="post" action="#">
       <div class="form-group">
         <label for="username">Username</label>
@@ -117,9 +116,7 @@ if (isset($_POST['username'])) {
           message = "An unknown error occurred while registering, please try again."
       }
 
-      document.getElementById("register-status-message").innerText = message;
-      // Remove the query string
-      params.delete("error");
+      document.getElementById("alertBox").innerHTML = `<div class="alert alert-danger">${message}</div>`;
     }
   </script>
 </footer>
