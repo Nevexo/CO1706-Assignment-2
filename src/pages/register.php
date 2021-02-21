@@ -127,6 +127,11 @@ if (isset($_POST['username'])) {
       document.getElementById("alertBox").innerHTML += `<div class="alert alert-danger">${message}</div>`;
     }
 
+    if (params.has('setOfferId')) {
+      // Used for setting the offerId selection box automatically.
+      document.getElementById("offerSelection").value = params.get("setOfferId");
+    }
+
     const validateForm = () => {
       const form = document.forms["registerForm"];
 
