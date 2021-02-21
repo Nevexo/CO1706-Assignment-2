@@ -116,6 +116,7 @@ if (isset($_SESSION['User'])) $user = unserialize($_SESSION['User']);
           echo '<img class="d-block w-100" src="'. $offers[$i]->ImagePath .'" alt="' . $offers[$i]->Name . '">';
           echo '<div class="carousel-caption d-none d-md-block text-dark">';
           echo '<h5>' . $offers[$i]->Name . '</h5><p>' . $offers[$i]->Description . '</p>';
+          echo '<h5>' . $offers[$i]->Name . '</h5><p>' . $offers[$i]->Description . ' - £' . $offers[$i]->Price . '/mo</p>';
           // Closing tags
           echo '</div></div>';
         }
