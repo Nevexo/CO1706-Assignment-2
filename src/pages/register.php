@@ -21,7 +21,7 @@ if (isset($_POST['username'])) {
     die();
   } catch (Exception $e) {
     // Something went wrong, reload the page with an error displayed.
-    header('Location: ' . $_SERVER['REQUEST_URI'] . "?error=" . $e->getMessage());
+    header('Location: ' . "?error=" . $e->getMessage());
     die();
   }
 }
