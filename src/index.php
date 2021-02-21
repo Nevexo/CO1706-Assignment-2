@@ -62,7 +62,7 @@ if (isset($_SESSION['User'])) $user = unserialize($_SESSION['User']);
             echo '<a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown">';
             echo $user->Username . ' <span class="badge badge-secondary">' . $user->PricingPlan->Name . '</span></a>';
             echo '<div class="dropdown-menu dropdown-menu-right">';
-            echo '<a class="dropdown-item disabled" href="#">Settings</a>';
+            echo '<a class="dropdown-item" href="pages/account.php">Account Settings</a>';
             echo '<a class="dropdown-item" href="/php/logout.php">Logout</a>';
             echo '</div></li>';
           } else {
@@ -121,7 +121,7 @@ if (isset($_SESSION['User'])) $user = unserialize($_SESSION['User']);
           } else {
             // Show switch to this plan button if the user is logged in.
             if ($user->PricingPlanId != $offers[$i]->Id) {
-              echo '<p><a class="btn btn-secondary" href="pages/register.php?setOfferId=' . $offers[$i]->Id . '">Switch to This Plan</a></p>';
+              echo '<p><a class="btn btn-secondary" href="pages/account.php?newPricingPlan=' . $offers[$i]->Id . '">Switch to This Plan</a></p>';
             }
           }
           // Closing tags

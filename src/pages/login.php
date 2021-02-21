@@ -99,6 +99,9 @@ if (isset($_POST['username'])) {
         case "InvalidUsernamePassword":
           message = "Invalid username or password."
           break;
+        case "NotLoggedIn":
+          message = "You must be logged in to access this page.";
+          break;
         default:
           message = "An unknown error occurred while logging in, please try again."
       }
