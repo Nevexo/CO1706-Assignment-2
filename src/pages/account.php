@@ -13,11 +13,17 @@ if (isset($_POST['offerSelection'])) {
   // TODO: handle pricing plan change
 }
 
-if (isset($_POST['newPassword'])) [
-  // TODO: handle password change
-]
+if (isset($_POST['newPassword'])) {
+  try {
+    $user->changePassword($_POST['currentPasswd'], $_POST['newPassword']);
+    header('Location: /php/logout.php');
+    die();
+  } catch (Exception $e) {
+    header('Location: ?error=' . $e->getMessage());
+    die();
+  }
+}
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -71,7 +77,7 @@ if (isset($_POST['newPassword'])) [
           echo '<a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown">';
           echo $user->Username . ' <span class="badge badge-secondary">' . $user->PricingPlan->Name . '</span></a>';
           echo '<div class="dropdown-menu dropdown-menu-right">';
-          echo '<a class="dropdown-item" href="pages/account.php">Account Settings</a>';
+          echo '<a class="dropdown-item" href="#">Account Settings</a>';
           echo '<a class="dropdown-item" href="/php/logout.php">Logout</a>';
           echo '</div></li>';
         } else {
@@ -97,7 +103,8 @@ if (isset($_POST['newPassword'])) [
         <div class="card-body">
           <h5 class="card-title">Account Password</h5>
           <h6 class="card-subtitle mb-2 text-muted">Change your password.</h6>
-          <form action="." method="post">
+          <span id="passwordChangeAlert"></span>
+          <form action="#" method="post">
             <div class="form-group">
               <label for="currentPasswd">Current Password</label>
               <input type="password" required class="form-control" id="currentPasswd" placeholder="Current Password" name="currentPasswd">
@@ -147,6 +154,24 @@ if (isset($_POST['newPassword'])) [
     document.getElementById("offerSelection").value = params.get("newPricingPlan");
     document.getElementById("pricingPlanAlert").innerHTML =
         '<div class="alert alert-primary">Press "Change Plan" to confirm plan change.</div>'
+  }
+
+  if (params.has("error")) {
+    const error = params.get('error');
+    let message;
+
+    switch (error) {
+      case "InvalidPassword":
+        message = "Incorrect current password."
+        break;
+      case "InvalidNewPassword":
+        message = "The new password is invalid.";
+        break;
+      default:
+        message = "An unknown error occurred while updating your password, please try again."
+    }
+
+    document.getElementById("passwordChangeAlert").innerHTML = `<div class="alert alert-danger">${message}</div>`;
   }
 </script>
 </html>

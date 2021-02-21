@@ -17,6 +17,41 @@ class User {
     $this->PricingPlan = Offers::getOffer($PricingPlanId);
   }
 
+  function confirmPassword($Password) {
+    // Check a password is valid
+    global $pdo;
+
+    $query = $pdo->prepare("SELECT * FROM users WHERE id = ?");
+    $query->execute([$this->Id]);
+    $result = $query->fetch(PDO::FETCH_ASSOC);
+    if ($result == false) throw new Exception("QueryError");
+
+    return password_verify($Password, $result['password']);
+  }
+
+  public function changePassword($Password, $NewPassword) {
+    // Change the user's password
+    global $pdo;
+    global $PASSWORD_MIN_LENGTH;
+
+    try {
+      $PasswdCheck = $this->confirmPassword($Password);
+    } catch (Exception $e) {
+      throw new Exception("PasswordCheckFailed");
+    }
+
+    if (!$PasswdCheck) throw new Exception("InvalidPassword");
+    if (strlen($NewPassword) < $PASSWORD_MIN_LENGTH) throw new Exception("InvalidNewPassword");
+
+    $NewPasswordHash = password_hash($NewPassword, PASSWORD_DEFAULT);
+    $query = $pdo->prepare("UPDATE users SET password = ? WHERE id = ?");
+    $result = $query->execute([$NewPasswordHash, $this->Id]);
+
+    if (!$result) {
+      throw new Exception("PasswordUpdateFailed");
+    } else return true;
+  }
+
   public function delete($Password) {
     // Delete this user from the database, requires the password
     // TODO
