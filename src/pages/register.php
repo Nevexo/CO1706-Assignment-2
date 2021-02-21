@@ -10,6 +10,7 @@ if (isset($_SESSION['User'])) {
 
 if (isset($_POST['username'])) {
   // The form has been submitted, attempt to create the user.
+
   try {
     // Create the user
     $user = Users::create($_POST['username'], $_POST['password'], $_POST['offerSelection']);
@@ -72,18 +73,18 @@ if (isset($_POST['username'])) {
     <p>Already got an account? <a href="/pages/login.php">Login now!</a></p>
     <hr class="my-4">
     <span id="alertBox"></span>
-    <form method="post" action="#">
+    <form method="post" action="#" id="registerForm" onsubmit="return validateForm();">
       <div class="form-group">
         <label for="username">Username</label>
-        <input type="text" name="username" class="form-control" id="username" placeholder="Username">
+        <input type="text" required name="username" class="form-control" id="username" placeholder="Username">
       </div>
       <div class="form-group">
         <label for="password">Password</label>
-        <input type="password" name="password" class="form-control" id="password" placeholder="Password">
+        <input type="password" required name="password" class="form-control" id="password" placeholder="Password">
       </div>
       <div class="form-group">
         <label for="offerSelection">Pricing Plan</label>
-        <select class="custom-select my-1 mr-sm-2" id="offerSelection" name="offerSelection">
+        <select required class="custom-select my-1 mr-sm-2" id="offerSelection" name="offerSelection">
           <?php
             require_once "../php/offers.php";
             $offers = Offers::getAllOffers();
@@ -92,6 +93,7 @@ if (isset($_POST['username'])) {
             }
           ?>
         </select>
+        <small class="form-text text-muted"><a href="/">See Pricing Plan Information</a></small>
       </div>
       <button type="submit" class="btn btn-warning">Register</button>
     </form>
@@ -104,6 +106,9 @@ if (isset($_POST['username'])) {
   <script>
     // Check if an error message query was added to the URL by PHP, if so, display a human-readable message.
     const params = new URLSearchParams(window.location.search);
+    // Get the minimum password length from PHP (php/vars.php)
+    const MIN_PASSWORD_LENGTH = <?require_once "../php/auth.php"; echo $PASSWORD_MIN_LENGTH?>;
+
     if (params.has('error')) {
       const error = params.get('error');
       let message;
@@ -112,11 +117,26 @@ if (isset($_POST['username'])) {
         case "UserAlreadyExists":
           message = "A user with that username already exists, please choose a different name."
           break;
+        case "PasswordTooShort":
+          message = "Your password isn't long enough."
+          break;
         default:
           message = "An unknown error occurred while registering, please try again."
       }
 
-      document.getElementById("alertBox").innerHTML = `<div class="alert alert-danger">${message}</div>`;
+      document.getElementById("alertBox").innerHTML += `<div class="alert alert-danger">${message}</div>`;
+    }
+
+    const validateForm = () => {
+      const form = document.forms["registerForm"];
+
+      // Password length check
+      if (form['password'].value.length < MIN_PASSWORD_LENGTH) {
+        document.getElementById("alertBox").innerHTML += `<div class="alert alert-danger">Password too short.</div>`;
+        return false;
+      }
+
+      return true;
     }
   </script>
 </footer>
