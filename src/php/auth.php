@@ -49,8 +49,13 @@ class Users {
     // Catch: InvalidUsernamePassword / QueryError
     global $pdo;
 
+    // Safe the username
+    $Username = htmlspecialchars($Username);
+
     $query = $pdo->prepare("SELECT * FROM users WHERE username = ?");
-    $query->execute([$Username]);
+    $query->execute([
+      $Username
+    ]);
     $data = $query->fetchAll(PDO::FETCH_ASSOC);
 
     // Compare passwords
@@ -74,9 +79,14 @@ class Users {
     // Catch: UserAlreadyExists / QueryError
     global $pdo;
 
+    // Safe the username from HTML injection
+    $Username = htmlspecialchars($Username);
+
     // First, check the user doesn't already exist
     $query = $pdo->prepare("SELECT * FROM users WHERE username = ?;");
-    $query->execute([$Username]);
+    $query->execute([
+      $Username
+    ]);
     if ($query->rowCount() != 0) throw new Exception("UserAlreadyExists");
 
     // Now create the new user - first, create the SQL statement.
