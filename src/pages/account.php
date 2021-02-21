@@ -24,10 +24,25 @@ if (isset($_POST['offerSelection'])) {
 if (isset($_POST['newPassword'])) {
   try {
     $user->changePassword($_POST['currentPasswd'], $_POST['newPassword']);
-    header('Location: /php/logout.php');
+    header('Location: /php
+    /logout.php');
     die();
   } catch (Exception $e) {
     header('Location: ?error=' . $e->getMessage());
+    die();
+  }
+}
+
+if (isset($_POST['deleteAccountPassword'])) {
+  // Attempt to close the account
+  try {
+    $user->delete($_POST['deleteAccountPassword']);
+
+    // Invalidate the session as the user has been removed
+    header('Location: /php/logout.php');
+    die();
+  } catch (Exception $e) {
+    header('Location: /');
     die();
   }
 }
@@ -104,6 +119,33 @@ if (isset($_POST['newPassword'])) {
   <p class="lead"><?php echo $user->PricingPlan->Name; ?></p>
 </div>
 
+<!--Delete account confirmation modal-->
+<div class="modal fade" id="deleteAccountModal" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Delete Account</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form action="#" method="post">
+          <div class="form-group">
+            <label for="deleteAccountPassword">Account Password</label>
+            <input type="password" required class="form-control" id="deleteAccountPassword" placeholder="Account Password" name="deleteAccountPassword">
+          </div>
+          <button type="submit" class="btn btn-danger">Delete Account</button>
+          <p class="text-muted">This action cannot be reversed!</p>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="container-fluid">
   <div class="row">
     <div class="col-md-6">
@@ -149,6 +191,18 @@ if (isset($_POST['newPassword'])) {
             </div>
             <button type="submit" class="btn btn-warning">Change Plan</button>
           </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Close Account</h5>
+          <h6 class="card-subtitle mb-2 text-muted">If you're finished with your account, you can delete it here.</h6>
+          <hr class="my-4">
+          <button class="btn btn-outline-danger" data-toggle="modal" data-target="#deleteAccountModal">Delete Account</button>
         </div>
       </div>
     </div>

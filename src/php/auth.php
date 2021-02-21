@@ -67,14 +67,26 @@ class User {
     $query = $pdo->prepare("UPDATE users SET password = ? WHERE id = ?");
     $result = $query->execute([$NewPasswordHash, $this->Id]);
 
-    if (!$result) {
-      throw new Exception("PasswordUpdateFailed");
-    } else return true;
+    if (!$result) throw new Exception("PasswordUpdateFailed");
+    return true;
   }
 
   public function delete($Password) {
     // Delete this user from the database, requires the password
-    // TODO
+    global $pdo;
+
+    try {
+      $PasswdCheck = $this->confirmPassword($Password);
+    } catch (Exception $e) {
+      throw new Exception("PasswordCheckFailed");
+    }
+    if (!$PasswdCheck) throw new Exception("InvalidPassword");
+
+    $query = $pdo->prepare("DELETE FROM users WHERE id = ?");
+    $result = $query->execute([$this->Id]);
+
+    if (!$result) throw new Exception("AccountDeleteFailed");
+    return true;
   }
 }
 
