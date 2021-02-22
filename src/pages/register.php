@@ -120,6 +120,9 @@ if (isset($_POST['username'])) {
         case "PasswordTooShort":
           message = "Your password isn't long enough."
           break;
+        case "RegistrationDisabled":
+          message = "Registration is currently disabled."
+          break;
         default:
           message = "An unknown error occurred while registering, please try again."
       }
