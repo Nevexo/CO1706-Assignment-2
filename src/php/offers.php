@@ -2,7 +2,8 @@
 // Code specific to the Pricing Plan / Offers system
 require_once "database.php";
 
-class PricingPlan {
+class PricingPlan
+{
   public $Id = 0;
   public $Name = "";
   public $Description = "";
@@ -21,7 +22,7 @@ class PricingPlan {
 
 class Offers
 {
-  static function dataToPricingPlan($offer)
+  static function dataToPricingPlan($offer): PricingPlan
   {
     // Convert object from SQL into PricingPlan object.
     return new PricingPlan(

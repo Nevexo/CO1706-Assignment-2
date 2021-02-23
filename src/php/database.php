@@ -7,4 +7,3 @@ $DATABASE_DSN = "mysql:host=" . $DATABASE_HOST . ";dbname=" . $DATABASE_SCHEMA_N
 
 // Establish connection to database
 $pdo = new PDO($DATABASE_DSN, $DATABASE_USERNAME, $DATABASE_PASSWORD);
-?>

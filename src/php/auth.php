@@ -4,20 +4,23 @@ require_once 'vars.php';
 require_once 'offers.php';
 require_once 'database.php';
 
-class User {
+class User
+{
   public $Id = 0;
   public $Username = '';
   public $PricingPlanId = 0;
   public $PricingPlan;
 
-  function __construct(int $Id, string $Username, int $PricingPlanId) {
+  function __construct(int $Id, string $Username, int $PricingPlanId)
+  {
     $this->Id = $Id;
     $this->Username = $Username;
     $this->PricingPlanId = $PricingPlanId;
     $this->PricingPlan = Offers::getOffer($PricingPlanId);
   }
 
-  public function changePricingPlan($NewPlanId) {
+  public function changePricingPlan($NewPlanId): User
+  {
     // Update the pricing plan for this user
     global $pdo;
 
@@ -37,7 +40,8 @@ class User {
     return $this;
   }
 
-  function confirmPassword($Password) {
+  function confirmPassword($Password): bool
+  {
     // Check a password is valid
     global $pdo;
 
@@ -49,7 +53,8 @@ class User {
     return password_verify($Password, $result['password']);
   }
 
-  public function changePassword($Password, $NewPassword) {
+  public function changePassword($Password, $NewPassword): bool
+  {
     // Change the user's password
     global $pdo;
     global $PASSWORD_MIN_LENGTH;
@@ -71,7 +76,8 @@ class User {
     return true;
   }
 
-  public function delete($Password) {
+  public function delete($Password): bool
+  {
     // Delete this user from the database, requires the password
     global $pdo;
 
@@ -90,7 +96,8 @@ class User {
   }
 }
 
-class Users {
+class Users
+{
   static function generateId(): int
   {
     // Generate a new random ID
