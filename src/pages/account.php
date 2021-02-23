@@ -1,7 +1,7 @@
 <?php
 session_start();
 if (!isset($_SESSION['User'])) {
-  header('Location: /pages/login.php?error=NotLoggedIn');
+  header('Location: login.php?error=NotLoggedIn');
   die();
 }
 require_once '../php/auth.php';
@@ -24,8 +24,7 @@ if (isset($_POST['offerSelection'])) {
 if (isset($_POST['newPassword'])) {
   try {
     $user->changePassword($_POST['currentPasswd'], $_POST['newPassword']);
-    header('Location: /php
-    /logout.php');
+    header('Location: ../php/logout.php');
     die();
   } catch (Exception $e) {
     header('Location: ?error=' . $e->getMessage());
@@ -39,7 +38,7 @@ if (isset($_POST['deleteAccountPassword'])) {
     $user->delete($_POST['deleteAccountPassword']);
 
     // Invalidate the session as the user has been removed
-    header('Location: /php/logout.php');
+    header('Location: ../php/logout.php');
     die();
   } catch (Exception $e) {
     header('Location: /');
@@ -80,7 +79,7 @@ if (isset($_POST['deleteAccountPassword'])) {
     <div class="collapse navbar-collapse" id="navbarResponsive">
       <ul class="navbar-nav mr-auto">
         <li class="navbar-item">
-          <a class="nav-link" href="/">Home</a>
+          <a class="nav-link" href="../">Home</a>
         </li>
         <li class="navbar-item">
           <a class="nav-link" href="#">Tracks</a>
@@ -95,20 +94,14 @@ if (isset($_POST['deleteAccountPassword'])) {
 
       <ul class="navbar-nav ml-auto">
         <?php
-        if (isset($_SESSION['User'])) {
           echo '<li class="nav-item dropdown">';
+
           echo '<a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown">';
           echo $user->Username . ' <span class="badge badge-secondary">' . $user->PricingPlan->Name . '</span></a>';
           echo '<div class="dropdown-menu dropdown-menu-right">';
           echo '<a class="dropdown-item" href="#">Account Settings</a>';
-          echo '<a class="dropdown-item" href="/php/logout.php">Logout</a>';
+          echo '<a class="dropdown-item" href="../php/logout.php">Logout</a>';
           echo '</div></li>';
-        } else {
-          echo '<li class="navbar-item"><div class="btn-group" role="group">
-                  <a href="pages/login.php" class="btn btn-outline-warning">Login</a>';
-          echo '<a href="pages/register.php" class="btn btn-warning">Register</a>
-                  </div></li>';
-        }
         ?>
       </ul>
     </div>

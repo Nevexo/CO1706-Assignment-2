@@ -4,7 +4,7 @@ require_once "../php/auth.php";
 
 if (isset($_SESSION['User'])) {
   // The user is already logged in, send them to the home page.
-  header('Location: /');
+  header('Location: ../');
   die();
 }
 
@@ -15,11 +15,11 @@ if (isset($_POST['username'])) {
 
     // We've logged in, add the user object to _SESSION and redirect the user.
     $_SESSION['User'] = serialize($user);
-    header('Location: /');
+    header('Location: ../');
     die();
   } catch (Exception $e) {
     // Something went wrong, reload the page with an error displayed.
-    header('Location: ' . "?error=" . $e->getMessage());
+    header('Location: ?error=' . $e->getMessage());
     die();
   }
 }
@@ -57,7 +57,7 @@ if (isset($_POST['username'])) {
       <div class="collapse navbar-collapse" id="navbarResponsive">
         <ul class="navbar-nav mr-auto">
           <li class="navbar-item">
-            <a class="nav-link" href="/">Home</a>
+            <a class="nav-link" href="../">Home</a>
           </li>
         </ul>
       </div>
@@ -68,7 +68,7 @@ if (isset($_POST['username'])) {
     <div class="jumbotron">
       <h1>Login to EcksMusic</h1>
       <p class="lead">Welcome to EcksMusic! Please login below.</p>
-      <p>Don't have an account? <a href="/pages/register.php">Create one now!</a></p>
+      <p>Don't have an account? <a href="register.php">Create one now.</a></p>
       <hr class="my-4">
       <span id="alertBox"></span>
       <form method="post" action="#">

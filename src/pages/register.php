@@ -4,7 +4,7 @@ require_once "../php/auth.php";
 
 if (isset($_SESSION['User'])) {
   // The user is already logged in, send them to the home page.
-  header('Location: /');
+  header('Location: ../');
   die();
 }
 
@@ -17,11 +17,11 @@ if (isset($_POST['username'])) {
 
     // $user is now an instance of auth->User, add it to _SESSION and redirect.
     $_SESSION['User'] = serialize($user);
-    header('Location: /');
+    header('Location: ../');
     die();
   } catch (Exception $e) {
     // Something went wrong, reload the page with an error displayed.
-    header('Location: ' . "?error=" . $e->getMessage());
+    header('Location: ?error=' . $e->getMessage());
     die();
   }
 }
@@ -59,7 +59,7 @@ if (isset($_POST['username'])) {
     <div class="collapse navbar-collapse" id="navbarResponsive">
       <ul class="navbar-nav mr-auto">
         <li class="navbar-item">
-          <a class="nav-link" href="/">Home</a>
+          <a class="nav-link" href="../">Home</a>
         </li>
       </ul>
     </div>
@@ -70,7 +70,7 @@ if (isset($_POST['username'])) {
   <div class="jumbotron">
     <h1>Create Account</h1>
     <p class="lead">Welcome to EcksMusic! Create your account below.</p>
-    <p>Already got an account? <a href="/pages/login.php">Login now!</a></p>
+    <p>Already got an account? <a href="login.php">Login here</a></p>
     <hr class="my-4">
     <span id="alertBox"></span>
     <form method="post" action="#" id="registerForm" onsubmit="return validateForm();">
@@ -93,7 +93,7 @@ if (isset($_POST['username'])) {
             }
           ?>
         </select>
-        <small class="form-text text-muted"><a href="/">See Pricing Plan Information</a></small>
+        <small class="form-text text-muted"><a href="../">See Pricing Plan Information</a></small>
       </div>
       <button type="submit" class="btn btn-warning">Register</button>
     </form>
