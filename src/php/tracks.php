@@ -38,11 +38,11 @@ class Tracks {
     global $pdo;
 
     $query = $pdo->prepare("SELECT * FROM tracks WHERE track_id > :after ORDER BY track_id LIMIT :limit;");
+    // pdo::execute converts all parameters into strings, this is rejected by MySQL so the parameters must be
+    // set manually to ensure the require type is sent.
     $query->bindParam(":limit", $limit, PDO::PARAM_INT);
     $query->bindParam(":after", $after, PDO::PARAM_INT);
     $result = $query->execute();
-//    echo $query->debugDumpParams() . "<br>";
-//    print_r($query->errorInfo());
 
     if (!$result) throw new Exception("QueryFailed");
 
@@ -53,5 +53,20 @@ class Tracks {
     }
 
     return $Tracks;
+  }
+
+  public static function get(int $Id): Track {
+    // Get a specific track from the Tracks table.
+    // id = a track_id
+    // Expect Track
+    global $pdo;
+
+    $query = $pdo->prepare("SELECT * FROM tracks WHERE track_id = ?");
+    $success = $query->execute([$Id]);
+    if (!$success) throw new Exception("QueryFailed");
+    if ($query->rowCount() == 0) throw new Exception("InvalidTrack");
+    $result = $query->fetch(PDO::FETCH_ASSOC);
+
+    return new Track($result);
   }
 }
