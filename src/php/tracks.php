@@ -27,7 +27,8 @@ class Track {
   }
 }
 
-class Tracks {
+class Tracks
+{
   // Static functions for accessing track information from the database
   public static function getAll(int $limit = 100, int $after = 0): array
   {
@@ -48,14 +49,15 @@ class Tracks {
 
     $Tracks = [];
     // Convert response from MySQL into Track objects.
-    foreach($query->fetchAll(PDO::FETCH_ASSOC) as $TrackEntry) {
+    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $TrackEntry) {
       array_push($Tracks, new Track($TrackEntry));
     }
 
     return $Tracks;
   }
 
-  public static function get(int $Id): Track {
+  public static function get(int $Id): Track
+  {
     // Get a specific track from the Tracks table.
     // id = a track_id
     // Expect Track
@@ -68,5 +70,45 @@ class Tracks {
     $result = $query->fetch(PDO::FETCH_ASSOC);
 
     return new Track($result);
+  }
+
+  public static function search(string $Type, string $Query)
+  {
+    // Search for a track by artist/album/name/genre
+    // type - the type of query to search for ^^
+    // query - the term to search for in the database
+    global $pdo;
+
+    // Switch each type of query for safety.
+    switch ($Type) {
+      case "track":
+        $sqlQuery = $pdo->prepare("SELECT * FROM tracks WHERE name LIKE :searchQuery");
+        break;
+      case "artist":
+        $sqlQuery = $pdo->prepare("SELECT * FROM tracks WHERE artist LIKE :searchQuery");
+        break;
+      case "album":
+        $sqlQuery = $pdo->prepare("SELECT * FROM tracks WHERE album LIKE :searchQuery");
+        break;
+      case "genre":
+        $sqlQuery = $pdo->prepare("SELECT * FROM tracks WHERE genre LIKE :searchQuery");
+        break;
+      default:
+        throw new Exception("InvalidSearchQueryType");
+    }
+    $sqlQuery->bindValue(":searchQuery", "%" . $Query . "%");
+
+    // Parameters were set above, so just execute the query.
+    $success = $sqlQuery->execute();
+    if (!$success) throw new Exception("QueryFailed");
+    if ($sqlQuery->rowCount() == 0) throw new Exception("NoResults");
+
+    // Convert results into Track objects
+    $Tracks = [];
+    foreach ($sqlQuery->fetchAll(PDO::FETCH_ASSOC) as $result) {
+      array_push($Tracks, new Track($result));
+    }
+
+    return $Tracks;
   }
 }
