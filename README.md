@@ -13,9 +13,9 @@ All files for this project are stored in the src/ directory and tracked with Git
   - [x] Session Tracking
   - [x] Password Hashing
   - [x] User Greeting on Pages
-- [ ] Pages
-  - [ ] Home Page
-    - [ ] Special Subscription Rates
+- [x] Pages
+  - [x] Home Page
+    - [x] Special Subscription Rates
   - [ ] Tracks Page
     - [ ] List of Tracks
     - [ ] Display Album Artwork (filenames from MySQL)
@@ -35,7 +35,11 @@ All files for this project are stored in the src/ directory and tracked with Git
 - [ ] Playlist feature (+ Auto shuffle)
 - [ ] Input validation
 - [ ] Pass W3 Validation
-- [ ] Recommendation System - Suggest tracks the user might like based on their ratings of other tracks.
+- [ ] Recommendation System
+  - [ ] Check all reviews by a user
+  - [ ] Order reviews by rating
+  - [ ] Get genre/album/artist for all tracks and randomly select tracks from those
+  - [ ] Display recommendations on a seperate page and the homepage's jumbotron
 - [x] Custom 404 Page (src/pages/404.html)
 
 ## Scripts Included
