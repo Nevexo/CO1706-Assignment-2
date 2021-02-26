@@ -107,7 +107,7 @@ if (isset($_POST['username'])) {
     // Check if an error message query was added to the URL by PHP, if so, display a human-readable message.
     const params = new URLSearchParams(window.location.search);
     // Get the minimum password length from PHP (php/vars.php)
-    const MIN_PASSWORD_LENGTH = <?require_once "../php/auth.php"; echo $PASSWORD_MIN_LENGTH?>;
+    const MIN_PASSWORD_LENGTH = <?php require_once "../php/auth.php"; echo $PASSWORD_MIN_LENGTH ?>;
 
     if (params.has('error')) {
       const error = params.get('error');
