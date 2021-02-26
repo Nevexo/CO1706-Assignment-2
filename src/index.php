@@ -41,13 +41,13 @@ if (isset($_SESSION['User'])) $user = unserialize($_SESSION['User']);
             <a class="nav-link" href="#">Home</a>
           </li>
           <li class="navbar-item">
-            <a class="nav-link" href="#">Tracks</a>
+            <a class="nav-link" href="pages/tracks.php">Tracks</a>
           </li>
           <li class="navbar-item">
-            <a class="nav-link" href="#">Albums</a>
+            <a class="nav-link" href="pages/albums.php">Albums</a>
           </li>
           <li class="navbar-item">
-            <a class="nav-link" href="#">Search</a>
+            <a class="nav-link" href="pages/search.php">Search</a>
           </li>
         </ul>
         <!--Search Bar-->

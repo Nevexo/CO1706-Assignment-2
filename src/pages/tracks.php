@@ -45,14 +45,14 @@ if (isset($_SESSION['User'])) $user = unserialize($_SESSION['User']);
         <li class="navbar-item">
           <a class="nav-link" href="../">Home</a>
         </li>
-        <li class="navbar-item">
+        <li class="navbar-item active">
           <a class="nav-link" href="#">Tracks</a>
         </li>
         <li class="navbar-item">
-          <a class="nav-link" href="#">Albums</a>
+          <a class="nav-link" href="albums.php">Albums</a>
         </li>
         <li class="navbar-item">
-          <a class="nav-link" href="#">Search</a>
+          <a class="nav-link" href="search.php">Search</a>
         </li>
       </ul>
 
@@ -63,7 +63,7 @@ if (isset($_SESSION['User'])) $user = unserialize($_SESSION['User']);
         echo '<a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown">';
         echo $user->Username . ' <span class="badge badge-secondary">' . $user->PricingPlan->Name . '</span></a>';
         echo '<div class="dropdown-menu dropdown-menu-right">';
-        echo '<a class="dropdown-item" href="#">Account Settings</a>';
+        echo '<a class="dropdown-item" href="account.php">Account Settings</a>';
         echo '<a class="dropdown-item" href="../php/logout.php">Logout</a>';
         echo '</div></li>';
         ?>
