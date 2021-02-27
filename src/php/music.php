@@ -1,6 +1,28 @@
 <?php
 require_once "database.php";
 
+class Artist {
+  public $Id;
+  public $Name;
+
+  public function __construct(int $Id, string $Name) {
+    $this->Id = $Id;
+    $this->Name = $Name;
+  }
+}
+
+class Album {
+  public $Id;
+  public $Name;
+  public $Artist;
+
+  public function __construct(int $Id, string $Name, Artist $Artist) {
+    $this->Id = $Id;
+    $this->Name = $Name;
+    $this->Artist = $Artist;
+  }
+}
+
 class Track {
   public $Id;
   public $Artist;
@@ -12,18 +34,18 @@ class Track {
   public $ThumbPath;
   public $SamplePath;
 
-  public function __construct($QueryResponse)
+  public function __construct($result)
   {
-    // Construct a Track from a MySQL query response
-    $this->Id = $QueryResponse['track_id'];
-    $this->Artist = $QueryResponse['artist'];
-    $this->Album = $QueryResponse['album'];
-    $this->Description = $QueryResponse['description'];
-    $this->Name = $QueryResponse['name'];
-    $this->Genre = $QueryResponse['genre'];
-    $this->ImagePath = $QueryResponse['image'];
-    $this->ThumbPath = $QueryResponse['thumb'];
-    $this->SamplePath = $QueryResponse['sample'];
+    // Construct a Track from a MySQL query result
+    $this->Id = $result['track_id'];
+    $this->Artist = new Artist($result['artist_id'], $result['artist_name']);
+    $this->Album = new Album($result['album_id'], $result['album_name'], $this->Artist);
+    $this->Description = $result['description'];
+    $this->Name = $result['track_name'];
+    $this->Genre = $result['genre'];
+    $this->ImagePath = $result['image'];
+    $this->ThumbPath = $result['thumbnail'];
+    $this->SamplePath = $result['sample'];
   }
 }
 
@@ -38,7 +60,10 @@ class Tracks
     // Return: array or exception.
     global $pdo;
 
-    $query = $pdo->prepare("SELECT * FROM tracks WHERE track_id > :after ORDER BY track_id LIMIT :limit;");
+    $query = $pdo->prepare(
+      "SELECT * FROM tracks NATURAL JOIN artists NATURAL JOIN albums 
+             WHERE track_id > :after ORDER BY track_id LIMIT :limit;"
+    );
     // pdo::execute converts all parameters into strings, this is rejected by MySQL so the parameters must be
     // set manually to ensure the require type is sent.
     $query->bindParam(":limit", $limit, PDO::PARAM_INT);
@@ -63,7 +88,7 @@ class Tracks
     // Expect Track
     global $pdo;
 
-    $query = $pdo->prepare("SELECT * FROM tracks WHERE track_id = ?");
+    $query = $pdo->prepare("SELECT * FROM tracks NATURAL JOIN artists NATURAL JOIN albums WHERE track_id = ?");
     $success = $query->execute([$Id]);
     if (!$success) throw new Exception("QueryFailed");
     if ($query->rowCount() == 0) throw new Exception("InvalidTrack");
@@ -80,18 +105,20 @@ class Tracks
     global $pdo;
 
     // Switch each type of query for safety.
+    $query = "SELECT * FROM tracks NATURAL JOIN artists NATURAL JOIN albums";
+    // TODO: Refactor
     switch ($Type) {
       case "track":
-        $sqlQuery = $pdo->prepare("SELECT * FROM tracks WHERE name LIKE :searchQuery");
+        $sqlQuery = $pdo->prepare($query . " WHERE name LIKE :searchQuery");
         break;
       case "artist":
-        $sqlQuery = $pdo->prepare("SELECT * FROM tracks WHERE artist LIKE :searchQuery");
+        $sqlQuery = $pdo->prepare($query ." WHERE artist LIKE :searchQuery");
         break;
       case "album":
-        $sqlQuery = $pdo->prepare("SELECT * FROM tracks WHERE album LIKE :searchQuery");
+        $sqlQuery = $pdo->prepare($query . " WHERE album LIKE :searchQuery");
         break;
       case "genre":
-        $sqlQuery = $pdo->prepare("SELECT * FROM tracks WHERE genre LIKE :searchQuery");
+        $sqlQuery = $pdo->prepare($query . " WHERE genre LIKE :searchQuery");
         break;
       default:
         throw new Exception("InvalidSearchQueryType");

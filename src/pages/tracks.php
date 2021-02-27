@@ -5,7 +5,7 @@ if (!isset($_SESSION['User'])) {
   die();
 }
 require_once '../php/auth.php';
-require_once '../php/tracks.php';
+require_once '../php/music.php';
 if (isset($_SESSION['User'])) $user = unserialize($_SESSION['User']);
 ?>
 <!DOCTYPE html>
