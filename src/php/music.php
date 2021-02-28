@@ -29,6 +29,7 @@ class Track {
   public $Album;
   public $Description;
   public $Name;
+  public $FullName;
   public $Genre;
   public $ImagePath;
   public $ThumbPath;
@@ -46,6 +47,7 @@ class Track {
     $this->ImagePath = $result['image'];
     $this->ThumbPath = $result['thumbnail'];
     $this->SamplePath = $result['sample'];
+    $this->FullName = $this->Artist->Name . ' - ' . $this->Name;
   }
 
   public function prettyPrint() {
@@ -67,7 +69,7 @@ class Track {
           </p>
           <p class="text-muted"><span title="Artist" class="fas fa-users"></span> ' . $this->Artist->Name . '</p>
           <p class="text-muted"><span title="Album" class="fas fa-compact-disc"></span> ' . $this->Album->Name . '</p>
-          <a href="#" class="card-link">More Info</a>
+          <a href="track.php?id=' . $this->Id . '" class="card-link">More Info</a>
           <a href="#" class="card-link">Add to Playlist</a>
         </div>
       </div>

@@ -1,3 +1,8 @@
 .row, .card {
     margin-bottom: 1rem;
 }
+
+/* Set audio controls to fill the parent container */
+audio {
+    width: 100%;
+}
