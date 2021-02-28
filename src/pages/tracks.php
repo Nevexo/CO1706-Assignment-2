@@ -4,6 +4,7 @@ if (!isset($_SESSION['User'])) {
   header('Location: login.php?error=NotLoggedIn');
   die();
 }
+
 require_once '../php/auth.php';
 require_once '../php/music.php';
 if (isset($_SESSION['User'])) $user = unserialize($_SESSION['User']);
@@ -77,82 +78,34 @@ if (isset($_SESSION['User'])) $user = unserialize($_SESSION['User']);
 
 <div class="container-fluid">
   <div class="row">
-    <div class="col-md-3">
-      <div class="card">
-        <img class="card-img-top" src="../images/chapintherecess.jpg" alt="Card image cap">
-        <div class="card-body">
-          <h5 class="card-title">
-            Taking A Seat
-          </h5>
-          <p>
-            <span class="badge badge-warning"><span class="fas fa-star"></span> Recommended for You</span>
-            <span class="badge badge-info"><span class="fas fa-music"></span> Genre: Rap</span>
-            <span class="badge badge-success"><span class="fas fa-user-edit"></span> Average Rating: 9.3</span>
-          </p>
-          <p class="text-muted"><span title="Artist" class="fas fa-users"></span> Disoriented Soundrel</p>
-          <p class="text-muted"><span title="Album" class="fas fa-compact-disc"></span> Chap In The Recess</p>
-          <a href="#" class="card-link">More Info</a>
-          <a href="#" class="card-link">Add to Playlist</a>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-3">
-      <div class="card" >
-        <img class="card-img-top" src="../images/chapintherecess.jpg" alt="Card image cap">
-        <div class="card-body">
-          <h5 class="card-title">
-            Repeat Attempt
-          </h5>
-          <p>
-            <span class="badge badge-info"><span class="fas fa-music"></span> Genre: Rap</span>
-            <span class="badge badge-success"><span class="fas fa-user-edit"></span> Average Rating: 9.3</span>
-          </p>
-          <p class="text-muted"><span title="Artist" class="fas fa-users"></span> Disoriented Soundrel</p>
-          <p class="text-muted"><span title="Album" class="fas fa-compact-disc"></span> Chap In The Recess</p>
-          <a href="#" class="card-link">More Info</a>
-          <a href="#" class="card-link">Add to Playlist</a>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-3">
-      <div class="card" >
-        <img class="card-img-top" src="../images/getabraded.jpg" alt="Card image cap">
-        <div class="card-body">
-          <h5 class="card-title">
-            Memo From The Void
-          </h5>
-          <p>
-            <span class="badge badge-info"><span class="fas fa-music"></span> Genre: Rap</span>
-            <span class="badge badge-success"><span class="fas fa-user-edit"></span> Average Rating: 9.3</span>
-          </p>
-          <p class="text-muted"><span title="Artist" class="fas fa-users"></span> Deceased Rod3nt</p>
-          <p class="text-muted"><span title="Album" class="fas fa-compact-disc"></span> Get Abraded</p>
-          <a href="#" class="card-link">More Info</a>
-          <a href="#" class="card-link">Add to Playlist</a>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-3">
-      <div class="card" >
-        <img class="card-img-top" src="../images/daybreaktriumph.jpg" alt="Card image cap">
-        <div class="card-body">
-          <h5 class="card-title">
-            A Number May Affirm
-          </h5>
-          <p>
-            <span class="badge badge-info"><span class="fas fa-music"></span> Genre: Rock</span>
-            <span class="badge badge-success"><span class="fas fa-user-edit"></span> Average Rating: 9.3</span>
-          </p>
-          <p class="text-muted"><span title="Artist" class="fas fa-users"></span> Watering Hole</p>
-          <p class="text-muted"><span title="Album" class="fas fa-compact-disc"></span> Daybreak Triumph</p>
-          <a href="#" class="card-link">More Info</a>
-          <a href="#" class="card-link">Add to Playlist</a>
-        </div>
-      </div>
-    </div>
+    <?php
+      $paginator = new TrackPaginator();
+      if (isset($_GET['page'])) $page = $_GET['page']; else $page = 1;
+      $tracks = $paginator->getPage($page);
+
+      foreach($tracks as $track) {
+        echo $track->prettyPrint();
+      }
+    ?>
+  </div>
+<!--   TODO: improve the formatting of this page-->
+  <div class="row d-flex justify-content-center">
+    <nav aria-label="Page navigation example">
+      <ul class="pagination">
+        <?php
+          // Print the pagination box to the screen, mark the current page as 'active'
+          for ($i = 1; $i <= $paginator->pages; $i++) {
+            if ($i == $page) {
+              // Show as active
+              echo "<li class='page-item active'><a class='page-link' href='?page=" . $i . "'>" . $i . "</a></li>\r\n";
+            } else {
+              echo "<li class='page-item'><a class='page-link' href='?page=" . $i . "'>" . $i . "</a></li>\r\n";
+            }
+          }
+        ?>
+      </ul>
+    </nav>
   </div>
 </div>
-
-
 </body>
 </html>

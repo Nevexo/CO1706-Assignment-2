@@ -47,11 +47,48 @@ class Track {
     $this->ThumbPath = $result['thumbnail'];
     $this->SamplePath = $result['sample'];
   }
+
+  public function prettyPrint() {
+    // Pretty-print this track as HTML.
+    // TODO: Average rating & recommended for you labels.
+    // TODO: Track hyperlinks.
+    return '
+      <div class="col-md-3">
+      <div class="card">
+        <img class="card-img-top" src="../' . $this->ImagePath . '" alt="Card image cap">
+        <div class="card-body">
+          <h5 class="card-title">
+            ' . $this->Name . '
+          </h5>
+          <p>
+            <!--<span class="badge badge-warning"><span class="fas fa-star"></span> Recommended for You</span>-->
+            <span class="badge badge-info"><span class="fas fa-music"></span> Genre: ' . $this->Genre . '</span>
+            <span class="badge badge-success"><span class="fas fa-user-edit"></span> Average Rating: TODO</span>
+          </p>
+          <p class="text-muted"><span title="Artist" class="fas fa-users"></span> ' . $this->Artist->Name . '</p>
+          <p class="text-muted"><span title="Album" class="fas fa-compact-disc"></span> ' . $this->Album->Name . '</p>
+          <a href="#" class="card-link">More Info</a>
+          <a href="#" class="card-link">Add to Playlist</a>
+        </div>
+      </div>
+    </div>
+    ';
+  }
 }
 
 class Tracks
 {
   // Static functions for accessing track information from the database
+  public static function trackCount(): int {
+    // Get the number of tracks in the database, used for pagination.
+    global $pdo;
+
+    $result = $pdo->query("SELECT COUNT(*) FROM tracks;");
+    if (!$result) throw new Exception("QueryFailed");
+
+    return $result->fetch(pdo::FETCH_NUM)[0];
+  }
+
   public static function getAll(int $limit = 100, int $after = 0): array
   {
     // Get all tracks
@@ -139,3 +176,49 @@ class Tracks
     return $Tracks;
   }
 }
+
+class TrackPaginator
+{
+  // This class handles track pagination, as there's over 100 tracks in the database we don't want to
+  // get this many results from the database constantly, and certainly don't want to push that many tracks
+  // to the user.
+  private $trackCount = 0;
+  public $pages = 0;
+
+  public function __construct() {
+    global $PAGINATION_PAGE_TRACKS;
+
+    try {
+      // Get number of tracks in the database.
+      $this->trackCount = Tracks::trackCount();
+    } catch (Exception $e) {
+      throw $e;
+    }
+
+    // Split the track count into pages, adding 1 to give the last page which won't have the full amount of items.
+    // TODO: Kind of a random number?
+    $this->pages = round($this->trackCount / $PAGINATION_PAGE_TRACKS) + 1;
+  }
+
+  public function getPage(int $page) {
+    // Get the tracks for a specific page
+    if ($page > $this->pages) throw new Exception("InvalidPage");
+
+    global $PAGINATION_PAGE_TRACKS;
+
+    // Get all tracks, limited to $PAGINATION_PAGE_TRACKS (vars.php) and from after the page's track ID.
+    if ($page == 1) {
+      $lastId = 0;
+    } else {
+      $lastId = $PAGINATION_PAGE_TRACKS * ($page - 1);
+    }
+
+    return Tracks::getAll($PAGINATION_PAGE_TRACKS, $lastId);
+  }
+}
+
+//$p = new TrackPaginator();
+//$t = $p->getPage($_GET['page']);
+//echo $t[0]->Id . "<br>";
+//echo $t[count($t) - 1]->Id;
+//die();
