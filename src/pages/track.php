@@ -153,33 +153,61 @@ try {
         </div>
         <div class="card-body">
           <div class="row">
-            <div class="col-sm-6">
-              <div class="card">
-                <div class="card-body">
-                  <h5 class="card-title">Ronnie Pickering</h5>
-                  <span class="badge badge-danger"><span class="fas fa-star"></span> 2/10</span>
-                  <p class="card-text">This is a negative review</p>
-                </div>
-              </div>
-            </div>
-            <div class="col-sm-6">
-              <div class="card">
-                <div class="card-body">
-                  <h5 class="card-title">Ed</h5>
-                  <span class="badge badge-success"><span class="fas fa-star"></span> 10/10</span>
-                  <p class="card-text">This is a positive review</p>
-                </div>
-              </div>
-            </div>
-            <div class="col-sm-6">
-              <div class="card">
-                <div class="card-body">
-                  <h5 class="card-title">Sandra</h5>
-                  <span class="badge badge-warning"><span class="fas fa-star"></span> 5/10</span>
-                  <p class="card-text">This is a neutral review</p>
-                </div>
-              </div>
-            </div>
+            <?php
+              require_once "../php/reviews.php";
+
+              try {
+                // Attempt to fetch all reviews for this track.
+                $reviews = Reviews::getForTrack($Track->Id);
+              } catch (Exception $e) {
+                if ($e->getMessage() == "NoReviews") {
+                  // No reviews have been posted, show a warning.
+                  echo '
+                  <div class="col-sm-12">
+                  <div class="card">
+                    <div class="card-body">
+                      <h5 class="card-title">No Reviews</h5>
+                      <p class="card-text">Review this track below!</p>
+                    </div>
+                  </div>
+                </div>';
+                } else {
+                  // Something else went wrong fetching reviews, display an error.
+                  echo '
+                  <div class="col-sm-12">
+                  <div class="card">
+                    <div class="card-body">
+                      <h5 class="card-title">Failed to Fetch Reviews</h5>
+                      <p class="card-text">Try again later.</p>
+                    </div>
+                  </div>
+                </div>';
+                }
+                return;
+              }
+
+              // Echo all reviews to the dom
+              foreach($reviews as $Review) {
+                // Get the label colour
+                $Tag = "badge-success";
+                if ($Review->Rating <= 3) {
+                  $Tag = "badge-danger";
+                } elseif ($Review->Rating > 3 and $Review->Rating < 7) {
+                  $Tag = "badge-warning";
+                }
+                $html = '
+                <div class="col-sm-6">
+                  <div class="card">
+                    <div class="card-body">
+                      <h5 class="card-title">' . $Review->OwnerName . '</h5>
+                      <span class="badge ' . $Tag . '"><span class="fas fa-star"></span> ' . $Review->Rating . ' /10</span>
+                      <p class="card-text">' . $Review->Review . '</p>
+                    </div>
+                  </div>
+                </div>';
+                echo $html;
+              }
+            ?>
           </div>
         </div>
       </div>
