@@ -96,7 +96,7 @@ class Reviews {
 
     // Taken from Stackoverflow response by user 'Mubin' (2015)
     // https://stackoverflow.com/questions/33461430/how-to-find-average-from-array-in-php
-    return array_sum($Ratings) / count($Ratings);
+    return round(array_sum($Ratings) / count($Ratings));
   }
 
   public static function getForUser(int $TrackId, int $UserId) {
