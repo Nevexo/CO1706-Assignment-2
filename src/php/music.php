@@ -146,6 +146,25 @@ class Tracks
     return new Track($result);
   }
 
+  public static function random(int $Count = 1): array
+  {
+    // Get random selection of songs (limited to $Count)
+    global $pdo;
+
+    $query = $pdo->prepare("SELECT * FROM tracks NATURAL JOIN artists NATURAL JOIN albums
+                                  ORDER BY RAND() LIMIT :limit");
+    $query->bindValue("limit", $Count, PDO::PARAM_INT);
+    $result = $query->execute();
+    if (!$result) throw new Exception("QueryFailed");
+
+    $tracks = [];
+    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $track) {
+      array_push($tracks, new Track($track));
+    }
+
+    return $tracks;
+  }
+
   public static function search(string $Type, string $Query)
   {
     // Search for a track by artist/album/name/genre
@@ -228,9 +247,3 @@ class TrackPaginator
     return Tracks::getAll($PAGINATION_PAGE_TRACKS, $lastId);
   }
 }
-
-//$p = new TrackPaginator();
-//$t = $p->getPage($_GET['page']);
-//echo $t[0]->Id . "<br>";
-//echo $t[count($t) - 1]->Id;
-//die();
