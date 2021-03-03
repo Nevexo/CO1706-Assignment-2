@@ -88,8 +88,11 @@ class User
     }
     if (!$PasswdCheck) throw new Exception("InvalidPassword");
 
-    $query = $pdo->prepare("DELETE FROM users WHERE id = ?");
-    $result = $query->execute([$this->Id]);
+    // Delete reviews first, and then remove the user.
+    // Reviews have the user_id as an FK so this would fail without deleting them first.
+    $query = $pdo->prepare("DELETE FROM reviews WHERE author_id = :userid; DELETE FROM users WHERE id = :userid;");
+    $query->bindValue("userid", $this->Id);
+    $result = $query->execute();
 
     if (!$result) throw new Exception("AccountDeleteFailed");
     return true;
