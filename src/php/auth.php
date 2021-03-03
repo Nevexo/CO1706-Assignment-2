@@ -5,6 +5,7 @@
 require_once 'vars.php';
 require_once 'offers.php';
 require_once 'database.php';
+require_once 'playlists.php';
 
 class User
 {
@@ -90,9 +91,16 @@ class User
     }
     if (!$PasswdCheck) throw new Exception("InvalidPassword");
 
+    // Get all playlists and safe-delete them
+    $playlists = Playlists::getForUser($this->Id);
+    foreach ($playlists as $playlist) {
+      $playlist->Delete();
+    }
+
     // Delete reviews first, and then remove the user.
     // Reviews have the user_id as an FK so this would fail without deleting them first.
-    $query = $pdo->prepare("DELETE FROM reviews WHERE author_id = :userid; DELETE FROM users WHERE id = :userid;");
+    $query = $pdo->prepare("DELETE FROM reviews WHERE author_id = :userid; 
+                                  DELETE FROM users WHERE id = :userid;");
     $query->bindValue("userid", $this->Id);
     $result = $query->execute();
 
