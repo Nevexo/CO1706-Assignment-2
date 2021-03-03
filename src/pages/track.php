@@ -178,7 +178,7 @@ if (isset($_POST['deleteReview'])) {
               try {
                 // Attempt to fetch all reviews for this track.
                 $reviews = Reviews::getForTrack($Track->Id);
-                
+
                 // Echo all reviews to the dom
                 foreach($reviews as $Review) {
                   // Get the label colour
@@ -209,7 +209,8 @@ if (isset($_POST['deleteReview'])) {
                   <div class="card">
                     <div class="card-body">
                       <h5 class="card-title">No Reviews</h5>
-                      <p class="card-text">Review this track below!</p>
+                      <p class="card-text">We use reviews to recommend our users similar tracks they may like.
+                      Review this track below!</p>
                     </div>
                   </div>
                 </div>';
