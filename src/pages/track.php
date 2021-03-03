@@ -287,8 +287,8 @@ if (isset($_POST['deleteReview'])) {
                   <div class="card">
                     <div class="card-body">
                       <h5 class="card-title">Your Review</h5>
-                      <span class="badge badge-secondary"><span class="fas fa-star"></span> ' . $Review->Rating . '/10</span>
-                      <p class="card-text">' . $Review->Review . '</p>
+                      <span class="badge badge-secondary"><span class="fas fa-star"></span> ' . $UserReview->Rating . '/10</span>
+                      <p class="card-text">' . $UserReview->Review . '</p>
                     </div>
                   </div>
                 </div>
