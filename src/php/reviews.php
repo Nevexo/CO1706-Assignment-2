@@ -27,6 +27,17 @@ class Review {
     // Returns the track instance.
     return Tracks::get($this->Track_Id);
   }
+
+  public function delete(): bool {
+    // Delete this review
+    global $pdo;
+
+    $query = $pdo->prepare("DELETE FROM reviews WHERE review_id = ?");
+    $query->execute([$this->Id]);
+    if (!$query) throw new Exception("QueryFailed");
+
+    return true;
+  }
 }
 
 class Reviews {
@@ -43,7 +54,7 @@ class Reviews {
     );
   }
 
-  public static function getForTrack($TrackId) {
+  public static function getForTrack($TrackId): array {
     // Get all reviews for a specific track
     global $pdo;
 
@@ -70,11 +81,27 @@ class Reviews {
     return $Reviews;
   }
 
+  public static function getForUser(int $TrackId, int $UserId) {
+    $TrackReviews = Reviews::getForTrack($TrackId);
+
+    foreach ($TrackReviews as $Review) {
+      if ($Review->OwnerId == $UserId) {
+        return $Review;
+      }
+    }
+
+    return null;
+  }
+
   public static function create(Track $Track, User $User, int $Rating, string $Review) {
     // Create a new review for a track
     global $pdo;
+    // Check the rating is valid, this should be handled by the form first.
     if ($Rating < 0 or $Rating > 10) throw new Exception("InvalidRatingValue");
+    // Check the review text isn't too long.
     if (strlen($Review) > 250) throw new Exception("ReviewTextTooLong");
+    // Check the user hasn't already reviewed this track.
+    if (Reviews::getForUser($Track->Id, $User->Id) != null) throw new Exception("ExistingReview");
 
     // Initialise the insert query for this review
     $q = $pdo->prepare("INSERT INTO reviews (track_id, author_id, rating, review) VALUES (?, ?, ?, ?)");

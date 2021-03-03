@@ -130,6 +130,7 @@ if (isset($_POST['deleteAccountPassword'])) {
           </div>
           <button type="submit" class="btn btn-danger">Delete Account</button>
           <p class="text-muted">This action cannot be reversed!</p>
+          <p>We'll delete all of your reviews and clear any recommendations before removing your account.</p>
         </form>
       </div>
       <div class="modal-footer">

@@ -7,6 +7,7 @@ if (!isset($_SESSION['User'])) {
 
 require_once '../php/auth.php';
 require_once '../php/music.php';
+require_once "../php/reviews.php";
 if (isset($_SESSION['User'])) $user = unserialize($_SESSION['User']);
 // Redirect user if there's no track ID selected
 if (!isset($_GET['id'])) header('Location: tracks.php');
@@ -17,6 +18,26 @@ try {
 } catch (Exception $e) {
   // Cannot find this track, take the user back to the track listl
   if (!isset($_GET['id'])) header('Location tracks.php');
+}
+
+// Check for review POST data
+if (isset($_POST['reviewBody'])) {
+  try {
+    Reviews::create($Track, $user, $_POST['rating'], htmlspecialchars($_POST['reviewBody']));
+  } catch (Exception $e) {
+    header('Location: ?id=' . $Track->Id . '&reviewError=' . $e->getMessage());
+  }
+}
+
+// Check for delete review button being pressed
+if (isset($_POST['deleteReview'])) {
+  try {
+    // Get the track for this user and attempt to delete it
+    $r = Reviews::getForUser($Track->Id, $user->Id);
+    $r->Delete();
+  } catch (Exception $e) {
+    header('Location: ?id=' . $Track->Id . '&reviewError=' . $e->getMessage());
+  }
 }
 ?>
 <!DOCTYPE html>
@@ -154,8 +175,6 @@ try {
         <div class="card-body">
           <div class="row">
             <?php
-              require_once "../php/reviews.php";
-
               try {
                 // Attempt to fetch all reviews for this track.
                 $reviews = Reviews::getForTrack($Track->Id);
@@ -212,64 +231,125 @@ try {
         </div>
       </div>
 
-      <div class="card">
-        <div class="card-header">
-          Review This Track
-        </div>
-        <div class="card-body">
-          <form>
-            <div class="form-group">
-              <label>Rating (/10)</label>
-              <select class="custom-select">
-                <option value=1>1/10</option>
-                <option value=2>2/10</option>
-                <option value=3>3/10</option>
-                <option value=3>4/10</option>
-                <option value=3 selected>5/10</option>
-                <option value=3>6/10</option>
-                <option value=3>7/10</option>
-                <option value=3>8/10</option>
-                <option value=3>9/10</option>
-                <option value=3>10/10</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label for="reviewBody">Review</label>
-              <textarea class="form-control" id="reviewBody" rows="3"></textarea>
-            </div>
-            <button type="submit" class="btn btn-warning">Submit Review</button>
-          </form>
-        </div>
-        <div class="card-footer text-muted">
-          Reviews are public, do not share any personal information.
-        </div>
-      </div>
+      <?php
+        $UserReview = Reviews::getForUser($Track->Id, $user->Id);
 
-      <div class="card">
-        <div class="card-header">
-          Review This Track
-        </div>
-        <div class="card-body">
-          <div class="row">
-            <div class="col">
-              <div class="card">
-                <div class="card-body">
-                  <h5 class="card-title">Your Review</h5>
-                  <span class="badge badge-danger"><span class="fas fa-star"></span> 1/10</span>
-                  <p class="card-text">Show this card if the user has reviewed this track.</p>
+        if ($UserReview == null) {
+          // The user hasn't reviewed this track, so display the submit review form.
+          echo '
+            <div class="card">
+            <div class="card-header">
+              Review This Track
+            </div>
+            <div class="card-body">
+              <form id="trackReview" action="#" method="post" onsubmit="return validateReviewForm();">
+                <span id="reviewFormLabel"></span>
+                <div class="form-group">
+                  <label>Rating (/10)</label>
+                  <select class="custom-select" name="rating" id="rating" required>
+                    <option value=1>1/10</option>
+                    <option value=2>2/10</option>
+                    <option value=3>3/10</option>
+                    <option value=4>4/10</option>
+                    <option value=5 selected>5/10</option>
+                    <option value=6>6/10</option>
+                    <option value=7>7/10</option>
+                    <option value=8>8/10</option>
+                    <option value=9>9/10</option>
+                    <option value=10>10/10</option>
+                  </select>
                 </div>
-              </div>
+                <div class="form-group">
+                  <label for="reviewBody">Review</label>
+                  <textarea class="form-control"
+                   required minlength="10" maxlength="250" name="reviewBody" id="reviewBody" rows="3"></textarea>
+                </div>
+                <button type="submit" class="btn btn-warning">Submit Review</button>
+              </form>
+            </div>
+            <div class="card-footer text-muted">
+              Reviews are public, do not share any personal information.
             </div>
           </div>
-          <button type="submit" class="btn btn-danger">Delete Review</button>
-        </div>
-        <div class="card-footer text-muted">
-          Reviews are public, do not share any personal information.
-        </div>
-      </div>
-
+          ';
+        } else {
+          // The user has reviewed this track, show their review in a card with a delete button
+          echo '
+            <div class="card">
+            <div class="card-header">
+              Review This Track
+            </div>
+            <div class="card-body">
+              <div class="row">
+                <div class="col">
+                  <div class="card">
+                    <div class="card-body">
+                      <h5 class="card-title">Your Review</h5>
+                      <span class="badge badge-secondary"><span class="fas fa-star"></span> ' . $Review->Rating . '/10</span>
+                      <p class="card-text">' . $Review->Review . '</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <p class="text-muted font-italic">We\'ll use your reviews to recommend you other songs.</p>
+              <form method="post" action="#">
+                <button type="submit" name="deleteReview" class="btn btn-danger">Delete Review</button>
+              </form>
+            </div>
+            <div class="card-footer text-muted">
+              Reviews are public, do not share any personal information.
+            </div>
+          </div>
+          ';
+        }
+      ?>
     </div>
   </div>
-
 </body>
+<script>
+  // Validation scripts for review form
+  const writeWarningLabel = (text) => {
+    const span = document.getElementById("reviewFormLabel");
+    span.innerHTML = `<div class="alert alert-danger" role="alert">${text}</div>`;
+  }
+
+  const validateReviewForm = () => {
+    const form = document.forms['trackReview'];
+
+    // Check review body length
+    if (form['reviewBody'].value.length > 250) {
+      writeWarningLabel("Review text too long, limited to 250 characters.");
+      return false;
+    }
+
+    if (form['reviewBody'].value.length < 10) {
+      writeWarningLabel("Review too short, please write at least 10 characters.");
+      return false;
+    }
+
+    return true;
+  }
+
+  // Check for query parameters
+  const params = new URLSearchParams(window.location.search);
+  if (params.has("reviewError")) {
+    switch (params.get("reviewError")) {
+      case "QueryFailed":
+        writeWarningLabel("Something went wrong on our side, please try again later.")
+        break;
+      case "InvalidRatingValue":
+        writeWarningLabel("Invalid rating specified.");
+        break;
+      case "ReviewTextTooLong":
+        writeWarningLabel("Review is too long, limited to 250 characters.");
+        break;
+      case "ExistingReview":
+        writeWarningLabel("Your account already has a review for this track, did you make it on another device?");
+        break;
+      default:
+        writeWarningLabel("Something went wrong creating your review. Please try again later.");
+        break;
+    }
+  }
+</script>
 </html>
