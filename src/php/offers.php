@@ -1,5 +1,7 @@
 <?php
-// Code specific to the Pricing Plan / Offers system
+// EcksMusic Offers System
+// Cameron Paul Fleming - 2021
+
 require_once "database.php";
 
 class PricingPlan

@@ -1,7 +1,7 @@
 <?php
-
-// Reviews subsystem
+// EcksMusic Reviews subsystem
 // Handles track reviews: getting, adding, deleting etc.
+// Cameron Paul Fleming - 2021
 
 require_once 'auth.php';
 require_once 'music.php';

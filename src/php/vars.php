@@ -1,5 +1,6 @@
 <?php
 // Global variables for all scripts
+// Cameron Paul Fleming - 2021
 
 // Database Configuration
 $DATABASE_HOST = 'sql';

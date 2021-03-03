@@ -1,4 +1,7 @@
 <?php
+// EcksMusic Track, Artist & Album definitions
+// Cameron Paul Fleming - 2021
+
 require_once "database.php";
 require_once "reviews.php";
 

@@ -1,5 +1,10 @@
 <?php
-// Database setup/teardown code
+// EcksMusic Database Setup
+// Cameron Paul Fleming - 2021
+
+// This file starts a connection to the MySQL database using PDO, this file is used by
+// almost all other php files, the connection tears down automatically when PHP finishes rendering a page.
+
 require_once 'vars.php';
 
 // PDO Data source name for MySQL server as configured in vars.php

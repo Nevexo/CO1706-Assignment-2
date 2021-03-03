@@ -1,5 +1,7 @@
 <?php
-// Authentication functions & classes
+// EcksMusic Authentication Subsystem
+// Cameron Paul Fleming - 2021
+
 require_once 'vars.php';
 require_once 'offers.php';
 require_once 'database.php';
