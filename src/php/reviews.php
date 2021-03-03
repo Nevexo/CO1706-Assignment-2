@@ -54,7 +54,7 @@ class Reviews {
     );
   }
 
-  public static function getForTrack($TrackId): array {
+  public static function getForTrack(int $TrackId): array {
     // Get all reviews for a specific track
     global $pdo;
 
@@ -79,6 +79,24 @@ class Reviews {
     }
 
     return $Reviews;
+  }
+
+  public static function averageRating(int $TrackId) {
+    // Get average rating for this track.
+    try {
+      $TrackReviews = Reviews::getForTrack($TrackId);
+    } catch (Exception $e) {
+      throw new Exception($e);
+    }
+
+    $Ratings = [];
+    foreach ($TrackReviews as $Review) {
+      array_push($Ratings, $Review->Rating);
+    }
+
+    // Taken from Stackoverflow response by user 'Mubin' (2015)
+    // https://stackoverflow.com/questions/33461430/how-to-find-average-from-array-in-php
+    return array_sum($Ratings) / count($Ratings);
   }
 
   public static function getForUser(int $TrackId, int $UserId) {

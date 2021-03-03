@@ -1,5 +1,6 @@
 <?php
 require_once "database.php";
+require_once "reviews.php";
 
 class Artist {
   public $Id;
@@ -34,6 +35,7 @@ class Track {
   public $ImagePath;
   public $ThumbPath;
   public $SamplePath;
+  public $AverageRating;
 
   public function __construct($result)
   {
@@ -48,6 +50,11 @@ class Track {
     $this->ThumbPath = $result['thumbnail'];
     $this->SamplePath = $result['sample'];
     $this->FullName = $this->Artist->Name . ' - ' . $this->Name;
+    try {
+      $this->AverageRating = Reviews::averageRating($this->Id) . "/10";
+    } catch (Exception $e) {
+      $this->AverageRating = "N/A";
+    }
   }
 
   public function prettyPrint() {
@@ -65,7 +72,7 @@ class Track {
           <p>
             <!--<span class="badge badge-warning"><span class="fas fa-star"></span> Recommended for You</span>-->
             <span class="badge badge-info"><span class="fas fa-music"></span> Genre: ' . $this->Genre . '</span>
-            <span class="badge badge-success"><span class="fas fa-user-edit"></span> Average Rating: TODO</span>
+            <span class="badge badge-success"><span class="fas fa-user-edit"></span> Average Rating: ' . $this->AverageRating . '</span>
           </p>
           <p class="text-muted"><span title="Artist" class="fas fa-users"></span> ' . $this->Artist->Name . '</p>
           <p class="text-muted"><span title="Album" class="fas fa-compact-disc"></span> ' . $this->Album->Name . '</p>
