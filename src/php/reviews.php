@@ -82,7 +82,11 @@ class Reviews {
   }
 
   public static function getForUser(int $TrackId, int $UserId) {
-    $TrackReviews = Reviews::getForTrack($TrackId);
+    try {
+      $TrackReviews = Reviews::getForTrack($TrackId);
+    } catch (Exception $e) {
+      return null;
+    }
 
     foreach ($TrackReviews as $Review) {
       if ($Review->OwnerId == $UserId) {

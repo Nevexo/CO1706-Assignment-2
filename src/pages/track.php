@@ -178,6 +178,29 @@ if (isset($_POST['deleteReview'])) {
               try {
                 // Attempt to fetch all reviews for this track.
                 $reviews = Reviews::getForTrack($Track->Id);
+                
+                // Echo all reviews to the dom
+                foreach($reviews as $Review) {
+                  // Get the label colour
+                  $Tag = "badge-success";
+                  if ($Review->Rating <= 3) {
+                    $Tag = "badge-danger";
+                  } elseif ($Review->Rating > 3 and $Review->Rating < 7) {
+                    $Tag = "badge-warning";
+                  }
+                  $html = '
+                <div class="col-sm-6">
+                  <div class="card">
+                    <div class="card-body">
+                      <h5 class="card-title">' . $Review->OwnerName . '</h5>
+                      <span class="badge ' . $Tag . '"><span class="fas fa-star"></span> ' . $Review->Rating . ' /10</span>
+                      <p class="card-text">' . $Review->Review . '</p>
+                    </div>
+                  </div>
+                </div>';
+                  echo $html;
+                }
+
               } catch (Exception $e) {
                 if ($e->getMessage() == "NoReviews") {
                   // No reviews have been posted, show a warning.
@@ -202,29 +225,6 @@ if (isset($_POST['deleteReview'])) {
                   </div>
                 </div>';
                 }
-                return;
-              }
-
-              // Echo all reviews to the dom
-              foreach($reviews as $Review) {
-                // Get the label colour
-                $Tag = "badge-success";
-                if ($Review->Rating <= 3) {
-                  $Tag = "badge-danger";
-                } elseif ($Review->Rating > 3 and $Review->Rating < 7) {
-                  $Tag = "badge-warning";
-                }
-                $html = '
-                <div class="col-sm-6">
-                  <div class="card">
-                    <div class="card-body">
-                      <h5 class="card-title">' . $Review->OwnerName . '</h5>
-                      <span class="badge ' . $Tag . '"><span class="fas fa-star"></span> ' . $Review->Rating . ' /10</span>
-                      <p class="card-text">' . $Review->Review . '</p>
-                    </div>
-                  </div>
-                </div>';
-                echo $html;
               }
             ?>
           </div>
