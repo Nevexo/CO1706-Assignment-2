@@ -82,13 +82,13 @@ if (isset($_POST['deleteAccountPassword'])) {
           <a class="nav-link" href="../">Home</a>
         </li>
         <li class="navbar-item">
-          <a class="nav-link" href="#">Tracks</a>
+          <a class="nav-link" href="tracks.php">Tracks</a>
         </li>
         <li class="navbar-item">
-          <a class="nav-link" href="#">Albums</a>
+          <a class="nav-link" href="albums.php">Albums</a>
         </li>
         <li class="navbar-item">
-          <a class="nav-link" href="#">Search</a>
+          <a class="nav-link" href="search.php">Search</a>
         </li>
       </ul>
 
