@@ -130,7 +130,7 @@ class Playlist
 
 class Playlists
 {
-  static function get(int $Id)
+  static function get(int $Id): Playlist
   {
     // Get a playlist by it's ID number.
     global $pdo;

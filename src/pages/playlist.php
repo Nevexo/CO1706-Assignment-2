@@ -6,44 +6,9 @@ if (!isset($_SESSION['User'])) {
 }
 
 require_once '../php/auth.php';
-require_once '../php/music.php';
-require_once "../php/reviews.php";
+require_once '../php/playlists.php';
 if (isset($_SESSION['User'])) $user = unserialize($_SESSION['User']);
-// Redirect user if there's no track ID selected
-if (!isset($_GET['id'])) {
-  header('Location: tracks.php');
-  die();
-}
 
-// Get the track and place it in the $Track variable
-try {
-  $Track = Tracks::get($_GET['id']);
-} catch (Exception $e) {
-  // Cannot find this track, take the user back to the track listl
-  if (!isset($_GET['id'])) header('Location tracks.php');
-}
-
-// Check for review POST data
-if (isset($_POST['reviewBody'])) {
-  try {
-    Reviews::create($Track, $user, $_POST['rating'], htmlspecialchars($_POST['reviewBody']));
-  } catch (Exception $e) {
-    header('Location: ?id=' . $Track->Id . '&reviewError=' . $e->getMessage());
-    die();
-  }
-}
-
-// Check for delete review button being pressed
-if (isset($_POST['deleteReview'])) {
-  try {
-    // Get the track for this user and attempt to delete it
-    $r = Reviews::getForUser($Track->Id, $user->Id);
-    $r->Delete();
-  } catch (Exception $e) {
-    header('Location: ?id=' . $Track->Id . '&reviewError=' . $e->getMessage());
-    die();
-  }
-}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -66,7 +31,7 @@ if (isset($_POST['deleteReview'])) {
         crossorigin="anonymous"/>
   <!-- Local stylesheets -->
   <link rel="stylesheet" href="../css/stylesheet.css"/>
-  <title><?php echo $Track->FullName; ?> | EcksMusic</title>
+  <title>Playlists | EcksMusic</title>
 </head>
 <body>
 <nav class="navbar navbar-expand-md navbar-dark bg-dark sticky-top">
@@ -181,20 +146,20 @@ if (isset($_POST['deleteReview'])) {
         <div class="card-body">
           <div class="row">
             <?php
-              try {
-                // Attempt to fetch all reviews for this track.
-                $reviews = Reviews::getForTrack($Track->Id);
+            try {
+              // Attempt to fetch all reviews for this track.
+              $reviews = Reviews::getForTrack($Track->Id);
 
-                // Echo all reviews to the dom
-                foreach($reviews as $Review) {
-                  // Get the label colour
-                  $Tag = "badge-success";
-                  if ($Review->Rating <= 3) {
-                    $Tag = "badge-danger";
-                  } elseif ($Review->Rating > 3 and $Review->Rating < 7) {
-                    $Tag = "badge-warning";
-                  }
-                  $html = '
+              // Echo all reviews to the dom
+              foreach($reviews as $Review) {
+                // Get the label colour
+                $Tag = "badge-success";
+                if ($Review->Rating <= 3) {
+                  $Tag = "badge-danger";
+                } elseif ($Review->Rating > 3 and $Review->Rating < 7) {
+                  $Tag = "badge-warning";
+                }
+                $html = '
                 <div class="col-sm-6">
                   <div class="card">
                     <div class="card-body">
@@ -204,13 +169,13 @@ if (isset($_POST['deleteReview'])) {
                     </div>
                   </div>
                 </div>';
-                  echo $html;
-                }
+                echo $html;
+              }
 
-              } catch (Exception $e) {
-                if ($e->getMessage() == "NoReviews") {
-                  // No reviews have been posted, show a warning.
-                  echo '
+            } catch (Exception $e) {
+              if ($e->getMessage() == "NoReviews") {
+                // No reviews have been posted, show a warning.
+                echo '
                   <div class="col-sm-12">
                   <div class="card">
                     <div class="card-body">
@@ -220,9 +185,9 @@ if (isset($_POST['deleteReview'])) {
                     </div>
                   </div>
                 </div>';
-                } else {
-                  // Something else went wrong fetching reviews, display an error.
-                  echo '
+              } else {
+                // Something else went wrong fetching reviews, display an error.
+                echo '
                   <div class="col-sm-12">
                   <div class="card">
                     <div class="card-body">
@@ -231,19 +196,19 @@ if (isset($_POST['deleteReview'])) {
                     </div>
                   </div>
                 </div>';
-                }
               }
+            }
             ?>
           </div>
         </div>
       </div>
 
       <?php
-        $UserReview = Reviews::getForUser($Track->Id, $user->Id);
+      $UserReview = Reviews::getForUser($Track->Id, $user->Id);
 
-        if ($UserReview == null) {
-          // The user hasn't reviewed this track, so display the submit review form.
-          echo '
+      if ($UserReview == null) {
+        // The user hasn't reviewed this track, so display the submit review form.
+        echo '
             <div class="card">
             <div class="card-header">
               Review This Track
@@ -279,9 +244,9 @@ if (isset($_POST['deleteReview'])) {
             </div>
           </div>
           ';
-        } else {
-          // The user has reviewed this track, show their review in a card with a delete button
-          echo '
+      } else {
+        // The user has reviewed this track, show their review in a card with a delete button
+        echo '
             <div class="card">
             <div class="card-header">
               Review This Track
@@ -308,7 +273,7 @@ if (isset($_POST['deleteReview'])) {
             </div>
           </div>
           ';
-        }
+      }
       ?>
     </div>
   </div>
