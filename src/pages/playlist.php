@@ -56,6 +56,9 @@ if (isset($_SESSION['User'])) $user = unserialize($_SESSION['User']);
         <li class="navbar-item">
           <a class="nav-link" href="search.php">Search</a>
         </li>
+        <li class="navbar-item">
+          <a class="nav-link active" href="#">Playlists</a>
+        </li>
       </ul>
 
       <ul class="navbar-nav ml-auto">
@@ -94,8 +97,7 @@ if (isset($_SESSION['User'])) $user = unserialize($_SESSION['User']);
     // Set card and footer information if this playlist is public or private.
     $type = "Private";
     $boxColour = "warning";
-    if ($public)
-    {
+    if ($public) {
       $type = "Public";
       $boxColour = "secondary";
     }
@@ -119,23 +121,38 @@ if (isset($_SESSION['User'])) $user = unserialize($_SESSION['User']);
       </div>
       ';
   }
+
   ?>
 
   <div class="row">
     <?php
-      // Write playlist entries to the dom, including public playlists.
-      $privatePlaylists = Playlists::getForUser($user->Id);
-      $publicPlaylists = Playlists::getPublic();
+    // Write playlist entries to the dom, including public playlists.
+    $privatePlaylists = Playlists::getForUser($user->Id);
+    $publicPlaylists = Playlists::getPublic();
 
-      foreach ($privatePlaylists as $playlist)
-      {
+    if (count($privatePlaylists) == 0 and count($publicPlaylists) == 0) {
+      echo '
+        <div class="col-md-12">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">No Playlists</h5>
+              <p class="card-text">
+                Create a playlist at the top of this page and add songs.
+                Public playlists will also be shown here. 
+              </p>
+            </div>
+          </div>
+        </div>
+        ';
+    } else {
+      foreach ($privatePlaylists as $playlist) {
         echoPlaylist($playlist, false);
       }
 
-      foreach($publicPlaylists as $playlist)
-      {
+      foreach ($publicPlaylists as $playlist) {
         if ($playlist->OwnerId != $user->Id) echoPlaylist($playlist, true);
       }
+    }
     ?>
   </div>
 </div>
