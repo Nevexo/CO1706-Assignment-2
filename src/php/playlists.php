@@ -24,10 +24,12 @@ class Playlist
   // A playlist, holds an array of tracks.
   public $Id;
   public $OwnerId;
+  public $OwnerName;
   public $Name;
   public $Tracks;
+  public $Public;
 
-  public function __construct(int $Id, int $OwnerId, string $Name)
+  public function __construct(int $Id, int $OwnerId, string $Name, bool $Public)
   {
     global $pdo;
 
@@ -35,6 +37,8 @@ class Playlist
     $this->OwnerId = $OwnerId;
     $this->Name = $Name;
     $this->Tracks = [];
+    $this->Public = $Public;
+    $this->OwnerName = Users::getUsername($OwnerId);
 
     // Get tracks from database
     $query = $pdo->prepare("SELECT * FROM playlist_entries NATURAL JOIN tracks NATURAL JOIN albums NATURAL JOIN artists WHERE playlist_id = ?");
@@ -126,6 +130,18 @@ class Playlist
       }
     }
   }
+
+  public function setPublic(int $Value) {
+    // Make this playlist publicly visible
+    global $pdo;
+    if ($Value != 0 and $Value != 1) throw new Exception("InvalidValue");
+
+    $query = $pdo->prepare("UPDATE playlists SET public = ? WHERE playlist_id = ?");
+    $result = $query->execute([$Value, $this->Id]);
+    if (!$result) throw new Exception("QueryFailed");
+
+    return true;
+  }
 }
 
 class Playlists
@@ -144,25 +160,51 @@ class Playlists
     return new Playlist(
       $playlist['playlist_id'],
       $playlist['owner_id'],
-      $playlist['playlist_name']
+      $playlist['playlist_name'],
+      false
     );
+  }
+
+  static function getPublic(): array
+  {
+    // Get public playlists
+    global $pdo;
+
+    $query = $pdo->query("SELECT * FROM playlists WHERE public = 1;");
+    if (!$query) throw new Exception("QueryFailed");
+
+    $Playlists = [];
+    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $playlist) {
+      // Skip any public playlists if includePublic is not enabled.
+      array_push($Playlists, new Playlist(
+        $playlist['playlist_id'],
+        $playlist['owner_id'],
+        $playlist['playlist_name'],
+        $playlist['public']
+      ));
+    }
+
+    return $Playlists;
   }
 
   static function getForUser(int $UserId): array
   {
-    // Get playlists for a user
+    // Get playlists for a specific user
     global $pdo;
 
-    $query = $pdo->prepare("SELECT * FROM playlists WHERE owner_id = ?");
-    $result = $query->execute([$UserId]);
+    $query = $pdo->prepare("SELECT * FROM playlists WHERE owner_id = :owner;");
+    $query->bindValue("owner", $UserId, PDO::PARAM_INT);
+    $result = $query->execute();
     if (!$result) throw new Exception("QueryFailed");
 
     $Playlists = [];
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $playlist) {
+      // Skip any public playlists if includePublic is not enabled.
       array_push($Playlists, new Playlist(
         $playlist['playlist_id'],
         $playlist['owner_id'],
-        $playlist['playlist_name']
+        $playlist['playlist_name'],
+        $playlist['public']
       ));
     }
 
@@ -181,7 +223,8 @@ class Playlists
     return new Playlist(
       $pdo->lastInsertId(),
       $User->Id,
-      $Name
+      $Name,
+      false
     );
   }
 }

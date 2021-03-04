@@ -111,6 +111,18 @@ class User
 
 class Users
 {
+  static function getUsername(int $Id): string
+  {
+    // Get username from ID
+    global $pdo;
+
+    $query = $pdo->prepare("SELECT username FROM users WHERE id = ?");
+    $query->execute([$Id]);
+    if (!$query) throw new Exception("QueryFailed");
+
+    return $query->fetch(PDO::FETCH_ASSOC)['username'];
+  }
+
   static function generateId(): int
   {
     // Generate a new random ID
