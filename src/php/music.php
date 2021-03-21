@@ -65,7 +65,6 @@ class Track {
     // TODO: Average rating & recommended for you labels.
     // TODO: Track hyperlinks.
     return '
-      <div class="col-md-3">
       <div class="card">
         <img class="card-img-top" src="../' . $this->ImagePath . '" alt="Card image cap">
         <div class="card-body">
@@ -83,7 +82,6 @@ class Track {
           <a href="#" class="card-link">Add to Playlist</a>
         </div>
       </div>
-    </div>
     ';
   }
 }

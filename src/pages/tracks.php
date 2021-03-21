@@ -84,7 +84,11 @@ if (isset($_SESSION['User'])) $user = unserialize($_SESSION['User']);
       $tracks = $paginator->getPage($page);
 
       foreach($tracks as $track) {
-        echo $track->prettyPrint();
+        echo '
+          <div class="col-md-3">
+            ' . $track->prettyPrint() . '
+          </div>
+        ';
       }
     ?>
   </div>
