@@ -9,6 +9,59 @@ require_once '../php/auth.php';
 require_once '../php/playlists.php';
 if (isset($_SESSION['User'])) $user = unserialize($_SESSION['User']);
 
+function deletePlaylist($Id) {
+  try {
+    $playlist = Playlists::get($Id);
+    $playlist->Delete();
+  } catch (Exception $e) {
+    header('Location: ?status=' . $e->getMessage());
+    die();
+  }
+}
+
+function updatePlaylist($Id, $Name, $Public) {
+  // Replace 'on' / 'off' from the radio button with a boolean value
+  $Public = $Public == "on";
+  try {
+    $playlist = Playlists::get(+$Id);
+    $playlist->rename($Name);
+    $playlist->setPublic($Public);
+  } catch (Exception $e) {
+    header('Location: ?status=' . $e->getMessage());
+    die();
+  }
+
+}
+
+function createPlaylist($Name, $Public) {
+  global $user;
+  $Public = $Public == "on";
+  try {
+    $playlist = Playlists::create($user, $Name);
+    $playlist->setPublic($Public);
+    header('Location: ?status=createdPlaylist&newPlaylistName='. htmlspecialchars($Name));
+    die();
+  } catch (Exception $e) {
+    header('Location: ?status=playlistCreationFailed');
+    die();
+  }
+}
+
+// Form handling code
+if (isset($_POST['playlistName'])) {
+  if ($_POST['playlistId'] != "") {
+    // An ID has been passed, the user is trying to edit/delete this playlist.
+    if (isset($_POST['deletePlaylist'])) {
+      // Delete this playlist
+      deletePlaylist($_POST['playlistId']);
+    } else {
+      updatePlaylist($_POST['playlistId'], $_POST['playlistName'], $_POST['playlistPublicCheck']);
+    }
+  } else {
+    // No ID was passed, this is a new playlist.
+    createPlaylist($_POST['playlistName'], $_POST['playlistPublicCheck']);
+  }
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -85,77 +138,205 @@ if (isset($_SESSION['User'])) $user = unserialize($_SESSION['User']);
     information pages.
   </p>
   <p class="lead">
-    <a class="btn btn-warning" href="#" role="button">Create a Playlist</a>
+    <a class="btn btn-warning" onclick="createPlaylistModal(); return true;" role="button">Create a Playlist</a>
   </p>
 </div>
 
+<!--Modal for creating or editing playlists-->
+<div id="playlistEditModal" class="modal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="playlist-modal-header">Create a Playlist</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form action="#" method="post" id="editCreatePlaylistForm">
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="playlistName">Playlist Name</label>
+            <input required type="text" class="form-control" id="playlistName" name="playlistName" placeholder="Playlist Name">
+          </div>
+          <div class="form-check">
+            <input type="checkbox" class="form-check-input" name="playlistPublicCheck" id="playlistPublicCheck">
+            <label class="form-check-label" for="playlistPublicCheck">Make this Playlist Public</label>
+          </div>
+          <!-- Hidden element used for tracking the playlist ID if editing -->
+          <input type="hidden" name="playlistId" id="playlistId"/>
+
+        </div>
+        <div class="modal-footer">
+          <button type="submit" id="deleteBttn" name="deletePlaylist" class="btn btn-danger mr-auto">Delete Playlist</button>
+          <button type="submit" class="btn btn-primary">Save Changes</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
 <div class="container-fluid">
+  <div class="alert alert-primary" id="statusAlert" role="alert">
+    <!-- Text added by JavaScript at runtime -->
+  </div>
+  <div class="card card-fluid">
+    <div class="card-header">
+      Your Playlists
+    </div>
+    <div class="card-body">
+      <?php
+      // Write playlist entries to the dom, including public playlists.
+      $privatePlaylists = Playlists::getForUser($user->Id);
 
-  <?php
-  function echoPlaylist(Playlist $playlist, bool $public)
-  {
-    // Set card and footer information if this playlist is public or private.
-    $type = "Private";
-    $boxColour = "warning";
-    if ($public) {
-      $type = "Public";
-      $boxColour = "secondary";
-    }
-
-    echo '
-      <div class="col-md-6">
-      <div class="card border-' . $boxColour . ' mb-3">
-        <div class="card-body text-secondary row">
-          <div class="col-md-10">
-            <h5 class="card-title">' . $playlist->Name . ' </h5>
-            <p class="card-text">This playlist has ' . count($playlist->Tracks) . ' song(s).</p>
-          </div>
-          <div class="col-md-1 text-lg-right">
-            <button class="btn btn-warning">Open Playlist</button>
-          </div>
-        </div>
-        <div class="card-footer text-muted">
-          ' . $type . ' Playlist - ' . $playlist->OwnerName . '
-        </div>
-      </div>
-      </div>
-      ';
-  }
-
-  ?>
-
-  <div class="row">
-    <?php
-    // Write playlist entries to the dom, including public playlists.
-    $privatePlaylists = Playlists::getForUser($user->Id);
-    $publicPlaylists = Playlists::getPublic();
-
-    if (count($privatePlaylists) == 0 and count($publicPlaylists) == 0) {
-      echo '
+      if (count($privatePlaylists) == 0) {
+        echo '
         <div class="col-md-12">
           <div class="card">
             <div class="card-body">
               <h5 class="card-title">No Playlists</h5>
               <p class="card-text">
-                Create a playlist at the top of this page and add songs.
-                Public playlists will also be shown here. 
+                You don\'t have any playlists, create one at the top of this page to keep a collection
+                of your favourite tracks. 
               </p>
             </div>
           </div>
         </div>
         ';
-    } else {
-      foreach ($privatePlaylists as $playlist) {
-        echoPlaylist($playlist, false);
+      } else
+      {
+        foreach ($privatePlaylists as $playlist) {
+          $type = ($playlist->Public ? "public" : "private");
+          // JavaScript function for calling the editPlaylistModal function
+          $editPlaylistFunction = "
+          editPlaylistModal(" . $playlist->Id . ", '" . $playlist->Name . "', " . $playlist->Public . "); 
+          return true;
+          ";
+          echo '
+          <div class="col-md-6">
+            <div class="card border-warning mb-3">
+              <div class="card-body text-secondary row">
+                <div class="col-md-10">
+                  <h5 class="card-title">' . $playlist->Name . '</h5>
+                  <p class="card-text"><span class="fas fa-compact-disc"></span> 
+                  This playlist has ' . count($playlist->Tracks) . ' song(s).</br>
+                  <span class="fas fa-users"></span> This is a ' . $type . ' playlist.
+                  </p>
+                </div>
+              </div>
+              <div class="card-footer">
+                <button class="btn btn-warning">Open Playlist</button>
+                <button onclick="' . $editPlaylistFunction . '" class="btn btn-outline-warning">Edit Playlist</button>
+              </div>
+            </div>
+          </div>  
+          ';
+        }
       }
+      ?>
+    </div>
+  </div>
 
-      foreach ($publicPlaylists as $playlist) {
-        if ($playlist->OwnerId != $user->Id) echoPlaylist($playlist, true);
+  <div class="card card-fluid">
+    <div class="card-header">
+      Public Playlists
+    </div>
+    <div class="card-body">
+      <?php
+      // Write playlist entries to the dom, including public playlists.
+      $publicPlaylists = Playlists::getPublic();
+
+      if (count($publicPlaylists) == 0) {
+        echo '
+        <div class="col-md-12">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">No Public Playlists</h5>
+              <p class="card-text">
+                Share your playlists from the <b>edit playlist</b> menu to share it with all
+                EcksMusic listeners. 
+              </p>
+            </div>
+          </div>
+        </div>
+        ';
+      } else
+      {
+        foreach ($publicPlaylists as $playlist) {
+          echo '
+          <div class="col-md-6">
+            <div class="card border-secondary mb-3">
+              <div class="card-body text-secondary row">
+                <div class="col-md-10">
+                  <h5 class="card-title">' . $playlist->Name . '</h5>
+                  <p class="card-text"><span class="fas fa-compact-disc"></span> 
+                  This playlist has ' . count($playlist->Tracks) . ' song(s).</br>
+                  <span class="fas fa-user"></span> Created by: ' . $playlist->OwnerName . '
+                  </p>
+                </div>
+              </div>
+              <div class="card-footer">
+                <button class="btn btn-warning">Open Playlist</button>
+              </div>
+            </div>
+          </div>  
+          ';
+        }
       }
-    }
-    ?>
+      ?>
+    </div>
   </div>
 </div>
 
+
 </body>
+<script>
+  const editPlaylistModal = (playlistId, playlistName, playlistPublic) => {
+    // Add the playlist ID to a hidden element so PHP can handle this as an edit request.
+    $('#playlistId').prop('value', playlistId);
+    // Configure the visible form
+    $('#playlist-modal-header').text("Edit Playlist");
+    $('#playlistName').prop('value', playlistName);
+    $('#playlistPublicCheck').prop('checked', playlistPublic);
+    $('#deleteBttn').show();
+    // Display the modal
+    $('#playlistEditModal').modal('show');
+  }
+
+  const createPlaylistModal = () => {
+    // Reset the modal in case 'editPlaylist' was called and dismissed.
+    $('#playlist-modal-header').text("Create Playlist");
+    $('#playlistId').prop('value', "");
+    $('#playlistName').prop('value', "");
+    $('#playlistPublicCheck').prop('checked', false);
+    $('#deleteBttn').hide();
+    // Display the modal
+    $('#playlistEditModal').modal('show');
+  }
+
+  // Update the alert label
+  const params = new URLSearchParams(window.location.search);
+  const statusAlert = document.getElementById("statusAlert");
+  statusAlert.hidden = true;
+
+  if (params.has("status")) {
+    statusAlert.hidden = false;
+    switch(params.get("status")) {
+      case "createdPlaylist":
+        statusAlert.innerText = `Successfully created playlist: ${params.get("newPlaylistName")}`;
+        break;
+      case "playlistCreationFailed":
+        statusAlert.classList.remove("alert-primary");
+        statusAlert.classList.add("alert-danger");
+        statusAlert.innerText = "Something went wrong creating your playlist, please try again later.";
+        break;
+      default:
+        statusAlert.classList.remove("alert-primary");
+        statusAlert.classList.add("alert-warning");
+        statusAlert.innerText = `Unknown error occurred: ${params.get("status")} please contact support.`;
+        break;
+    }
+  }
+
+</script>
 </html>
