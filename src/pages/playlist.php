@@ -185,55 +185,57 @@ if (isset($_POST['playlistName'])) {
       Your Playlists
     </div>
     <div class="card-body">
-      <?php
-      // Write playlist entries to the dom, including public playlists.
-      $privatePlaylists = Playlists::getForUser($user->Id);
+      <div class="row">
+        <?php
+        // Write playlist entries to the dom, including public playlists.
+        $privatePlaylists = Playlists::getForUser($user->Id);
 
-      if (count($privatePlaylists) == 0) {
-        echo '
-        <div class="col-md-12">
-          <div class="card">
-            <div class="card-body">
-              <h5 class="card-title">No Playlists</h5>
-              <p class="card-text">
-                You don\'t have any playlists, create one at the top of this page to keep a collection
-                of your favourite tracks. 
-              </p>
+        if (count($privatePlaylists) == 0) {
+          echo '
+          <div class="col-md-12">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">No Playlists</h5>
+                <p class="card-text">
+                  You don\'t have any playlists, create one at the top of this page to keep a collection
+                  of your favourite tracks. 
+                </p>
+              </div>
             </div>
           </div>
-        </div>
-        ';
-      } else
-      {
-        foreach ($privatePlaylists as $playlist) {
-          $type = ($playlist->Public ? "public" : "private");
-          // JavaScript function for calling the editPlaylistModal function
-          $editPlaylistFunction = "
-          editPlaylistModal(" . $playlist->Id . ", '" . $playlist->Name . "', " . $playlist->Public . "); 
-          return true;
-          ";
-          echo '
-          <div class="col-md-6">
-            <div class="card border-warning mb-3">
-              <div class="card-body text-secondary row">
-                <div class="col-md-10">
-                  <h5 class="card-title">' . $playlist->Name . '</h5>
-                  <p class="card-text"><span class="fas fa-compact-disc"></span> 
-                  This playlist has ' . count($playlist->Tracks) . ' song(s).</br>
-                  <span class="fas fa-users"></span> This is a ' . $type . ' playlist.
-                  </p>
+          ';
+        } else
+        {
+          foreach ($privatePlaylists as $playlist) {
+            $type = ($playlist->Public ? "public" : "private");
+            // JavaScript function for calling the editPlaylistModal function
+            $editPlaylistFunction = "
+            editPlaylistModal(" . $playlist->Id . ", '" . $playlist->Name . "', " . $playlist->Public . "); 
+            return true;
+            ";
+            echo '
+            <div class="col-md-6">
+              <div class="card border-warning mb-3">
+                <div class="card-body text-secondary row">
+                  <div class="col-md-10">
+                    <h5 class="card-title">' . $playlist->Name . '</h5>
+                    <p class="card-text"><span class="fas fa-compact-disc"></span> 
+                    This playlist has ' . count($playlist->Tracks) . ' song(s).</br>
+                    <span class="fas fa-users"></span> This is a ' . $type . ' playlist.
+                    </p>
+                  </div>
+                </div>
+                <div class="card-footer">
+                  <button class="btn btn-warning">Open Playlist</button>
+                  <button onclick="' . $editPlaylistFunction . '" class="btn btn-outline-warning">Edit Playlist</button>
                 </div>
               </div>
-              <div class="card-footer">
-                <button class="btn btn-warning">Open Playlist</button>
-                <button onclick="' . $editPlaylistFunction . '" class="btn btn-outline-warning">Edit Playlist</button>
-              </div>
-            </div>
-          </div>  
-          ';
+            </div>  
+            ';
+          }
         }
-      }
-      ?>
+        ?>
+      </div>
     </div>
   </div>
 
@@ -242,48 +244,50 @@ if (isset($_POST['playlistName'])) {
       Public Playlists
     </div>
     <div class="card-body">
-      <?php
-      // Write playlist entries to the dom, including public playlists.
-      $publicPlaylists = Playlists::getPublic();
+      <div class="row">
+        <?php
+        // Write playlist entries to the dom, including public playlists.
+        $publicPlaylists = Playlists::getPublic();
 
-      if (count($publicPlaylists) == 0) {
-        echo '
-        <div class="col-md-12">
-          <div class="card">
-            <div class="card-body">
-              <h5 class="card-title">No Public Playlists</h5>
-              <p class="card-text">
-                Share your playlists from the <b>edit playlist</b> menu to share it with all
-                EcksMusic listeners. 
-              </p>
+        if (count($publicPlaylists) == 0) {
+          echo '
+          <div class="col-md-12">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">No Public Playlists</h5>
+                <p class="card-text">
+                  Share your playlists from the <b>edit playlist</b> menu to share it with all
+                  EcksMusic listeners. 
+                </p>
+              </div>
             </div>
           </div>
-        </div>
-        ';
-      } else
-      {
-        foreach ($publicPlaylists as $playlist) {
-          echo '
-          <div class="col-md-6">
-            <div class="card border-secondary mb-3">
-              <div class="card-body text-secondary row">
-                <div class="col-md-10">
-                  <h5 class="card-title">' . $playlist->Name . '</h5>
-                  <p class="card-text"><span class="fas fa-compact-disc"></span> 
-                  This playlist has ' . count($playlist->Tracks) . ' song(s).</br>
-                  <span class="fas fa-user"></span> Created by: ' . $playlist->OwnerName . '
-                  </p>
+          ';
+        } else
+        {
+          foreach ($publicPlaylists as $playlist) {
+            echo '
+            <div class="col-md-6">
+              <div class="card border-secondary mb-3">
+                <div class="card-body text-secondary row">
+                  <div class="col-md-10">
+                    <h5 class="card-title">' . $playlist->Name . '</h5>
+                    <p class="card-text"><span class="fas fa-compact-disc"></span> 
+                    This playlist has ' . count($playlist->Tracks) . ' song(s).</br>
+                    <span class="fas fa-user"></span> Created by: ' . $playlist->OwnerName . '
+                    </p>
+                  </div>
+                </div>
+                <div class="card-footer">
+                  <button class="btn btn-warning">Open Playlist</button>
                 </div>
               </div>
-              <div class="card-footer">
-                <button class="btn btn-warning">Open Playlist</button>
-              </div>
-            </div>
-          </div>  
-          ';
+            </div>  
+            ';
+          }
         }
-      }
-      ?>
+        ?>
+      </div>
     </div>
   </div>
 </div>
