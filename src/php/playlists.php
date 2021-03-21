@@ -131,10 +131,11 @@ class Playlist
     }
   }
 
-  public function setPublic(int $Value) {
+  public function setPublic(bool $Value) {
     // Make this playlist publicly visible
     global $pdo;
-    if ($Value != 0 and $Value != 1) throw new Exception("InvalidValue");
+    // Convert boolean into integer for SQL query.
+    $Value = +$Value;
 
     $query = $pdo->prepare("UPDATE playlists SET public = ? WHERE playlist_id = ?");
     $result = $query->execute([$Value, $this->Id]);
@@ -175,7 +176,6 @@ class Playlists
 
     $Playlists = [];
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $playlist) {
-      // Skip any public playlists if includePublic is not enabled.
       array_push($Playlists, new Playlist(
         $playlist['playlist_id'],
         $playlist['owner_id'],
