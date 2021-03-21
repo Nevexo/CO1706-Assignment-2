@@ -162,7 +162,7 @@ class Playlists
       $playlist['playlist_id'],
       $playlist['owner_id'],
       $playlist['playlist_name'],
-      false
+      boolval($playlist['public'])
     );
   }
 
