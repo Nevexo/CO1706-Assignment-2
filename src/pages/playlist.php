@@ -226,7 +226,7 @@ if (isset($_POST['playlistName'])) {
                   </div>
                 </div>
                 <div class="card-footer">
-                  <button class="btn btn-warning">Open Playlist</button>
+                  <a class="btn btn-warning" href="playlist_info.php?id=' . $playlist->Id . '">Open Playlist</a>
                   <button onclick="' . $editPlaylistFunction . '" class="btn btn-outline-warning">Edit Playlist</button>
                 </div>
               </div>
