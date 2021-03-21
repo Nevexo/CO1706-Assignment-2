@@ -55,6 +55,9 @@ if (isset($_SESSION['User'])) $user = unserialize($_SESSION['User']);
         <li class="navbar-item">
           <a class="nav-link" href="search.php">Search</a>
         </li>
+        <li class="navbar-item">
+          <a class="nav-link" href="playlist.php">Playlists</a>
+        </li>
       </ul>
 
       <ul class="navbar-nav ml-auto">

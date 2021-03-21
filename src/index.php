@@ -49,6 +49,9 @@ if (isset($_SESSION['User'])) $user = unserialize($_SESSION['User']);
           <li class="navbar-item">
             <a class="nav-link" href="pages/search.php">Search</a>
           </li>
+          <li class="navbar-item">
+            <a class="nav-link" href="pages/playlist.php">Playlists</a>
+          </li>
         </ul>
         <!--Search Bar-->
 <!--        <form class="form-inline my-2 my-lg-0">-->
