@@ -143,7 +143,7 @@ if (isset($_POST['playlistName'])) {
 </div>
 
 <!--Modal for creating or editing playlists-->
-<div id="playlistEditModal" class="modal" tabindex="-1" role="dialog">
+<div id="playlistEditModal" class="modal fade" tabindex="-1" role="dialog">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">

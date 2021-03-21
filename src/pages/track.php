@@ -8,6 +8,7 @@ if (!isset($_SESSION['User'])) {
 require_once '../php/auth.php';
 require_once '../php/music.php';
 require_once "../php/reviews.php";
+require_once '../php/playlists.php';
 if (isset($_SESSION['User'])) $user = unserialize($_SESSION['User']);
 // Redirect user if there's no track ID selected
 if (!isset($_GET['id'])) {
@@ -111,6 +112,53 @@ if (isset($_POST['deleteReview'])) {
     </div>
   </div>
 </nav>
+
+<!-- TODO
+  - Add some form of handling for when there's no playlists on the user's account
+    - Maybe allow them to create a new playlist from this page?
+    - At least show a warning redirecting them to the playlists interface
+  - Improve implementation, the add to playlist button needs a proper home.
+  - Add track implementation
+  - Handle the track already being in a playlist?
+-->
+
+<!-- Add to Playlist modal -->
+<div id="addToPlaylistModal" class="modal fade" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="playlist-modal-header">Create a Playlist</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form action="#" method="post" id="addToPlaylistForm">
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="playlistSelection">Playlist</label>
+            <select id="playlistSelection" name="playlistSelection" class="form-control">
+              <?php
+              $playlists = Playlists::getForUser($user->Id);
+              foreach($playlists as $playlist) {
+                echo '
+                    <option>' . $playlist->Name . '</option>
+                  ';
+              }
+              ?>
+            </select>
+          </div>
+          <!-- Hidden element used for storing the trackId the user is adding to a playlist -->
+          <input type="hidden" name="trackId" id="trackId"/>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Add Track</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
 <div class="jumbotron">
   <div class="row">
     <div class="col-auto">
@@ -155,6 +203,11 @@ if (isset($_POST['deleteReview'])) {
                 <span title="Album" class="fas fa-music"></span> Genre: <i><?php echo $Track->Genre; ?> <br/></i>
                 <span title="Album" class="fas fa-compact-disc"></span> Album: <i><?php echo $Track->Album->Name; ?><br/></i>
                 <span title="Album" class="fas fa-users"></span> Average Rating: <i><?php echo $Track->AverageRating?></i>
+                <button
+                        onclick="addToPlaylist(<?php echo $Track->Id ?>); return true;"
+                        class="btn btn-primary">
+                  Add to Playlist
+                </button>
               </p>
               <a href="#" class="card-link">More from This Artist</a>
               <a href="#" class="card-link">More in This Genre</a>
@@ -360,6 +413,11 @@ if (isset($_POST['deleteReview'])) {
         writeWarningLabel("Something went wrong creating your review. Please try again later.");
         break;
     }
+  }
+
+  const addToPlaylist = (trackId) => {
+    $('#trackId').prop('value', trackId);
+    $('#addToPlaylistModal').modal('show');
   }
 </script>
 </html>
