@@ -216,7 +216,7 @@ class Playlists
     // Create a new playlist
     global $pdo;
     $query = $pdo->prepare("INSERT INTO playlists (owner_id, playlist_name) VALUES (?, ?)");
-    $result = $query->execute([$User->Id, $Name]);
+    $result = $query->execute([$User->Id, htmlspecialchars($Name)]);
     if (!$result) throw new Exception("QueryFailed");
 
     // Return a playlist object
