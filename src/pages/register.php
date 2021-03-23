@@ -83,14 +83,19 @@ if (isset($_POST['username'])) {
         <input type="password" required name="password" class="form-control" id="password" placeholder="Password">
       </div>
       <div class="form-group">
+        <label for="passwordConfirm">Confirm Password</label>
+        <input type="password" required name="passwordConfirm" class="form-control" id="passwordConfirm"
+               placeholder="Password Again">
+      </div>
+      <div class="form-group">
         <label for="offerSelection">Pricing Plan</label>
         <select required class="custom-select my-1 mr-sm-2" id="offerSelection" name="offerSelection">
           <?php
-            require_once "../php/offers.php";
-            $offers = Offers::getAllOffers();
-            foreach ($offers as $offer) {
-              echo '<option value="' . $offer->Id . '">' . $offer->Name . " (£" .$offer->Price . "/mo)</option>";
-            }
+          require_once "../php/offers.php";
+          $offers = Offers::getAllOffers();
+          foreach ($offers as $offer) {
+            echo '<option value="' . $offer->Id . '">' . $offer->Name . " (£" . $offer->Price . "/mo)</option>";
+          }
           ?>
         </select>
         <small class="form-text text-muted"><a href="../">See Pricing Plan Information</a></small>
@@ -141,6 +146,12 @@ if (isset($_POST['username'])) {
       // Password length check
       if (form['password'].value.length < MIN_PASSWORD_LENGTH) {
         document.getElementById("alertBox").innerHTML += `<div class="alert alert-danger">Password too short.</div>`;
+        return false;
+      }
+
+      // Password confirmation check
+      if (form['password'].value !== form['passwordConfirm'].value) {
+        document.getElementById("alertBox").innerHTML += `<div class="alert alert-danger">Passwords to not match.</div>`;
         return false;
       }
 
