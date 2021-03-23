@@ -31,6 +31,7 @@ $playlist = getPlaylist($_GET['id']);
 // Form handlers
 if (isset($_POST['randomTracks'])) {
   // Add random tracks to this playlist
+  if ($playlist->OwnerId != $user->Id) return;
   $playlist->randomPopulate();
   // Refresh the playlist
   $playlist = getPlaylist($_GET['id']);

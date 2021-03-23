@@ -10,8 +10,10 @@ require_once '../php/playlists.php';
 if (isset($_SESSION['User'])) $user = unserialize($_SESSION['User']);
 
 function deletePlaylist($Id) {
+  global $user;
   try {
     $playlist = Playlists::get($Id);
+    if ($playlist->OwnerId != $user->Id) return;
     $playlist->Delete();
   } catch (Exception $e) {
     header('Location: ?status=' . $e->getMessage());
@@ -21,9 +23,11 @@ function deletePlaylist($Id) {
 
 function updatePlaylist($Id, $Name, $Public) {
   // Replace 'on' / 'off' from the radio button with a boolean value
+  global $user;
   $Public = $Public == "on";
   try {
     $playlist = Playlists::get(+$Id);
+    if ($playlist->OwnerId != $user->Id) return;
     $playlist->rename($Name);
     $playlist->setPublic($Public);
   } catch (Exception $e) {
