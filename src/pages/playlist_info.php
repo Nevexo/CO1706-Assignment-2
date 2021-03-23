@@ -123,7 +123,8 @@ if (isset($_POST['randomTracks'])) {
       <div class="row">
         <?php
           if (count($playlist->Tracks) == 0) {
-            echo '
+            if ($playlist->OwnerId == $user->Id) {
+              echo '
               <div class="col-md-12">
                 <div class="card">
                   <div class="card-body">
@@ -139,6 +140,20 @@ if (isset($_POST['randomTracks'])) {
                 </div>
               </div>
               ';
+            } else {
+                echo '
+                <div class="col-md-12">
+                  <div class="card">
+                    <div class="card-body">
+                      <h5 class="card-title">No Tracks</h5>
+                      <p class="card-text">
+                        The owner of this playlist hasn\'t added any tracks yet.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                ';
+            }
           } else {
             foreach ($playlist->Tracks as $Track) {
               echo '
