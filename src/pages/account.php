@@ -11,12 +11,14 @@ if (isset($_SESSION['User'])) $user = unserialize($_SESSION['User']);
 // Handle POST requests from the forms on this page
 if (isset($_POST['offerSelection'])) {
   try {
-    $newUserObject = $user->changePricingPlan($_POST['offerSelection']);
+    // Safe the results, these are coming from a query
+    $newPlanId = intval($_POST['offerSelection']);
+    $newUserObject = $user->changePricingPlan($newPlanId);
     $_SESSION['User'] = serialize($newUserObject);
     header('Location: ?changePlanResult=success');
     die();
   } catch (Exception $e) {
-    header('Location ?changePlanResult=' . $e->getMessage());
+    header('Location ?changePlanResult=failure');
     die();
   }
 }
