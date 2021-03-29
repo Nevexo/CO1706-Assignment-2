@@ -37,6 +37,13 @@ if (isset($_POST['randomTracks'])) {
   $playlist = getPlaylist($_GET['id']);
 }
 
+if (isset($_POST['deleteTrackId'])) {
+  // Remove the selected track from this playlist.
+  $playlist->removeTrack($_POST['deleteTrackId']);
+  // Refresh the playlist
+  $playlist = getPlaylist($_GET['id']);
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -162,11 +169,14 @@ if (isset($_POST['randomTracks'])) {
                   <div class="card">
                     <div class="card-body">
                       ' . $Track->prettyPrint() . '
-                      <button class="btn btn-outline-danger">Remove Track</button>
+                      <form action="#" method="post">
+                        <input type="hidden" name="deleteTrackId" id="deleteTrackId" value="' . $Track->Id . '"/>
+                        <button type="submit" class="btn btn-outline-danger">Remove Track</button>
+                      </form>
+                      
                     </div>
                   </div>
                 </div>
-
               ';
             }
           }
