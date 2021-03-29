@@ -37,12 +37,13 @@ function updatePlaylist($Id, $Name, $Public) {
 
 }
 
-function createPlaylist($Name, $Public) {
+function createPlaylist($Name, $Public, $Track) {
   global $user;
   $Public = $Public == "on";
   try {
     $playlist = Playlists::create($user, $Name);
     $playlist->setPublic($Public);
+    if ($Track) $playlist->addTrack($Track);
     header('Location: ?status=createdPlaylist&newPlaylistName='. htmlspecialchars($Name));
     die();
   } catch (Exception $e) {
@@ -63,7 +64,7 @@ if (isset($_POST['playlistName'])) {
     }
   } else {
     // No ID was passed, this is a new playlist.
-    createPlaylist($_POST['playlistName'], $_POST['playlistPublicCheck']);
+    createPlaylist($_POST['playlistName'], $_POST['playlistPublicCheck'], $_POST['autoTrackId']);
   }
 }
 ?>
@@ -168,7 +169,8 @@ if (isset($_POST['playlistName'])) {
           </div>
           <!-- Hidden element used for tracking the playlist ID if editing -->
           <input type="hidden" name="playlistId" id="playlistId"/>
-
+          <!-- Hidden element used for automatically add tracks to new playlists -->
+          <input type="hidden" name="autoTrackId" id="autoTrackId"/>
         </div>
         <div class="modal-footer">
           <button type="submit" id="deleteBttn" name="deletePlaylist" class="btn btn-danger mr-auto">Delete Playlist</button>
@@ -343,6 +345,15 @@ if (isset($_POST['playlistName'])) {
         statusAlert.classList.add("alert-warning");
         statusAlert.innerText = `Unknown error occurred: ${params.get("status")} please contact support.`;
         break;
+    }
+  }
+
+  // Handlers for creating playlists when called from another page (i.e. tracks add to playlist button)
+  if (params.has("action")) {
+    if (params.get("action") === "createNew") {
+      // Immediately open the create playlist modal, setting the trackid in a hidden element.
+      if (params.has("addTrack")) $('#autoTrackId').prop('value', params.get("addTrack"));
+      createPlaylistModal();
     }
   }
 
