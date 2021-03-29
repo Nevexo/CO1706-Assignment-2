@@ -39,6 +39,7 @@ if (isset($_POST['randomTracks'])) {
 
 if (isset($_POST['deleteTrackId'])) {
   // Remove the selected track from this playlist.
+  if ($playlist->OwnerId != $user->Id) return;
   $playlist->removeTrack($_POST['deleteTrackId']);
   // Refresh the playlist
   $playlist = getPlaylist($_GET['id']);
@@ -164,7 +165,8 @@ if (isset($_POST['deleteTrackId'])) {
             }
           } else {
             foreach ($playlist->Tracks as $Track) {
-              echo '
+              if ($playlist->OwnerId == $user->Id) {
+                echo '
                 <div class="col-md-4">
                   <div class="card">
                     <div class="card-body">
@@ -178,6 +180,15 @@ if (isset($_POST['deleteTrackId'])) {
                   </div>
                 </div>
               ';
+              }
+              else
+              {
+                echo '
+                <div class="col-md-4">
+                  ' . $Track->prettyPrint() . '  
+                </div>
+                ';
+              }
             }
           }
         ?>
