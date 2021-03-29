@@ -45,6 +45,35 @@ if (isset($_POST['deleteReview'])) {
     die();
   }
 }
+
+// Add track to Playlist handler
+if (isset($_POST['playlistSelection']))
+{
+  $PlaylistId = $_POST['playlistSelection'];
+  $TrackId = $_POST['trackId'];
+  try {
+    $Playlist = Playlists::get($PlaylistId);
+  } catch (Exception $e) {
+    header('Location: ?id=' . $Track->Id . '&playlistStatus=error');
+    die();
+  }
+
+  try {
+    $Playlist->addTrack($TrackId);
+    header('Location: ?id=' . $Track->Id . '&playlistStatus=added&playlistName=' . $Playlist->Name);
+    die();
+  } catch (Exception $e) {
+    switch($e->getMessage())
+    {
+      case "DuplicateTrack":
+        header('Location: ?id=' . $Track->Id . '&playlistStatus=duplicate');
+        die();
+      default:
+        header('Location: ?id=' . $Track->Id . '&playlistStatus=error');
+        die();
+    }
+  }
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -127,12 +156,12 @@ if (isset($_POST['deleteReview'])) {
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="playlist-modal-header">Create a Playlist</h5>
+        <h5 class="modal-title" id="playlist-modal-header">Add to Playlist</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <form action="#" method="post" id="addToPlaylistForm">
+      <form action="#" method="post" id="addToPlaylistForm" onsubmit="return catchPlaylistForm();">
         <div class="modal-body">
           <div class="form-group">
             <label for="playlistSelection">Playlist</label>
@@ -141,10 +170,11 @@ if (isset($_POST['deleteReview'])) {
               $playlists = Playlists::getForUser($user->Id);
               foreach($playlists as $playlist) {
                 echo '
-                    <option>' . $playlist->Name . '</option>
+                    <option value="' . $playlist->Id . '">' . $playlist->Name . '</option>
                   ';
               }
               ?>
+              <option value="CreateNewPlaylist">New Playlist...</option>
             </select>
           </div>
           <!-- Hidden element used for storing the trackId the user is adding to a playlist -->
@@ -177,6 +207,7 @@ if (isset($_POST['deleteReview'])) {
 </div>
 
 <div class="container-fluid">
+  <span id="playlistLabel"></span>
   <div class="row">
     <!-- Left column - used for information -->
     <div class="col-md-6">
@@ -371,9 +402,9 @@ if (isset($_POST['deleteReview'])) {
 </body>
 <script>
   // Validation scripts for review form
-  const writeWarningLabel = (text) => {
-    const span = document.getElementById("reviewFormLabel");
-    span.innerHTML = `<div class="alert alert-danger" role="alert">${text}</div>`;
+  const writeInfoLabel = (type, level, text) => {
+    const span = document.getElementById(type);
+    span.innerHTML = `<div class="alert alert-` + level + `" role="alert">${text}</div>`;
   }
 
   const validateReviewForm = () => {
@@ -381,12 +412,12 @@ if (isset($_POST['deleteReview'])) {
 
     // Check review body length
     if (form['reviewBody'].value.length > 250) {
-      writeWarningLabel("Review text too long, limited to 250 characters.");
+      writeInfoLabel("Review text too long, limited to 250 characters.");
       return false;
     }
 
     if (form['reviewBody'].value.length < 10) {
-      writeWarningLabel("Review too short, please write at least 10 characters.");
+      writeInfoLabel("Review too short, please write at least 10 characters.");
       return false;
     }
 
@@ -398,19 +429,34 @@ if (isset($_POST['deleteReview'])) {
   if (params.has("reviewError")) {
     switch (params.get("reviewError")) {
       case "QueryFailed":
-        writeWarningLabel("Something went wrong on our side, please try again later.")
+        writeInfoLabel("reviewFormLabel", "danger", "Something went wrong on our side, please try again later.")
         break;
       case "InvalidRatingValue":
-        writeWarningLabel("Invalid rating specified.");
+        writeInfoLabel("reviewFormLabel", "danger", "Invalid rating specified.");
         break;
       case "ReviewTextTooLong":
-        writeWarningLabel("Review is too long, limited to 250 characters.");
+        writeInfoLabel("reviewFormLabel", "danger", "Review is too long, limited to 250 characters.");
         break;
       case "ExistingReview":
-        writeWarningLabel("Your account already has a review for this track, did you make it on another device?");
+        writeInfoLabel("reviewFormLabel", "danger", "Your account already has a review for this track, did you make it on another device?");
         break;
       default:
-        writeWarningLabel("Something went wrong creating your review. Please try again later.");
+        writeInfoLabel("reviewFormLabel", "danger", "Something went wrong creating your review. Please try again later.");
+        break;
+    }
+  }
+
+  if (params.has("playlistStatus"))
+  {
+    switch(params.get("playlistStatus")) {
+      case "duplicate":
+        writeInfoLabel("playlistLabel", "danger", "This track has already been added to that playlist.");
+        break
+      case "error":
+        writeInfoLabel("playlistLabel", "danger", "Something went wrong adding this track to the playlist, please try again later.");
+        break;
+      default:
+        writeInfoLabel("playlistLabel", "success", `Added this track to the ${params.get('playlistName')} playlist.`);
         break;
     }
   }
@@ -418,6 +464,19 @@ if (isset($_POST['deleteReview'])) {
   const addToPlaylist = (trackId) => {
     $('#trackId').prop('value', trackId);
     $('#addToPlaylistModal').modal('show');
+  }
+
+  const catchPlaylistForm = () => {
+    // Handle responses from the Add to Playlist modal form, if the "New Playlist..." option is selected
+    // forward the user to the playlists creation page.
+    const form = document.forms["addToPlaylistForm"];
+
+    if (form['playlistSelection'].value === "CreateNewPlaylist")
+    {
+      window.location = "playlist.php?action=createNew&addTrack=" + params.get("id");
+      return false;
+    }
+    return true;
   }
 </script>
 </html>
