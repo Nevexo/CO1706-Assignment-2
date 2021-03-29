@@ -142,15 +142,6 @@ if (isset($_POST['playlistSelection']))
   </div>
 </nav>
 
-<!-- TODO
-  - Add some form of handling for when there's no playlists on the user's account
-    - Maybe allow them to create a new playlist from this page?
-    - At least show a warning redirecting them to the playlists interface
-  - Improve implementation, the add to playlist button needs a proper home.
-  - Add track implementation
-  - Handle the track already being in a playlist?
--->
-
 <!-- Add to Playlist modal -->
 <div id="addToPlaylistModal" class="modal fade" tabindex="-1" role="dialog">
   <div class="modal-dialog" role="document">
