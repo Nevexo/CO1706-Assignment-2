@@ -5,7 +5,9 @@ All files for this project are stored in the src/ directory and tracked with Git
 
 - Submission Date: `18th April 2021`
 - GitHub Repository: https://github.com/nevexo-uni/CO1706-Assignment-2 (access available by request)
-- Vesta URL: https://vesta.uclan.ac.uk/~CPFleming/assignment-2/
+- Production Access
+  - UCLan Vesta: https://vesta.uclan.ac.uk/~CPFleming/assignment-2/
+  - As-developed build: http://ecksmusic.ldn1.cpfleming.co.uk/
 
 ## Assignment Progress
 - [x] App Connects to MySQL Database
