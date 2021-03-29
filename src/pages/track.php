@@ -224,14 +224,14 @@ if (isset($_POST['playlistSelection']))
               <p class="card-text">
                 <span title="Album" class="fas fa-music"></span> Genre: <i><?php echo $Track->Genre; ?> <br/></i>
                 <span title="Album" class="fas fa-compact-disc"></span> Album: <i><?php echo $Track->Album->Name; ?><br/></i>
-                <span title="Album" class="fas fa-users"></span> Average Rating: <i><?php echo $Track->AverageRating?></i>
-                <button
-                        onclick="addToPlaylist(<?php echo $Track->Id ?>); return true;"
-                        class="btn btn-primary">
-                  Add to Playlist
-                </button>
+                <span title="Album" class="fas fa-users"></span> Average Rating: <i><?php echo $Track->AverageRating?>></i>
               </p>
-              <a href="#" class="card-link">More from This Artist</a>
+              <button
+                      onclick="addToPlaylist(<?php echo $Track->Id ?>); return true;"
+                      class="btn btn-warning">
+                Add to Playlist
+              </button><br/>
+              <a href="#" class="card-link">More from This Artist</a><br/>
               <a href="#" class="card-link">More in This Genre</a>
             </div>
           </div>
