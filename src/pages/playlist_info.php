@@ -115,7 +115,9 @@ if (isset($_POST['deleteTrackId'])) {
 <div class="jumbotron">
   <h1 class="display-4"><? echo $playlist->Name; ?></h1>
   <p class="lead">A
-    <?php echo ($playlist->Public ? 'public' : 'private') . ' playlist by ' . $playlist->OwnerName; ?>
+    <?php
+    echo ($playlist->Public ? 'public' : 'private') . ' playlist by ' .
+      ($playlist->OwnerId == $user->Id ? 'you' : $playlist->OwnerName); ?>
     on EcksMusic.</p>
   <hr class="my-4">
   <p>
