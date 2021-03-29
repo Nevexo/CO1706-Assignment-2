@@ -213,6 +213,9 @@ class Playlists
 
   static function create(User $User, string $Name): Playlist
   {
+    // Pro
+    if ($Name == "CreateNewPlaylist") throw new Exception("InvalidName");
+
     // Create a new playlist
     global $pdo;
     $query = $pdo->prepare("INSERT INTO playlists (owner_id, playlist_name) VALUES (?, ?)");
