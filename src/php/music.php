@@ -79,7 +79,6 @@ class Track {
           <p class="text-muted"><span title="Artist" class="fas fa-users"></span> ' . $this->Artist->Name . '</p>
           <p class="text-muted"><span title="Album" class="fas fa-compact-disc"></span> ' . $this->Album->Name . '</p>
           <a href="track.php?id=' . $this->Id . '" class="card-link">More Info</a>
-          <a href="#" class="card-link">Add to Playlist</a>
         </div>
       </div>
     ';
