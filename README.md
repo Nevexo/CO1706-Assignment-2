@@ -23,7 +23,7 @@ All files for this project are stored in the src/ directory and tracked with Git
   - [x] User greeted on all pages with their username (top right)
   - [x] Validation on all forms
   - [x] 404 Page (.htaccess, pages/404.html)
-- 2:2 (60%+)
+- 2:1 (60%+)
   - [x] Registration Page (pages/register.php)
     - Username
       - Duplicates not allowed
