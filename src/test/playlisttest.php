@@ -10,6 +10,7 @@ function testPlaylists(User $User)
   echo "create playlist<br>";
   try {
     $P = Playlists::create($User, "Smoketest Tunes");
+    $P->setPublic(true);
   } catch (Exception $e) {
     throw $e;
   }
