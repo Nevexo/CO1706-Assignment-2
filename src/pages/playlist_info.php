@@ -169,7 +169,7 @@ if (isset($_POST['deleteTrackId'])) {
             foreach ($playlist->Tracks as $Track) {
               if ($playlist->OwnerId == $user->Id) {
                 echo '
-                <div class="col-md-4">
+                <div class="col-md-3">
                   <div class="card">
                     <div class="card-body">
                       ' . $Track->prettyPrint() . '
@@ -186,7 +186,7 @@ if (isset($_POST['deleteTrackId'])) {
               else
               {
                 echo '
-                <div class="col-md-4">
+                <div class="col-md-3">
                   ' . $Track->prettyPrint() . '  
                 </div>
                 ';
