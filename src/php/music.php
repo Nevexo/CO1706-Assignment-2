@@ -244,3 +244,49 @@ class TrackPaginator
     return Tracks::getAll($PAGINATION_PAGE_TRACKS, $lastId);
   }
 }
+
+class Albums
+{
+  // Static functions for accessing album information
+  public static function get(int $Id): Album
+  {
+    // Get a specific album by it's ID number
+    global $pdo;
+
+    $query = $pdo->prepare("SELECT * FROM albums NATURAL JOIN artists WHERE album_id = ?");
+    $success = $query->execute([$Id]);
+    if (!$success) throw new Exception("QueryFailed");
+    if ($query->rowCount() == 0) throw new Exception("InvalidAlbum");
+    $result = $query->fetch(PDO::FETCH_ASSOC);
+
+    return new Album(
+      $result['album_id'], $result['album_name'],
+      new Artist($result['artist_id'], $result['artist_name'])
+    );
+  }
+
+  public static function getAll(int $artist = null): array
+  {
+    // Get all albums, from all or specific artists.
+    global $pdo;
+
+    $query = $pdo->prepare("SELECT * FROM albums NATUAL JOIN artists");
+    $success = $query->execute();
+    if (!$success) throw new Exception("QueryFailed");
+
+    $Albums = [];
+    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $result)
+    {
+      // Skip any tracks not by $artist (if defined)
+      if (!is_null($artist) && $result['artist_id'] != $artist) continue;
+      array_push($Albums,
+        new Album(
+          $result['album_id'], $result['album_name'],
+          new Artist($result['artist_id'], $result['artist_name'])
+        )
+      );
+    }
+
+    return $Albums;
+  }
+}
