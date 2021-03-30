@@ -173,9 +173,9 @@ if (isset($_POST['playlistName'])) {
           <input type="hidden" name="autoTrackId" id="autoTrackId"/>
         </div>
         <div class="modal-footer">
-          <button type="submit" id="deleteBttn" name="deletePlaylist" class="btn btn-danger mr-auto">Delete Playlist</button>
-          <button type="submit" class="btn btn-primary">Save Changes</button>
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="submit" id="deleteBttn" name="deletePlaylist" tabindex='3' class="btn btn-danger mr-auto">Delete Playlist</button>
+          <button type="submit" tabindex='1' class="btn btn-primary">Save Changes</button>
+          <button type="button" tabindex='2' class="btn btn-secondary" data-dismiss="modal">Close</button>
         </div>
       </form>
     </div>
