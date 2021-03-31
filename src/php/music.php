@@ -9,28 +9,56 @@ class Artist
 {
   public $ArtistId;
   public $ArtistName;
+  public $Albums = [];
+
+  public function __construct(int $Id, string $Name, array $Albums)
+  {
+    $this->ArtistId = $Id;
+    $this->ArtistName = $Name;
+    $this->Albums = $Albums;
+  }
 }
 
-class Album extends Artist
+class Album
 {
   public $AlbumId;
   public $AlbumName;
-  public $AlbumArtUrl;
+  public $Tracks = [];
+
+  public function __construct(int $Id, string $Name, array $Tracks)
+  {
+    $this->AlbumId = $Id;
+    $this->AlbumName = $Name;
+    $this->Tracks = $Tracks;
+  }
 }
 
-class Track extends Album
+class Track
 {
   public $TrackId;
   public $TrackName;
   public $Genre;
   public $Description;
   public $ThumbnailPath;
+  public $AlbumArt;
   public $AverageRating;
   public $SamplePath;
 
-  public function __construct()
+  public function __construct(int $Id,
+                              string $Name,
+                              string $Genre,
+                              string $Description,
+                              string $ThumbnailPath,
+                              string $AlbumArt,
+                              string $SamplePath)
   {
-    return;
+    $this->TrackId = $Id;
+    $this->TrackName = $Name;
+    $this->Genre = $Genre;
+    $this->Description = $Description;
+    $this->ThumbnailPath = $ThumbnailPath;
+    $this->AlbumArt = $AlbumArt;
+    $this->SamplePath = $SamplePath;
   }
 }
 
@@ -117,6 +145,12 @@ class Track extends Album
 
 class Tracks
 {
+  private function queryToObject(string $SqlResult)
+  {
+    // Convert a track SQL result into artist, album and track objects.
+    
+  }
+
   // Static functions for accessing track information from the database
   public static function trackCount(): int {
     // Get the number of tracks in the database, used for pagination.
