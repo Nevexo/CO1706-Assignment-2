@@ -62,8 +62,7 @@ class Track {
 
   public function prettyPrint() {
     // Pretty-print this track as HTML.
-    // TODO: Average rating & recommended for you labels.
-    // TODO: Track hyperlinks.
+    // TODO: Recommended for you labels.
     return '
       <div class="card">
         <img class="card-img-top" src="../' . $this->ImagePath . '" alt="Card image cap">
@@ -250,7 +249,6 @@ class TrackPaginator
     }
 
     // Split the track count into pages, adding 1 to give the last page which won't have the full amount of items.
-    // TODO: Kind of a random number?
     $this->pages = round($this->trackCount / $PAGINATION_PAGE_TRACKS) + 1;
   }
 
