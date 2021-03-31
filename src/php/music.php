@@ -5,85 +5,115 @@
 require_once "database.php";
 require_once "reviews.php";
 
-class Artist {
-  public $Id;
-  public $Name;
-
-  public function __construct(int $Id, string $Name) {
-    $this->Id = $Id;
-    $this->Name = $Name;
-  }
+class Artist
+{
+  public $ArtistId;
+  public $ArtistName;
 }
 
-class Album {
-  public $Id;
-  public $Name;
-  public $Artist;
-
-  public function __construct(int $Id, string $Name, Artist $Artist) {
-    $this->Id = $Id;
-    $this->Name = $Name;
-    $this->Artist = $Artist;
-  }
+class Album extends Artist
+{
+  public $AlbumId;
+  public $AlbumName;
+  public $AlbumArtUrl;
 }
 
-class Track {
-  public $Id;
-  public $Artist;
-  public $Album;
-  public $Description;
-  public $Name;
-  public $FullName;
+class Track extends Album
+{
+  public $TrackId;
+  public $TrackName;
   public $Genre;
-  public $ImagePath;
-  public $ThumbPath;
-  public $SamplePath;
+  public $Description;
+  public $ThumbnailPath;
   public $AverageRating;
+  public $SamplePath;
 
-  public function __construct($result)
+  public function __construct()
   {
-    // Construct a Track from a MySQL query result
-    $this->Id = $result['track_id'];
-    $this->Artist = new Artist($result['artist_id'], $result['artist_name']);
-    $this->Album = new Album($result['album_id'], $result['album_name'], $this->Artist);
-    $this->Description = $result['description'];
-    $this->Name = $result['track_name'];
-    $this->Genre = $result['genre'];
-    $this->ImagePath = $result['image'];
-    $this->ThumbPath = $result['thumbnail'];
-    $this->SamplePath = $result['sample'];
-    $this->FullName = $this->Artist->Name . ' - ' . $this->Name;
-    try {
-      $this->AverageRating = Reviews::averageRating($this->Id) . "/10";
-    } catch (Exception $e) {
-      $this->AverageRating = "N/A";
-    }
-  }
-
-  public function prettyPrint() {
-    // Pretty-print this track as HTML.
-    // TODO: Average rating & recommended for you labels.
-    // TODO: Track hyperlinks.
-    return '
-      <div class="card">
-        <img class="card-img-top" src="../' . $this->ImagePath . '" alt="Card image cap">
-        <div class="card-body">
-          <h5 class="card-title">
-            ' . $this->Name . '
-          </h5>
-          <p>
-            <!--<span class="badge badge-warning"><span class="fas fa-star"></span> Recommended for You</span>-->
-            <span class="badge badge-info"><span class="fas fa-music"></span> Genre: ' . $this->Genre . '</span>
-            <span class="badge badge-success"><span class="fas fa-user-edit"></span> Average Rating: ' . $this->AverageRating . '</span>
-          </p>
-          <p class="text-muted"><span title="Artist" class="fas fa-users"></span> ' . $this->Artist->Name . '</p>
-          <p class="text-muted"><span title="Album" class="fas fa-compact-disc"></span> ' . $this->Album->Name . '</p>
-          <a href="track.php?id=' . $this->Id . '" class="card-link">More Info</a>
-        </div>
-      </div>
-    ';
+    return;
   }
 }
+
+
+//class Artist {
+//  public $Id;
+//  public $Name;
+//
+//  public function __construct(int $Id, string $Name) {
+//    $this->Id = $Id;
+//    $this->Name = $Name;
+//  }
+//}
+//
+//class Album {
+//  public $Id;
+//  public $Name;
+//  public $Artist;
+//
+//  public function __construct(int $Id, string $Name, Artist $Artist) {
+//    $this->Id = $Id;
+//    $this->Name = $Name;
+//    $this->Artist = $Artist;
+//  }
+//}
+//
+//class Track {
+//  public $Id;
+//  public $Artist;
+//  public $Album;
+//  public $Description;
+//  public $Name;
+//  public $FullName;
+//  public $Genre;
+//  public $ImagePath;
+//  public $ThumbPath;
+//  public $SamplePath;
+//  public $AverageRating;
+//
+//  public function __construct($result)
+//  {
+//    // Construct a Track from a MySQL query result
+//    $this->Id = $result['track_id'];
+//    $this->Artist = new Artist($result['artist_id'], $result['artist_name']);
+//    $this->Album = new Album($result['album_id'], $result['album_name'], $this->Artist);
+//    $this->Description = $result['description'];
+//    $this->Name = $result['track_name'];
+//    $this->Genre = $result['genre'];
+//    $this->ImagePath = $result['image'];
+//    $this->ThumbPath = $result['thumbnail'];
+//    $this->SamplePath = $result['sample'];
+//    $this->FullName = $this->Artist->Name . ' - ' . $this->Name;
+//    try {
+//      $this->AverageRating = Reviews::averageRating($this->Id) . "/10";
+//    } catch (Exception $e) {
+//      $this->AverageRating = "N/A";
+//    }
+//  }
+//
+//  public function prettyPrint() {
+//    // Pretty-print this track as HTML.
+//    // TODO: Average rating & recommended for you labels.
+//    // TODO: Track hyperlinks.
+//    return '
+//      <div class="card">
+//        <img class="card-img-top" src="../' . $this->ImagePath . '" alt="Card image cap">
+//        <div class="card-body">
+//          <h5 class="card-title">
+//            ' . $this->Name . '
+//          </h5>
+//          <p>
+//            <!--<span class="badge badge-warning"><span class="fas fa-star"></span> Recommended for You</span>-->
+//            <span class="badge badge-info"><span class="fas fa-music"></span> Genre: ' . $this->Genre . '</span>
+//            <span class="badge badge-success"><span class="fas fa-user-edit"></span> Average Rating: ' . $this->AverageRating . '</span>
+//          </p>
+//          <p class="text-muted"><span title="Artist" class="fas fa-users"></span> ' . $this->Artist->Name . '</p>
+//          <p class="text-muted"><span title="Album" class="fas fa-compact-disc"></span> ' . $this->Album->Name . '</p>
+//          <a href="track.php?id=' . $this->Id . '" class="card-link">More Info</a>
+//        </div>
+//      </div>
+//    ';
+//  }
+//}
 
 class Tracks
 {
