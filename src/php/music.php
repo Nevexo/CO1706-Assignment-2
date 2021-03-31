@@ -143,6 +143,32 @@ class Tracks
     return new Track($result);
   }
 
+  public static function getAlbum(int $AlbumId): array
+  {
+    // Get tracks from the specified album
+    global $pdo;
+
+    // Cancel if this album doesn't exist
+    try {
+      Albums::get($AlbumId);
+    } catch (Exception $e) {throw new Exception("InvalidAlbum");}
+
+    // Run the query to find all tracks with this specific album ID.
+    $query = $pdo->prepare("SELECT * FROM tracks NATURAL JOIN artists NATURAL JOIN albums WHERE album_id = ?");
+    $success = $query->execute([$AlbumId]);
+    if (!$success) throw new Exception("QueryFailed");
+    if ($query->rowCount() == 0) throw new Exception("NoTracksFound");
+
+    // Convert results into Track objects
+    $Tracks = [];
+    foreach($query->fetchAll(PDO::FETCH_ASSOC) as $TrackEntry)
+    {
+      array_push($Tracks, new Track($TrackEntry));
+    }
+
+    return $Tracks;
+  }
+
   public static function random(int $Count = 1): array
   {
     // Get random selection of songs (limited to $Count)
