@@ -97,7 +97,7 @@ class Tracks
     return $result->fetch(pdo::FETCH_NUM)[0];
   }
 
-  public static function getAll(int $limit = 100, int $after = 0): array
+  public static function getAll(int $limit = 200, int $after = 0): array
   {
     // Get all tracks
     // limit - Set a limit on the query
