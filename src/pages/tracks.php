@@ -82,7 +82,8 @@ if (isset($_SESSION['User'])) $user = unserialize($_SESSION['User']);
 <div class="container-fluid">
   <div class="row">
     <?php
-      $paginator = new TrackPaginator();
+      $Tracks = tracks::getAll();
+      $paginator = new TrackPaginator($Tracks);
       if (isset($_GET['page'])) $page = $_GET['page']; else $page = 1;
     try {
       $tracks = $paginator->getPage($page);
@@ -108,7 +109,7 @@ if (isset($_SESSION['User'])) $user = unserialize($_SESSION['User']);
       <ul class="pagination">
         <?php
           // Print the pagination box to the screen, mark the current page as 'active'
-          for ($i = 1; $i <= $paginator->pages; $i++) {
+          for ($i = 1; $i <= $paginator->pageCount; $i++) {
             if ($i == $page) {
               // Show as active
               echo "<li class='page-item active'><a class='page-link' href='?page=" . $i . "'>" . $i . "</a></li>\r\n";
