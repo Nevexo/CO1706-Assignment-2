@@ -6,8 +6,23 @@ if (!isset($_SESSION['User'])) {
 }
 
 require_once '../php/auth.php';
-
+require_once '../php/music.php';
 if (isset($_SESSION['User'])) $user = unserialize($_SESSION['User']);
+// Redirect user if there's no album ID selected
+if (!isset($_GET['id'])) {
+  header('Location: albums.php');
+  die();
+}
+
+// Get the album object and put it in the $Album variable.
+// Then get all tracks for this album and store them in $Tracks.
+try {
+  $Album = Albums::get($_GET['id']);
+  $Tracks = Tracks::getAlbum($Album->Id);
+} catch (Exception $e) {
+  // Cannot find this album (or something went wrong on the database, redirect to albums list page)
+  if (!isset($_GET['id'])) header('Location albums.php');
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -30,7 +45,7 @@ if (isset($_SESSION['User'])) $user = unserialize($_SESSION['User']);
         crossorigin="anonymous"/>
   <!-- Local stylesheets -->
   <link rel="stylesheet" href="../css/stylesheet.css"/>
-  <title>Albums | EcksMusic</title>
+  <title><?php echo $Album->Name; ?> | EcksMusic</title>
 </head>
 <body>
 <nav class="navbar navbar-expand-md navbar-dark bg-dark sticky-top">
@@ -50,7 +65,7 @@ if (isset($_SESSION['User'])) $user = unserialize($_SESSION['User']);
           <a class="nav-link" href="tracks.php">Tracks</a>
         </li>
         <li class="navbar-item">
-          <a class="nav-link active" href="#">Albums</a>
+          <a class="nav-link" href="albums.php">Albums</a>
         </li>
         <li class="navbar-item">
           <a class="nav-link" href="search.php">Search</a>
@@ -75,40 +90,36 @@ if (isset($_SESSION['User'])) $user = unserialize($_SESSION['User']);
     </div>
   </div>
 </nav>
+
 <div class="jumbotron">
-  <h1 class="display-4">Albums</h1>
+  <div class="row">
+    <div class="col-auto">
+      <img alt="Album thumbnail" src="../<?php echo $Tracks[0]->ThumbPath; ?>"/>
+    </div>
+    <div class="col">
+      <h1 class="display-4">
+        <?php echo $Album->Name; ?>
+      </h1>
+      <p class="lead">
+        <span class="text-muted fas fa-users"></span>
+        <?php echo $Album->Artist->Name; ?>
+      </p>
+    </div>
+  </div>
 </div>
 
 <div class="container-fluid">
   <div class="row">
     <?php
-      // Get all albums and display them on this page
-    try {
-      $albums = Albums::getAll();
-    } catch (Exception $e) {
-      echo '<div class="alert alert-danger" role="alert">Something went wrong loading this page.</div>';
-    }
-
-    foreach ($albums as $a) {
-      echo '
-        <div class="col-md-4">
-          <div class="card">
-            <div class="card-body">
-              <h5 class="card-title">' . $a->Name . '</h5>
-              <p class="card-text">' . $a->Artist->Name . '</p>
-              <a href="album.php?id=' . $a->Id . '" class="btn btn-warning">More Info</a>
-            </div>
+      foreach ($Tracks as $t) {
+        echo '
+          <div class="col-md-3">
+            ' . $t->prettyPrint() . '
           </div>
-        </div>
-      ';
-    }
+        ';
+      }
     ?>
-
   </div>
 </div>
-
 </body>
-<script>
-
-</script>
 </html>
