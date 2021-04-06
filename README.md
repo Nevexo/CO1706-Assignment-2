@@ -37,7 +37,7 @@ All files for this project are stored in the src/ directory and tracked with Git
   - [x] Playlist Function
     - Random selection of tracks
   - [ ] Users can browse for music by album and artist
-  - [ ] Album description page
+  - [x] Album description page
   - [ ] Search page
   - [x] Average review ratings displayed on
     - Tracks page

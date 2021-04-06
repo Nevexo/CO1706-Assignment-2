@@ -224,7 +224,7 @@ if (isset($_POST['playlistSelection']))
               <span class="badge badge-warning"><span class="fas fa-star"></span> Recommended for You</span>
               <p class="card-text">
                 <span title="Album" class="fas fa-music"></span> Genre: <i><?php echo $Track->Genre; ?> <br/></i>
-                <span title="Album" class="fas fa-compact-disc"></span> Album: <i><?php echo $Track->Album->Name; ?><br/></i>
+                <span title="Album" class="fas fa-compact-disc"></span> Album: <a href="album.php?id=<?php echo $Track->Album->Id?>"><i><?php echo $Track->Album->Name; ?></i></a><br/>
                 <span title="Album" class="fas fa-users"></span> Average Rating: <i><?php echo $Track->AverageRating?></i>
               </p>
               <button
