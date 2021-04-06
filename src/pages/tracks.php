@@ -87,11 +87,11 @@ if (isset($_SESSION['User'])) $user = unserialize($_SESSION['User']);
           Filter
         </div>
         <div class="card-body">
-          <form>
+          <form action="#" method="get">
             <div class="form-row">
               <div class="form-group col-md-4">
                 <label for="genre">Genre</label>
-                <select id="genre" class="form-control">
+                <select name="genre" id="genre" class="form-control">
                   <option selected>Any</option>
                   <?php
                     foreach (Tracks::getGenreList() as $Genre)
@@ -103,7 +103,7 @@ if (isset($_SESSION['User'])) $user = unserialize($_SESSION['User']);
               </div>
               <div class="form-group col-md-4">
                 <label for="album">Album</label>
-                <select id="album" class="form-control">
+                <select name="album" id="album" class="form-control">
                   <option selected>Any</option>
                   <?php
                   foreach (Albums::getAll() as $Album)
@@ -115,7 +115,7 @@ if (isset($_SESSION['User'])) $user = unserialize($_SESSION['User']);
               </div>
               <div class="form-group col-md-4">
                 <label for="artist">Artist</label>
-                <select id="artist" class="form-control">
+                <select name="artist" id="artist" class="form-control">
                   <option selected>Any</option>
                   <?php
                   foreach (Artists::getAll() as $Artist)
@@ -134,7 +134,16 @@ if (isset($_SESSION['User'])) $user = unserialize($_SESSION['User']);
   </div>
   <div class="row">
     <?php
-      $Tracks = tracks::getAll();
+      // Check for filters
+      if (isset($_GET['genre']))
+      {
+        // Some filters are active, get tracks with these filters
+        $Tracks = Tracks::search("genre", $_GET['genre']);
+      } else
+      {
+        // No filtering, get all tracks.
+        $Tracks = tracks::getAll();
+      }
       $paginator = new TrackPaginator($Tracks);
       if (isset($_GET['page'])) $page = $_GET['page']; else $page = 1;
     try {
