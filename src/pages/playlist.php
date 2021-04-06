@@ -41,10 +41,10 @@ function createPlaylist($Name, $Public, $Track) {
   global $user;
   $Public = $Public == "on";
   try {
-    $playlist = Playlists::create($user, $Name);
+    $playlist = Playlists::create($user, htmlspecialchars($Name, ENT_QUOTES));
     $playlist->setPublic($Public);
     if ($Track) $playlist->addTrack($Track);
-    header('Location: ?status=createdPlaylist&newPlaylistName='. htmlspecialchars($Name));
+    header('Location: ?status=createdPlaylist&newPlaylistName='. htmlspecialchars($Name, ENT_QUOTES));
     die();
   } catch (Exception $e) {
     header('Location: ?status=playlistCreationFailed');
