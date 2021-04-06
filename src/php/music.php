@@ -101,7 +101,7 @@ class Tracks
   {
     // Get all tracks
     // limit - Set a limit on the query
-    // after - Get all tracks AFTER this ID sorted by ID.
+    // after - Get all tracks AFTER this ID sorted by ID. DEPRECATED
     // Return: array or exception.
     global $pdo;
 
@@ -232,40 +232,38 @@ class Tracks
 
 class TrackPaginator
 {
-  // This class handles track pagination, as there's over 100 tracks in the database we don't want to
-  // get this many results from the database constantly, and certainly don't want to push that many tracks
-  // to the user.
+  // This class paginates (splits into pages) an array of Track objects to reduce the size of the final
+  // Tracks.php page, this can also be implemented anywhere a lot of tracks are displayed.
   private $trackCount = 0;
-  public $pages = 0;
+  public $pageCount = 0;
+  private $tracks;
 
-  public function __construct() {
-    global $PAGINATION_PAGE_TRACKS;
+  public function __construct(Array $Tracks)
+  {
+    global $PAGINATION_PAGE_TRACKS; // Number of tracks per page, set in vars.php.
 
-    try {
-      // Get number of tracks in the database.
-      $this->trackCount = Tracks::trackCount();
-    } catch (Exception $e) {
-      throw $e;
-    }
+    $this->trackCount = count($Tracks);
 
-    // Split the track count into pages, adding 1 to give the last page which won't have the full amount of items.
-    $this->pages = round($this->trackCount / $PAGINATION_PAGE_TRACKS) + 1;
+    // Calculate number of pages, add 1 if the final page will have less than PAGINATION_PAGE_TRACKS tracks.
+    $this->pageCount = round($this->trackCount / $PAGINATION_PAGE_TRACKS);
+    if ($this->trackCount % $PAGINATION_PAGE_TRACKS != 0) $this->pageCount++;
+    $this->tracks = $Tracks;
   }
 
-  public function getPage(int $page) {
-    // Get the tracks for a specific page
-    if ($page > $this->pages) throw new Exception("InvalidPage");
-
+  public function getPage(int $page = 1): Array
+  {
+    // Get track listing for this page
     global $PAGINATION_PAGE_TRACKS;
 
-    // Get all tracks, limited to $PAGINATION_PAGE_TRACKS (vars.php) and from after the page's track ID.
+    if ($page > $this->pageCount) throw new Exception("InvalidPage");
+
     if ($page == 1) {
       $lastId = 0;
     } else {
       $lastId = $PAGINATION_PAGE_TRACKS * ($page - 1);
     }
 
-    return Tracks::getAll($PAGINATION_PAGE_TRACKS, $lastId);
+    return array_slice($this->tracks, $lastId, $PAGINATION_PAGE_TRACKS);
   }
 }
 
