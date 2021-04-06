@@ -84,9 +84,16 @@ if (isset($_SESSION['User'])) $user = unserialize($_SESSION['User']);
     <?php
       $paginator = new TrackPaginator();
       if (isset($_GET['page'])) $page = $_GET['page']; else $page = 1;
+    try {
       $tracks = $paginator->getPage($page);
+    } catch (Exception $e) {
+      echo '<div class="alert alert-danger" role="alert">
+              Failed to get tracks, please try again later.
+            </div>';
+      die();
+    }
 
-      foreach($tracks as $track) {
+    foreach($tracks as $track) {
         echo '
           <div class="col-md-3">
             ' . $track->prettyPrint() . '
