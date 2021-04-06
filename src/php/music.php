@@ -325,3 +325,30 @@ class Albums
     return $Albums;
   }
 }
+
+class Artists
+{
+  // Static functions for accessing artist information
+  public static function getAll(): array
+  {
+    // Get all artists
+    global $pdo;
+
+    $query = $pdo->prepare("SELECT * FROM artists");
+    $success = $query->execute();
+    if (!$success) throw new Exception("QueryFailed");
+
+    $Artists = [];
+    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $result)
+    {
+      // Skip any tracks not by $artist (if defined)
+      array_push($Artists,
+        new Artist(
+          $result['artist_id'], $result['artist_name']
+        )
+      );
+    }
+
+    return $Artists;
+  }
+}
