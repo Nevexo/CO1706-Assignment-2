@@ -81,6 +81,58 @@ if (isset($_SESSION['User'])) $user = unserialize($_SESSION['User']);
 
 <div class="container-fluid">
   <div class="row">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-header">
+          Filter
+        </div>
+        <div class="card-body">
+          <form>
+            <div class="form-row">
+              <div class="form-group col-md-4">
+                <label for="genre">Genre</label>
+                <select id="genre" class="form-control">
+                  <option selected>Any</option>
+                  <?php
+                    foreach (Tracks::getGenreList() as $Genre)
+                    {
+                      echo "<option>" . $Genre['genre'] ."</option>";
+                    }
+                  ?>
+                </select>
+              </div>
+              <div class="form-group col-md-4">
+                <label for="album">Album</label>
+                <select id="album" class="form-control">
+                  <option selected>Any</option>
+                  <?php
+                  foreach (Albums::getAll() as $Album)
+                  {
+                    echo "<option>" . $Album->Name ."</option>";
+                  }
+                  ?>
+                </select>
+              </div>
+              <div class="form-group col-md-4">
+                <label for="artist">Artist</label>
+                <select id="artist" class="form-control">
+                  <option selected>Any</option>
+                  <?php
+                  foreach (Artists::getAll() as $Artist)
+                  {
+                    echo "<option>" . $Artist->Name ."</option>";
+                  }
+                  ?>
+                </select>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-warning">Update Filter</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
     <?php
       $Tracks = tracks::getAll();
       $paginator = new TrackPaginator($Tracks);
