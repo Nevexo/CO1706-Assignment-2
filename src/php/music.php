@@ -187,6 +187,19 @@ class Tracks
     return $tracks;
   }
 
+  public static function getGenreList(): Array
+  {
+    // Get a list of available genres from the database
+    // Genres are not relational in this database, so they must be manually queried.
+    global $pdo;
+
+    $query = "SELECT DISTINCT genre FROM tracks";
+    $response = $pdo->query($query);
+    if (!$response) throw new Exception("QueryFailed");
+
+    return $response->fetchAll(PDO::FETCH_ASSOC);
+  }
+
   public static function search(string $Type, string $Query)
   {
     // Search for a track by artist/album/name/genre
