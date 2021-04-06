@@ -21,7 +21,8 @@ try {
   $Track = Tracks::get($_GET['id']);
 } catch (Exception $e) {
   // Cannot find this track, take the user back to the track listl
-  if (!isset($_GET['id'])) header('Location tracks.php');
+  header('Location: tracks.php');
+  die();
 }
 
 // Check for review POST data

@@ -21,7 +21,8 @@ try {
   $Tracks = Tracks::getAlbum($Album->Id);
 } catch (Exception $e) {
   // Cannot find this album (or something went wrong on the database, redirect to albums list page)
-  if (!isset($_GET['id'])) header('Location albums.php');
+  header('Location: albums.php');
+  die();
 }
 ?>
 <!DOCTYPE html>
