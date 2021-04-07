@@ -253,30 +253,26 @@ class TrackPaginator
 
   public function __construct(Array $Tracks)
   {
-    global $PAGINATION_PAGE_TRACKS; // Number of tracks per page, set in vars.php.
-
     $this->trackCount = count($Tracks);
 
     // Calculate number of pages, add 1 if the final page will have less than PAGINATION_PAGE_TRACKS tracks.
-    $this->pageCount = round($this->trackCount / $PAGINATION_PAGE_TRACKS);
-    if ($this->trackCount % $PAGINATION_PAGE_TRACKS != 0) $this->pageCount++;
+    $this->pageCount = round($this->trackCount / PAGINATION_PAGE_TRACKS);
+    if ($this->trackCount % PAGINATION_PAGE_TRACKS != 0) $this->pageCount++;
     $this->tracks = $Tracks;
   }
 
   public function getPage(int $page = 1): Array
   {
     // Get track listing for this page
-    global $PAGINATION_PAGE_TRACKS;
-
     if ($page > $this->pageCount) throw new Exception("InvalidPage");
 
     if ($page == 1) {
       $lastId = 0;
     } else {
-      $lastId = $PAGINATION_PAGE_TRACKS * ($page - 1);
+      $lastId = PAGINATION_PAGE_TRACKS * ($page - 1);
     }
 
-    return array_slice($this->tracks, $lastId, $PAGINATION_PAGE_TRACKS);
+    return array_slice($this->tracks, $lastId, PAGINATION_PAGE_TRACKS);
   }
 }
 

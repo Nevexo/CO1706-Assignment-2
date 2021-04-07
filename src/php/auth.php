@@ -60,7 +60,6 @@ class User
   {
     // Change the user's password
     global $pdo;
-    global $PASSWORD_MIN_LENGTH;
 
     try {
       $PasswdCheck = $this->confirmPassword($Password);
@@ -69,7 +68,7 @@ class User
     }
 
     if (!$PasswdCheck) throw new Exception("InvalidPassword");
-    if (strlen($NewPassword) < $PASSWORD_MIN_LENGTH) throw new Exception("InvalidNewPassword");
+    if (strlen($NewPassword) < PASSWORD_MIN_LENGTH) throw new Exception("InvalidNewPassword");
 
     $NewPasswordHash = password_hash($NewPassword, PASSWORD_DEFAULT);
     $query = $pdo->prepare("UPDATE users SET password = ? WHERE id = ?");
@@ -180,17 +179,15 @@ class Users
     // Expect: User
     // Catch: UserAlreadyExists / QueryError
     global $pdo;
-    global $PASSWORD_MIN_LENGTH;
-    global $ENABLE_REGISTRATION;
 
     // Check for missing parameters
     if ($Username == "") throw new Exception("MissingUsername");
     if ($PlainTextPassword == "") throw new Exception("MissingPassword");
     if ($PricingPlanId == "") throw new Exception("MissingPricingPlan");
-    if (!$ENABLE_REGISTRATION) throw new Exception("RegistrationDisabled");
+    if (ENABLE_REGISTRATION) throw new Exception("RegistrationDisabled");
 
     // Check password complexity requirements
-    if (strlen($PlainTextPassword) < $PASSWORD_MIN_LENGTH) throw new Exception("PasswordTooShort");
+    if (strlen($PlainTextPassword) < PASSWORD_MIN_LENGTH) throw new Exception("PasswordTooShort");
 
     // Safe the username from HTML injection
     $Username = htmlspecialchars($Username);

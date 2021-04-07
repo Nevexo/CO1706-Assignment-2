@@ -3,14 +3,14 @@
 // Cameron Paul Fleming - 2021
 
 // Database Configuration
-$DATABASE_HOST = 'sql';
-$DATABASE_USERNAME = 'root';
-$DATABASE_PASSWORD = 'password';
-$DATABASE_SCHEMA_NAME = 'musicstream';
+define("DATABASE_HOST",        'sql');
+define("DATABASE_USERNAME",    'root');
+define("DATABASE_PASSWORD",    'password');
+define("DATABASE_SCHEMA_NAME", 'musicstream');
 
 // Authentication Configuration
-$PASSWORD_MIN_LENGTH = 3;
-$ENABLE_REGISTRATION = true;
+define("PASSWORD_MIN_LENGTH", 3);
+define("ENABLE_REGISTRATION", true);
 
 // Pagination Settings
-$PAGINATION_PAGE_TRACKS = 12; // Number of tracks to return per page of the paginator.
+define("PAGINATION_PAGE_TRACKS", 12); // Number of tracks to return per page of the paginator.
