@@ -111,7 +111,7 @@ CREATE TABLE `playlist_entries` (
   KEY `track_instance_idx` (`track_id`),
   CONSTRAINT `parent_playlist` FOREIGN KEY (`playlist_id`) REFERENCES `playlists` (`playlist_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `track_instance` FOREIGN KEY (`track_id`) REFERENCES `tracks` (`track_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=705 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -120,6 +120,7 @@ CREATE TABLE `playlist_entries` (
 
 LOCK TABLES `playlist_entries` WRITE;
 /*!40000 ALTER TABLE `playlist_entries` DISABLE KEYS */;
+INSERT INTO `playlist_entries` VALUES (429,46,2),(430,46,3),(431,46,4),(433,46,6),(435,46,8),(436,46,9),(437,46,10),(438,46,11),(439,46,12),(440,46,13),(441,46,14),(442,46,15),(443,46,16),(444,46,17),(445,46,18),(446,46,19),(447,46,20),(448,46,21),(449,46,22),(450,46,23),(451,46,24),(452,46,25),(453,46,26),(454,46,27),(455,46,28),(456,46,29),(457,46,30),(458,46,31),(459,46,32),(460,46,33),(461,46,34),(462,46,35),(463,46,36),(464,46,37),(465,46,38),(466,46,39),(467,46,40),(468,46,41),(469,46,42),(470,46,43),(471,46,44),(472,46,45),(473,46,46),(474,46,47),(475,46,48),(476,46,49),(477,46,50),(478,46,51),(479,46,52),(480,46,53),(481,46,54),(482,46,55),(483,46,56),(484,46,57),(485,46,58),(486,46,59),(487,46,60),(488,46,61),(489,46,62),(490,46,63),(491,46,64),(492,46,65),(493,46,66),(494,46,67),(495,46,68),(496,46,69),(497,46,70),(498,46,71),(499,46,72),(500,46,73),(501,46,74),(502,46,75),(503,46,76),(504,46,77),(505,46,78),(506,46,79),(507,46,80),(508,46,81),(509,46,82),(510,46,83),(511,46,84),(512,46,85),(513,46,86),(514,46,87),(515,46,88),(516,46,89),(517,46,90),(518,46,91),(519,46,92),(520,46,93),(521,46,94),(522,46,95),(523,46,96),(524,46,97),(525,46,98),(526,46,99),(527,46,100),(528,46,101),(529,46,102),(530,46,103),(531,46,104),(532,46,105),(533,46,106),(534,46,107),(535,46,108),(536,46,109),(537,46,110),(538,46,111),(539,46,112),(540,46,113),(541,46,114),(542,46,115),(543,46,116),(544,46,117),(545,46,118),(546,46,119),(547,46,120),(548,46,121),(549,46,122),(683,60,27),(684,60,111),(685,60,47),(686,60,96),(687,60,34),(688,60,44),(689,60,51),(690,60,17),(691,60,113),(692,60,30),(693,46,1),(695,61,55),(696,61,105),(697,61,85),(698,61,119),(699,61,103),(700,61,1),(702,61,82),(703,61,77),(704,62,1);
 /*!40000 ALTER TABLE `playlist_entries` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -138,7 +139,7 @@ CREATE TABLE `playlists` (
   PRIMARY KEY (`playlist_id`),
   KEY `playlist_owner_idx` (`owner_id`),
   CONSTRAINT `playlist_owner` FOREIGN KEY (`owner_id`) REFERENCES `users` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=63 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -147,7 +148,40 @@ CREATE TABLE `playlists` (
 
 LOCK TABLES `playlists` WRITE;
 /*!40000 ALTER TABLE `playlists` DISABLE KEYS */;
+INSERT INTO `playlists` VALUES (46,1454999602,'All Tracks Test Playlist',1),(60,1454999602,'Private Test Playlist',0),(61,896120299,'My Favourite Songs',1),(62,896120299,'Absolute Guff',0);
 /*!40000 ALTER TABLE `playlists` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `recommendations`
+--
+
+DROP TABLE IF EXISTS `recommendations`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `recommendations` (
+  `recomm_id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `track_id` int(11) NOT NULL,
+  `influence_track_id` int(11) NOT NULL,
+  PRIMARY KEY (`recomm_id`),
+  UNIQUE KEY `recomm_id_UNIQUE` (`recomm_id`),
+  KEY `user_idx` (`user_id`),
+  KEY `track_idx` (`track_id`),
+  KEY `influence_track_idx` (`influence_track_id`),
+  CONSTRAINT `influence_track` FOREIGN KEY (`influence_track_id`) REFERENCES `tracks` (`track_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `recomm_track` FOREIGN KEY (`track_id`) REFERENCES `tracks` (`track_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `recommendations`
+--
+
+LOCK TABLES `recommendations` WRITE;
+/*!40000 ALTER TABLE `recommendations` DISABLE KEYS */;
+/*!40000 ALTER TABLE `recommendations` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -168,7 +202,7 @@ CREATE TABLE `reviews` (
   KEY `author_idx` (`author_id`),
   CONSTRAINT `author` FOREIGN KEY (`author_id`) REFERENCES `users` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `track` FOREIGN KEY (`track_id`) REFERENCES `tracks` (`track_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=38 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -177,7 +211,7 @@ CREATE TABLE `reviews` (
 
 LOCK TABLES `reviews` WRITE;
 /*!40000 ALTER TABLE `reviews` DISABLE KEYS */;
-INSERT INTO `reviews` VALUES (18,1,851269135,8,'Love this Song!! Wicked Bassline'),(19,61,851269135,10,'Love Watering Hole, this is by far the most epic track on the album, what a closer!');
+INSERT INTO `reviews` VALUES (18,1,851269135,8,'Love this Song!! Wicked Bassline'),(19,61,851269135,10,'Love Watering Hole, this is by far the most epic track on the album, what a closer!'),(34,1,896120299,1,'Hate this track, it\'s absolute garbage, how can anyone listen to this guff?');
 /*!40000 ALTER TABLE `reviews` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -242,7 +276,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (851269135,'Brendan','$2y$10$2SLZhPggtRnwJfbFaLpulOFBJkwlkE6eckjXqyBUhlex6n0nE24gC',1),(896120299,'Bobby','$2y$10$x4TfvkSUaCVtPObn1R3UL.uHOmS1d300gHiTiE3/Niz7MJXLzFc4K',1),(1617779988,'DemoUser','$2y$10$X6d/zpruLepLx/Zm3mR76O2IWYkxeKztilGXwPbOAlj/trJSPIHS6',2);
+INSERT INTO `users` VALUES (354534971,'Bob','$2y$10$U9vzbs0L1Nw5IRxiDsF/M.md2o3YbiGYs91L119tPTbXPrXQTRLw2',4),(851269135,'Brendan','$2y$10$2SLZhPggtRnwJfbFaLpulOFBJkwlkE6eckjXqyBUhlex6n0nE24gC',1),(896120299,'Bobby','$2y$10$x4TfvkSUaCVtPObn1R3UL.uHOmS1d300gHiTiE3/Niz7MJXLzFc4K',1),(1454999602,'Cameron','$2y$10$GW69YZT8YUi75CiKxhcU2u0lfRxbEDvG7xXyh6eYuj.c73ROQNSdO',4),(1617779988,'DemoUser','$2y$10$X6d/zpruLepLx/Zm3mR76O2IWYkxeKztilGXwPbOAlj/trJSPIHS6',2);
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -255,4 +289,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-03-05 10:48:50
+-- Dump completed on 2021-04-07 19:15:05
