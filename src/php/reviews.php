@@ -100,6 +100,7 @@ class Reviews {
   }
 
   public static function getForUserByTrack(int $TrackId, int $UserId) {
+    // Get reviews by a user on a specific track
     try {
       $TrackReviews = Reviews::getForTrack($TrackId);
     } catch (Exception $e) {
@@ -113,6 +114,18 @@ class Reviews {
     }
 
     return null;
+  }
+
+  public static function getForUser(int $UserId) {
+    // Get all reviews by a specific user
+    global $pdo;
+
+    $query = $pdo->prepare("SELECT * FROM reviews WHERE author_id = ?");
+    $result = $query->execute([$UserId]);
+
+    if (!$result) throw new Exception("QueryFailed");
+
+    return $query->fetchAll(PDO::FETCH_ASSOC);
   }
 
   public static function create(Track $Track, User $User, int $Rating, string $Review) {
