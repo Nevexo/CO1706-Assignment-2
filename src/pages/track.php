@@ -39,7 +39,7 @@ if (isset($_POST['reviewBody'])) {
 if (isset($_POST['deleteReview'])) {
   try {
     // Get the track for this user and attempt to delete it
-    $r = Reviews::getForUser($Track->Id, $user->Id);
+    $r = Reviews::getForUserByTrack($Track->Id, $user->Id);
     $r->Delete();
   } catch (Exception $e) {
     header('Location: ?id=' . $Track->Id . '&reviewError=' . $e->getMessage());
@@ -318,7 +318,7 @@ if (isset($_POST['playlistSelection']))
       </div>
 
       <?php
-        $UserReview = Reviews::getForUser($Track->Id, $user->Id);
+        $UserReview = Reviews::getForUserByTrack($Track->Id, $user->Id);
 
         if ($UserReview == null) {
           // The user hasn't reviewed this track, so display the submit review form.

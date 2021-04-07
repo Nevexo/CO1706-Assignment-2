@@ -99,7 +99,7 @@ class Reviews {
     return round(array_sum($Ratings) / count($Ratings));
   }
 
-  public static function getForUser(int $TrackId, int $UserId) {
+  public static function getForUserByTrack(int $TrackId, int $UserId) {
     try {
       $TrackReviews = Reviews::getForTrack($TrackId);
     } catch (Exception $e) {
@@ -123,7 +123,7 @@ class Reviews {
     // Check the review text isn't too long.
     if (strlen($Review) > 250) throw new Exception("ReviewTextTooLong");
     // Check the user hasn't already reviewed this track.
-    if (Reviews::getForUser($Track->Id, $User->Id) != null) throw new Exception("ExistingReview");
+    if (Reviews::getForUserByTrack($Track->Id, $User->Id) != null) throw new Exception("ExistingReview");
 
     // Initialise the insert query for this review
     $q = $pdo->prepare("INSERT INTO reviews (track_id, author_id, rating, review) VALUES (?, ?, ?, ?)");
