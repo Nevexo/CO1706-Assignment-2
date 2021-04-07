@@ -168,6 +168,32 @@ class Tracks
     return $Tracks;
   }
 
+  public static function getArtist(int $ArtistId): array
+  {
+    // Get tracks by a specific artist.
+    global $pdo;
+
+    // Cancel if this artist doesn't exist
+    try {
+      Artists::get($ArtistId);
+    } catch (Exception $e) {throw new Exception("InvalidArtist");}
+
+    // Run the query to find all tracks with this specific album ID.
+    $query = $pdo->prepare("SELECT * FROM tracks NATURAL JOIN artists NATURAL JOIN albums WHERE artist_id = ?");
+    $success = $query->execute([$ArtistId]);
+    if (!$success) throw new Exception("QueryFailed");
+    if ($query->rowCount() == 0) throw new Exception("NoTracksFound");
+
+    // Convert results into Track objects
+    $Tracks = [];
+    foreach($query->fetchAll(PDO::FETCH_ASSOC) as $TrackEntry)
+    {
+      array_push($Tracks, new Track($TrackEntry));
+    }
+
+    return $Tracks;
+  }
+
   public static function random(int $Count = 1): array
   {
     // Get random selection of songs (limited to $Count)
@@ -346,5 +372,19 @@ class Artists
     }
 
     return $Artists;
+  }
+
+  public static function get(int $Id): Artist
+  {
+    // Get a specific artist
+    global $pdo;
+
+    $query = $pdo->prepare("SELECT * FROM artists WHERE artist_id = ?");
+    $result = $query->execute([$Id]);
+    if (!$result) throw new Exception("QueryFailed");
+    if ($query->rowCount() == 0) throw new Exception("InvalidArtist");
+
+    $data = $query->fetch(PDO::FETCH_ASSOC);
+    return new Artist($data['artist_id'], $data['artist_name']);
   }
 }

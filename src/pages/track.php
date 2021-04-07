@@ -190,10 +190,10 @@ if (isset($_POST['playlistSelection']))
       <h1 class="display-4">
         <?php echo $Track->Name; ?>
       </h1>
-      <p class="lead">
+      <a href="artist.php?id=<?php echo $Track->Artist->Id; ?>"><p class="lead">
         <span class="text-muted fas fa-users"></span>
         <?php echo $Track->Artist->Name; ?>
-      </p>
+      </p></a>
     </div>
   </div>
 </div>
