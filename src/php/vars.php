@@ -14,3 +14,8 @@ define("ENABLE_REGISTRATION", true);
 
 // Pagination Settings
 define("PAGINATION_PAGE_TRACKS", 12); // Number of tracks to return per page of the paginator.
+
+// Recommendation System Settings
+define("RECOMMENDATION_WEIGHTING_GENRE",  50);
+define("RECOMMENDATION_WEIGHTING_ALBUM",  30);
+define("RECOMMENDATION_WEIGHTING_ARTIST", 20);
