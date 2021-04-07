@@ -87,9 +87,9 @@ if (isset($_SESSION['User'])) $user = unserialize($_SESSION['User']);
           Filter
         </div>
         <div class="card-body">
-          <form action="#" method="get">
+          <form action="#" method="get" id="filters">
             <div class="form-row">
-              <div class="form-group col-md-4">
+              <div class="form-group col-md-12">
                 <label for="genre">Genre</label>
                 <select name="genre" id="genre" class="form-control">
                   <option selected>Any</option>
@@ -98,30 +98,6 @@ if (isset($_SESSION['User'])) $user = unserialize($_SESSION['User']);
                     {
                       echo "<option>" . $Genre['genre'] ."</option>";
                     }
-                  ?>
-                </select>
-              </div>
-              <div class="form-group col-md-4">
-                <label for="album">Album</label>
-                <select name="album" id="album" class="form-control">
-                  <option selected>Any</option>
-                  <?php
-                  foreach (Albums::getAll() as $Album)
-                  {
-                    echo "<option>" . $Album->Name ."</option>";
-                  }
-                  ?>
-                </select>
-              </div>
-              <div class="form-group col-md-4">
-                <label for="artist">Artist</label>
-                <select name="artist" id="artist" class="form-control">
-                  <option selected>Any</option>
-                  <?php
-                  foreach (Artists::getAll() as $Artist)
-                  {
-                    echo "<option>" . $Artist->Name ."</option>";
-                  }
                   ?>
                 </select>
               </div>
@@ -135,26 +111,40 @@ if (isset($_SESSION['User'])) $user = unserialize($_SESSION['User']);
   <div class="row">
     <?php
       // Check for filters
-      if (isset($_GET['genre']))
+      if (isset($_GET['genre']) && $_GET['genre'] != "Any")
       {
-        // Some filters are active, get tracks with these filters
-        $Tracks = Tracks::search("genre", $_GET['genre']);
+        // The genre filter is active, search by genre.
+        try {
+          $Tracks = Tracks::search("genre", $_GET['genre']);
+        } catch (Exception $e) {
+          // No tracks found, likely a modified query parameter.
+          echo '<div class="alert alert-danger" role="alert">
+                  No tracks found for this filter.
+                </div>';
+          die();
+        }
       } else
       {
         // No filtering, get all tracks.
         $Tracks = tracks::getAll();
       }
+
+      // Create a new paginator to split the track listing into pages.
       $paginator = new TrackPaginator($Tracks);
       if (isset($_GET['page'])) $page = $_GET['page']; else $page = 1;
+
     try {
+      // Get the pagination page.
       $tracks = $paginator->getPage($page);
     } catch (Exception $e) {
+      // Invalid page, likely a modified query parameter.
       echo '<div class="alert alert-danger" role="alert">
               Failed to get tracks, please try again later.
             </div>';
       die();
     }
 
+    // Enum the tracks and display them using the Track prettyPrint helper.
     foreach($tracks as $track) {
         echo '
           <div class="col-md-3">
@@ -164,7 +154,7 @@ if (isset($_SESSION['User'])) $user = unserialize($_SESSION['User']);
       }
     ?>
   </div>
-<!--   TODO: improve the formatting of this page-->
+
   <div class="row d-flex justify-content-center">
     <nav aria-label="Page navigation example">
       <ul class="pagination">
@@ -173,9 +163,9 @@ if (isset($_SESSION['User'])) $user = unserialize($_SESSION['User']);
           for ($i = 1; $i <= $paginator->pageCount; $i++) {
             if ($i == $page) {
               // Show as active
-              echo "<li class='page-item active'><a class='page-link' href='?page=" . $i . "'>" . $i . "</a></li>\r\n";
+              echo "<li class='page-item active'><a class='page-link' onclick='changePage(" . $i . ")'>" . $i . "</a></li>\r\n";
             } else {
-              echo "<li class='page-item'><a class='page-link' href='?page=" . $i . "'>" . $i . "</a></li>\r\n";
+              echo "<li class='page-item'><a class='page-link' onclick='changePage(" . $i . ")'>" . $i . "</a></li>\r\n";
             }
           }
         ?>
@@ -184,4 +174,18 @@ if (isset($_SESSION['User'])) $user = unserialize($_SESSION['User']);
   </div>
 </div>
 </body>
+<script>
+  const queryParams = new URLSearchParams(window.location.search);
+
+  const changePage = (newPage) => {
+    // Handle a pagination page change by only adjusting one of the parameters (to preserve filters)
+    queryParams.set("page", newPage);
+
+    window.location.search = queryParams.toString()
+  }
+
+  // Update the genre filter if parameter is present
+  const form = document.forms['filters']
+  if (queryParams.has("genre")) form['genre'].value = queryParams.get("genre");
+</script>
 </html>
