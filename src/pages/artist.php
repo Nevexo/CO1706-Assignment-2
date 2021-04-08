@@ -105,7 +105,7 @@ try {
 
 <div class="container-fluid">
   <div class="row">
-    <div class="col-md-6">
+    <div class="col-lg-9">
       <div class="card">
         <div class="card-header">
           Tracks
@@ -126,7 +126,7 @@ try {
       </div>
     </div>
 
-    <div class="col-md-6">
+    <div class="col-lg-3">
       <div class="card">
         <div class="card-header">
           Albums
@@ -143,7 +143,7 @@ try {
 
             foreach ($albums as $a) {
               echo '
-                <div class="col-md-4">
+                <div class="col-md-12">
                   <div class="card">
                     <div class="card-body">
                       <h5 class="card-title">' . $a->Name . '</h5>
