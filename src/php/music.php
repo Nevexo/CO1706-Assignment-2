@@ -327,7 +327,7 @@ class Albums
     // Get all albums, from all or specific artists.
     global $pdo;
 
-    $query = $pdo->prepare("SELECT * FROM albums NATUAL JOIN artists");
+    $query = $pdo->prepare("SELECT * FROM albums NATURAL JOIN artists");
     $success = $query->execute();
     if (!$success) throw new Exception("QueryFailed");
 
