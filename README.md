@@ -1,11 +1,24 @@
 # CO1706-Assignment-2
 By: Cameron Paul Fleming (G20860874)
 
-All files for this project are stored in the src/ directory and tracked with Git.
+All files for this project are stored in the `src/` directory and tracked with Git.
 
-- Submission Date: `18th April 2021`
+A working copy of the MySQL database can be found in the `sql-init/` directory, this is automatically installed to the local
+docker based MySQL server during the first start.
+
+The `tools/` directory stores smoketest scripts for the PHP and the single-use Python script used to convert the provided database into
+the schema used by this application.
+
+The `src/samples/` and `src/images/` directories include the provided files, `src/svgs/` contains the modified subscription header images.
+
+Two .htaccess files are tracked by Git, `src/.htaccess` is used by the Docker Apache server for testing locally, `src/.htaccess_vesta`
+is the modified version of this file specifically for use on Vesta. This is rename to `.htaccess` when the source is synced to Vesta.
+
+The `src/php/vars.php` file contains settings for the platform, including database connection details, controls for the registration system, etc.
+
+- Due Date: `18th April 2021`
 - GitHub Repository: https://github.com/nevexo-uni/CO1706-Assignment-2 (access available by request)
-- Production Access
+- Access - Both servers have the same database.
   - UCLan Vesta: https://vesta.uclan.ac.uk/~CPFleming/assignment-2/
   - As-developed build: http://ecksmusic.ldn1.cpfleming.co.uk/
 
@@ -58,5 +71,8 @@ the following accounts were created for demo purposes and can be logged into.
 | Brendan  | EcksMusicBrendan | A default user account holding reviews on tracks 1 and 61 |
 
 ## Running with Docker
-EcksMusic was tested with Docker, using the Dockerfile found in php-image and MariaDB. Run `docker-compose up -d`
+This assignment was tested with Docker, using the Dockerfile found in php-image and MariaDB. Run `docker-compose up -d`
 from the root directory and navigate to http://localhost
+
+If testing through some other means, it may be necessary to alter the database connection details, these can be found in 
+`src/php/vars.php` file. 

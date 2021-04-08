@@ -1,1 +1,4 @@
+# EcksMusic .htaccess file, modified for use on Vesta.
+# Cameron Paul Fleming - 2021
+
 ErrorDocument 404   /~CPFleming/assignment-2/pages/404.html

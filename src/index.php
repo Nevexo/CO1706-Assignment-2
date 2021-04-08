@@ -1,4 +1,8 @@
 <?php
+
+// EcksMusic Home Page
+// Cameron Paul Fleming - 2021
+
 session_start();
 require_once 'php/auth.php';
 require_once 'php/offers.php';

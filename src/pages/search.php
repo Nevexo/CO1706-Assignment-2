@@ -1,4 +1,8 @@
 <?php
+
+// Track Search Frontend Page
+// Cameron Paul Fleming - 2021
+
 session_start();
 if (!isset($_SESSION['User'])) {
   header('Location: login.php?error=NotLoggedIn');

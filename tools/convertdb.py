@@ -1,3 +1,8 @@
+# CO1706/Tools - Single-use throw-away script for converting the existing database into
+# the schema used by EcksMusic. 
+
+# Cameron Paul Fleming - 2021
+
 import mysql.connector
 
 db = mysql.connector.connect(

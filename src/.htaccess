@@ -1,1 +1,4 @@
+# EcksMusic default .htaccess file, use .htaccess_vesta if deploying to Vesta.
+# Cameron Paul Fleming - 2021
+
 ErrorDocument 404   /pages/404.html
