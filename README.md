@@ -11,35 +11,35 @@ All files for this project are stored in the src/ directory and tracked with Git
 
 ## Features Implemented
 - Third (40%+)
-  - [x] Connects to database with PDO (php/database.php)
-  - [x] Logon page (pages/login.php)
-  - [x] Homepage displays current subscriptions in the carousel
-  - [x] Tracks page (pages/tracks.php)
+  - [X] Connects to database with PDO (php/database.php)
+  - [X] Logon page (pages/login.php)
+  - [X] Homepage displays current subscriptions in the carousel
+  - [X] Tracks page (pages/tracks.php)
 - 2:2 (50%+)
-  - [x] Session tracking
-  - [x] Tracks page displays artwork (pages/tracks.php)
-  - [x] HTML5 Player (pages/track.php)
-  - [ ] Users can browse tracks by genre
-  - [x] User greeted on all pages with their username (top right)
-  - [x] Validation on all forms
-  - [x] 404 Page (.htaccess, pages/404.html)
+  - [X] Session tracking
+  - [X] Tracks page displays artwork (pages/tracks.php)
+  - [X] HTML5 Player (pages/track.php)
+  - [X] Users can browse tracks by genre
+  - [X] User greeted on all pages with their username (top right)
+  - [X] Validation on all forms
+  - [X] 404 Page (.htaccess, pages/404.html)
 - 2:1 (60%+)
-  - [x] Registration Page (pages/register.php)
+  - [X] Registration Page (pages/register.php)
     - Username
       - Duplicates not allowed
     - Password
     - Pricing plan
-  - [x] Track information page (pages/track.php)
-  - [x] Users can review tracks (pages/track.php + php/reviews.php)
-  - [x] HTML/JavaScript form validation on all forms
-  - [x] Passwords stored with hashes (php/auth.php)
+  - [X] Track information page (pages/track.php)
+  - [X] Users can review tracks (pages/track.php + php/reviews.php)
+  - [X] HTML/JavaScript form validation on all forms
+  - [X] Passwords stored with hashes (php/auth.php)
 - First (70%+)
-  - [x] Playlist Function
+  - [X] Playlist Function
     - Random selection of tracks
   - [ ] Users can browse for music by album and artist
-  - [x] Album description page
+  - [X] Album description page
   - [ ] Search page
-  - [x] Average review ratings displayed on
+  - [X] Average review ratings displayed on
     - Tracks page
     - Track information page
     - Playlist page
