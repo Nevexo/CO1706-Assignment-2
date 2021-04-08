@@ -145,10 +145,11 @@ if (isset($_SESSION['User'])) $user = unserialize($_SESSION['User']);
     }
 
     // Enum the tracks and display them using the Track prettyPrint helper.
+    // Pass 'true' as hyperlinks to enable links on album/artist names.
     foreach($tracks as $track) {
         echo '
           <div class="col-md-3">
-            ' . $track->prettyPrint() . '
+            ' . $track->prettyPrint(true) . '
           </div>
         ';
       }

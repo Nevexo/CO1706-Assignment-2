@@ -60,12 +60,13 @@ class Track {
     }
   }
 
-  public function prettyPrint() {
+  public function prettyPrint(bool $hyperlinks = false) {
     // Pretty-print this track as HTML.
+    // Set hyperlinks to true to enable links for artist/album
     // TODO: Recommended for you labels.
-    return '
+    $html = '
       <div class="card">
-        <img class="card-img-top" src="../' . $this->ImagePath . '" alt="Card image cap">
+        <img class="card-img-top" src="../' . $this->ImagePath . '" alt="Track image">
         <div class="card-body">
           <h5 class="card-title">
             ' . $this->Name . '
@@ -73,14 +74,42 @@ class Track {
           <p>
             <!--<span class="badge badge-warning"><span class="fas fa-star"></span> Recommended for You</span>-->
             <span class="badge badge-info"><span class="fas fa-music"></span> Genre: ' . $this->Genre . '</span>
-            <span class="badge badge-success"><span class="fas fa-user-edit"></span> Average Rating: ' . $this->AverageRating . '</span>
+            <span class="badge badge-success">
+            <span class="fas fa-user-edit"></span> Average Rating: ' . $this->AverageRating . '</span>
           </p>
-          <p class="text-muted"><span title="Artist" class="fas fa-users"></span> ' . $this->Artist->Name . '</p>
-          <p class="text-muted"><span title="Album" class="fas fa-compact-disc"></span> ' . $this->Album->Name . '</p>
+          ##ARTIST##
+          ##ALBUM##
           <a href="track.php?id=' . $this->Id . '" class="card-link">More Info</a>
         </div>
       </div>
     ';
+
+    // Replace ##ARTIST## and ##ALBUM## placeholders with either plaintext or a hyperlink depending on $hyperlinks.
+    if ($hyperlinks)
+    {
+      // Add links to artist/album
+      $html = str_replace("##ARTIST##",
+        '<p class="text-muted"><span title="Artist" class="fas fa-users"></span> 
+                <a href="artist.php?id=' . $this->Id . '">' . $this->Artist->Name . '</a></p>',
+        $html);
+
+      $html = str_replace("##ALBUM##",
+        '<p class="text-muted"><span title="Album" class="fas fa-compact-disc"></span>
+                <a href="album.php?id=' . $this->Album->Id . '">' . $this->Album->Name . '</a></p>',
+        $html);
+
+    } else
+    {
+      $html = str_replace("##ARTIST##",
+        '<p class="text-muted"><span title="Artist" class="fas fa-users"></span> ' . $this->Artist->Name . '</p>',
+        $html);
+
+      $html = str_replace("##ALBUM##",
+        '<p class="text-muted"><span title="Album" class="fas fa-compact-disc"></span> ' . $this->Album->Name . '</p>',
+        $html);
+    }
+
+    return $html;
   }
 }
 
