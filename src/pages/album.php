@@ -102,8 +102,9 @@ try {
         <?php echo $Album->Name; ?>
       </h1>
       <p class="lead">
+        <a href="artist.php?id=<?php echo $Album->Artist->Id; ?>">
         <span class="text-muted fas fa-users"></span>
-        <?php echo $Album->Artist->Name; ?>
+        <?php echo $Album->Artist->Name; ?></a>
       </p>
     </div>
   </div>
