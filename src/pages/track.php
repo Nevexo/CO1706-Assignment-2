@@ -213,6 +213,21 @@ if (isset($_POST['playlistSelection']))
           <audio controls src="../<?php echo $Track->SamplePath; ?>"></audio>
         </div>
       </div>
+      <!-- Album Information -->
+      <div class="card">
+        <div class="card-header">
+          Album Information
+        </div>
+        <div class="card-body">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title"><?php echo $Track->Album->Name; ?></h5>
+              <p class="card-text"><?php echo $Track->Artist->Name; ?></p>
+              <a href="album.php?id=<?php echo $Track->Album->Id; ?>" class="btn btn-warning">More Info</a>
+            </div>
+          </div>
+        </div>
+      </div>
       <!-- Track information -->
       <div class="row">
         <div class="col-md-6">
@@ -223,17 +238,17 @@ if (isset($_POST['playlistSelection']))
             <div class="card-body">
               <span class="badge badge-warning"><span class="fas fa-star"></span> Recommended for You</span>
               <p class="card-text">
-                <span title="Album" class="fas fa-music"></span> Genre: <i><?php echo $Track->Genre; ?> <br/></i>
-                <span title="Album" class="fas fa-compact-disc"></span> Album: <a href="album.php?id=<?php echo $Track->Album->Id?>"><i><?php echo $Track->Album->Name; ?></i></a><br/>
-                <span title="Album" class="fas fa-users"></span> Average Rating: <i><?php echo $Track->AverageRating?></i>
+                <span title="Album" class="fas fa-music"></span>
+                  Genre: <a href="tracks.php?genre=<?php echo $Track->Genre; ?>"><i><?php echo $Track->Genre; ?>
+                  </i></a><br/>
+                <span title="Album" class="fas fa-users"></span>
+                  Average Rating: <i><?php echo $Track->AverageRating?></i>
               </p>
               <button
                       onclick="addToPlaylist(<?php echo $Track->Id ?>); return true;"
                       class="btn btn-warning">
                 Add to Playlist
               </button><br/>
-              <a href="#" class="card-link">More from This Artist</a><br/>
-              <a href="#" class="card-link">More in This Genre</a>
             </div>
           </div>
         </div>
