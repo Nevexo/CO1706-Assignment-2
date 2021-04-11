@@ -90,7 +90,7 @@ class Track {
       // Add links to artist/album
       $html = str_replace("##ARTIST##",
         '<p class="text-muted"><span title="Artist" class="fas fa-users"></span> 
-                <a href="artist.php?id=' . $this->Id . '">' . $this->Artist->Name . '</a></p>',
+                <a href="artist.php?id=' . $this->Artist->Id . '">' . $this->Artist->Name . '</a></p>',
         $html);
 
       $html = str_replace("##ALBUM##",
