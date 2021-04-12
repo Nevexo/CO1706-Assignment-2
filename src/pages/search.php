@@ -69,8 +69,8 @@ if (isset($_GET['search']))
   try {
     $results = RunSearch($_GET['search'], $filter);
   } catch (Exception $e) {
-    // TODO: excep handle
-    print_r($e);
+    header('Location: ?error=true');
+    die();
   }
 
   // Split results into three arrays.
@@ -159,6 +159,9 @@ if (isset($_GET['search']))
       Search
     </div>
     <div class="card-body">
+      <div class="alert alert-danger" role="alert" id="searchFailedAlert" hidden>
+        Search failed, please try again later.
+      </div>
       <form action="#" method="get" id="searchForm">
         <div class="form-group row">
           <div class="col-md-8">
@@ -193,6 +196,14 @@ if (isset($_GET['search']))
   </div>
 
   <?php
+    // Display an alert if no results were found.
+    if (count($results) == 0)
+    {
+      echo '
+      <div class="alert alert-secondary" role="alert">
+        No results found for your query.
+      </div>';
+    }
     if ($Tracks != [])
     {
       // Echo Tracks card into dom
@@ -282,6 +293,8 @@ if (isset($_GET['search']))
   // Script to restore options to form
   const queryParams = new URLSearchParams(window.location.search);
   const form = document.forms['searchForm']
+
+  if (queryParams.has("error") && queryParams.get("error")) document.getElementById("searchFailedAlert").hidden = false;
 
   if (queryParams.has("search")) form['search'].value = queryParams.get("search");
   if (queryParams.has("filter"))
