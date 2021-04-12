@@ -74,8 +74,7 @@ class Track {
           <p>
             <!--<span class="badge badge-warning"><span class="fas fa-star"></span> Recommended for You</span>-->
             <span class="badge badge-info"><span class="fas fa-music"></span> Genre: ' . $this->Genre . '</span>
-            <span class="badge badge-success">
-            <span class="fas fa-user-edit"></span> Average Rating: ' . $this->AverageRating . '</span>
+            ##AVG_RATING##
           </p>
           ##ARTIST##
           ##ALBUM##
@@ -83,6 +82,14 @@ class Track {
         </div>
       </div>
     ';
+
+    if ($this->AverageRating != "N/A") {
+      // Only display average rating tag if there are reviews on this track.
+      $html = str_replace("##AVG_RATING##",
+      '<span class="badge badge-success">
+              <span class="fas fa-user-edit"></span> Average Rating: ' . $this->AverageRating . '</span>',
+      $html);
+    } else $html = str_replace("##AVG_RATING##", "", $html);
 
     // Replace ##ARTIST## and ##ALBUM## placeholders with either plaintext or a hyperlink depending on $hyperlinks.
     if ($hyperlinks)
