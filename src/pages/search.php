@@ -21,6 +21,9 @@ function RunSearch(string $Query, string $Filter): array
   // Query the database for a/multiple track(s)
   global $SearchFilters;
 
+  // Check the query is >= 3 characters long
+  if (strlen($Query) < 3) throw new Exception("SearchQueryTooShort");
+
   // Check for valid filter, if not using all.
   if ($Filter != "all" && !in_array($Filter, $SearchFilters)) throw new Exception("InvalidSearchFilter");
 
@@ -177,6 +180,7 @@ if (isset($_GET['search']))
                     autocapitalize="off"
                     spellcheck="false"
                     maxlength="2048"
+                    minlength="3"
                     name="search"
             >
           </div>
@@ -199,7 +203,7 @@ if (isset($_GET['search']))
 
   <?php
     // Display an alert if no results were found.
-    if (count($results) == 0)
+    if (count($results) == 0 && isset($_GET['search']))
     {
       echo '
       <div class="alert alert-secondary" role="alert">
