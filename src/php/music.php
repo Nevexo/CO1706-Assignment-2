@@ -369,6 +369,28 @@ class Albums
 
     return $Albums;
   }
+
+  public static function search(string $Query): Array
+  {
+    // Search for a track by name, returns an array of tracks, exception or empty array.
+    global $pdo;
+
+    $query = $pdo->prepare("SELECT * FROM albums NATURAL JOIN artists 
+                                  WHERE album_name LIKE :searchQuery");
+    $query->bindValue(":searchQuery", "%" . $Query . "%");
+    $success = $query->execute();
+    if (!$success) throw new Exception("QueryFailed");
+    $results = $query->fetchAll(PDO::FETCH_ASSOC);
+
+    $Albums = [];
+    foreach ($results as $result) array_push($Albums, new Album(
+      $result['album_id'],
+      $result['album_name'],
+      new Artist($result['artist_id'], $result['artist_name'])
+    ));
+
+    return $Albums;
+  }
 }
 
 class Artists
@@ -409,5 +431,25 @@ class Artists
 
     $data = $query->fetch(PDO::FETCH_ASSOC);
     return new Artist($data['artist_id'], $data['artist_name']);
+  }
+
+  public static function search(string $Query): Array
+  {
+    // Search for a track by name, returns an array of tracks, exception or empty array.
+    global $pdo;
+
+    $query = $pdo->prepare("SELECT * FROM artists WHERE artist_name LIKE :searchQuery");
+    $query->bindValue(":searchQuery", "%" . $Query . "%");
+    $success = $query->execute();
+    if (!$success) throw new Exception("QueryFailed");
+    $results = $query->fetchAll(PDO::FETCH_ASSOC);
+
+    $Artists = [];
+    foreach ($results as $result) array_push($Artists, new Artist(
+      $result['artist_id'],
+      $result['artist_name']
+    ));
+
+    return $Artists;
   }
 }
