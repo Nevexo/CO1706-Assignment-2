@@ -272,6 +272,24 @@ class Tracks
 
     return $Tracks;
   }
+
+  public static function search(string $Query): Array
+  {
+    // Search for a track by name, returns an array of tracks, exception or empty array.
+    global $pdo;
+
+    $query = $pdo->prepare("SELECT * FROM tracks NATURAL JOIN artists NATURAL JOIN albums 
+                                  WHERE track_name LIKE :searchQuery");
+    $query->bindValue(":searchQuery", "%" . $Query . "%");
+    $success = $query->execute();
+    if (!$success) throw new Exception("QueryFailed");
+    $results = $query->fetchAll(PDO::FETCH_ASSOC);
+
+    $Tracks = [];
+    foreach ($results as $result) array_push($Tracks, new Track($result));
+
+    return $Tracks;
+  }
 }
 
 class TrackPaginator
