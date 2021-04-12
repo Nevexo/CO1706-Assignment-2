@@ -9,9 +9,79 @@ if (!isset($_SESSION['User'])) {
   die();
 }
 
-require_once '../php/auth.php';
+// Supported search filters
+$SearchFilters = ["track", "album", "artist"];
 
+require_once '../php/auth.php';
+require_once '../php/music.php';
 if (isset($_SESSION['User'])) $user = unserialize($_SESSION['User']);
+
+function RunSearch(string $Query, string $Filter): array
+{
+  // Query the database for a/multiple track(s)
+  global $SearchFilters;
+
+  // Check for valid filter, if not using all.
+  if ($Filter != "all" && !in_array($Filter, $SearchFilters)) throw new Exception("InvalidSearchFilter");
+
+  $results = [];
+
+  if ($Filter == "all")
+  {
+    // If 'all' is selected, then run a search for all providers.
+    try {
+      // Merge all results into one
+      $results = array_merge(
+        Tracks::search($Query),
+        Albums::search($Query),
+        Artists::search($Query)
+      );
+    } catch(Exception $e) {throw $e;}
+  } else
+  {
+    // Run a specific search filter
+    try {
+      switch ($Filter)
+      {
+        case "track":
+          $results = Tracks::search($Query);
+          break;
+        case "album":
+          $results = Albums::search($Query);
+          break;
+        case "artist":
+          $results = Artists::search($Query);
+          break;
+      }
+    } catch (Exception $e) {throw $e;}
+  }
+
+  return $results;
+}
+
+if (isset($_GET['search']))
+{
+  // A search query is present, run the search system.
+
+  // Resolve the filter, if it's not defined, use all.
+  $filter = (isset($_GET['filter']) ? $_GET['filter'] : "all");
+
+  try {
+    $results = RunSearch($_GET['search'], $filter);
+  } catch (Exception $e) {
+    // TODO: excep handle
+    print_r($e);
+  }
+
+  // Split results into three arrays.
+  $Tracks = $Albums = $Artists = [];
+  foreach ($results as $result)
+  {
+    if (is_a($result, "track")) array_push($Tracks, $result);
+    if (is_a($result, "album")) array_push($Albums, $result);
+    if (is_a($result, "artist")) array_push($Artists, $result);
+  }
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -108,9 +178,9 @@ if (isset($_SESSION['User'])) $user = unserialize($_SESSION['User']);
           <div class="col-md-3">
             <select class="form-control" aria-label="Filter" name="filter">
               <option value="all" selected>Everything</option>
-              <option value="track">Track</option>
-              <option value="album">Album</option>
-              <option value="artist">Artist</option>
+              <option value="track">Tracks</option>
+              <option value="album">Albums</option>
+              <option value="artist">Artists</option>
             </select>
 
           </div>
@@ -121,6 +191,90 @@ if (isset($_SESSION['User'])) $user = unserialize($_SESSION['User']);
       </form>
     </div>
   </div>
+
+  <?php
+    if ($Tracks != [])
+    {
+      // Echo Tracks card into dom
+      echo '
+      <div class="card">
+        <div class="card-header">
+          Tracks
+        </div>
+        <div class="card-body">
+      ';
+      // PrettyPrint all tracks
+      foreach ($Tracks as $Track)
+      {
+        echo '
+          <div class="col-md-3">
+            ' . $Track->prettyPrint(true) . '
+          </div>
+        ';
+      }
+      // Close divs for tracks card.
+      echo '</div></div>';
+    }
+
+    if ($Albums != [])
+    {
+      // Echo albums into dom
+      echo '
+      <div class="card">
+        <div class="card-header">
+          Albums
+        </div>
+        <div class="card-body">
+      ';
+
+      foreach ($Albums as $Album)
+      {
+        echo '
+        <div class="col-md-4">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">' . $Album->Name . '</h5>
+              <p class="card-text">' . $Album->Artist->Name . '</p>
+              <a href="album.php?id=' . $Album->Id . '" class="btn btn-warning">More Info</a>
+            </div>
+          </div>
+        </div>
+      ';
+      }
+
+      // Close card divs
+      echo '</div></div>';
+    }
+
+    if ($Artists != [])
+    {
+      // Echo artists onto the dom
+      echo '
+      <div class="card">
+        <div class="card-header">
+          Artists
+        </div>
+        <div class="card-body">
+      ';
+
+      foreach ($Artists as $Artist)
+      {
+        echo '
+        <div class="col-md-4">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">' . $Artist->Name . '</h5>
+              <a href="artist.php?id=' . $Artist->Id . '" class="btn btn-warning">More Info</a>
+            </div>
+          </div>
+        </div>
+      ';
+      }
+
+      // Close card divs
+      echo '</div></div>';
+    }
+  ?>
 </div>
 
 </body>
