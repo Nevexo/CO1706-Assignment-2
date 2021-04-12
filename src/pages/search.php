@@ -84,11 +84,60 @@ if (isset($_SESSION['User'])) $user = unserialize($_SESSION['User']);
 </div>
 
 <div class="container-fluid">
+  <div class="card">
+    <div class="card-header">
+      Search
+    </div>
+    <div class="card-body">
+      <form action="#" method="get" id="searchForm">
+        <div class="form-group row">
+          <div class="col-md-8">
+            <input
+                    type="text"
+                    class="form-control"
+                    id="textSearch"
+                    placeholder="Search..."
+                    aria-label="Search"
+                    autofocus
+                    autocapitalize="off"
+                    spellcheck="false"
+                    maxlength="2048"
+                    name="search"
+            >
+          </div>
+          <div class="col-md-3">
+            <select class="form-control" aria-label="Filter" name="filter">
+              <option value="all" selected>Everything</option>
+              <option value="track">Track</option>
+              <option value="album">Album</option>
+              <option value="artist">Artist</option>
+            </select>
 
+          </div>
+          <div class="col-md-1">
+            <button type="submit" class="btn btn-warning">Search</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
 </div>
 
 </body>
 <script>
+  // Script to restore options to form
+  const queryParams = new URLSearchParams(window.location.search);
+  const form = document.forms['searchForm']
 
+  if (queryParams.has("search")) form['search'].value = queryParams.get("search");
+  if (queryParams.has("filter"))
+  {
+    const filter = queryParams.get("filter");
+
+    if (["all", "artist", "album", "track"].includes(filter))
+      form['filter'].value = queryParams.get("filter");
+    else
+      form['filter'].value = "all";
+  }
 </script>
 </html>
