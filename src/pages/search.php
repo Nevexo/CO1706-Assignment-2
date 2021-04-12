@@ -219,6 +219,7 @@ if (isset($_GET['search']))
           Tracks
         </div>
         <div class="card-body">
+        <div class="row">
       ';
       // PrettyPrint all tracks
       foreach ($Tracks as $Track)
@@ -230,7 +231,7 @@ if (isset($_GET['search']))
         ';
       }
       // Close divs for tracks card.
-      echo '</div></div>';
+      echo '</div></div></div>';
     }
 
     if ($Albums != [])
@@ -242,6 +243,7 @@ if (isset($_GET['search']))
           Albums
         </div>
         <div class="card-body">
+        <div class="row">
       ';
 
       foreach ($Albums as $Album)
@@ -260,7 +262,7 @@ if (isset($_GET['search']))
       }
 
       // Close card divs
-      echo '</div></div>';
+      echo '</div></div></div>';
     }
 
     if ($Artists != [])
@@ -272,6 +274,7 @@ if (isset($_GET['search']))
           Artists
         </div>
         <div class="card-body">
+        <div class="row">
       ';
 
       foreach ($Artists as $Artist)
@@ -289,7 +292,7 @@ if (isset($_GET['search']))
       }
 
       // Close card divs
-      echo '</div></div>';
+      echo '</div></div></div>';
     }
   ?>
 </div>
