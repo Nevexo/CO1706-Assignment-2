@@ -119,7 +119,7 @@ if (isset($_SESSION['User'])) $user = unserialize($_SESSION['User']);
       {
         // The genre filter is active, search by genre.
         try {
-          $Tracks = Tracks::search("genre", $_GET['genre']);
+          $Tracks = Tracks::getByGenre($_GET['genre']);
         } catch (Exception $e) {
           // No tracks found, likely a modified query parameter.
           echo '<div class="alert alert-danger" role="alert">

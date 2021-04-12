@@ -255,42 +255,18 @@ class Tracks
     return $response->fetchAll(PDO::FETCH_ASSOC);
   }
 
-  public static function search(string $Type, string $Query)
+  public static function getByGenre(string $Genre): Array
   {
-    // Search for a track by artist/album/name/genre
-    // type - the type of query to search for ^^
-    // query - the term to search for in the database
+    // Get an array of tracks that have a specified genre.
     global $pdo;
 
-    // Switch each type of query for safety.
-    $query = "SELECT * FROM tracks NATURAL JOIN artists NATURAL JOIN albums";
-    // TODO: Refactor
-    switch ($Type) {
-      case "track":
-        $sqlQuery = $pdo->prepare($query . " WHERE name LIKE :searchQuery");
-        break;
-      case "artist":
-        $sqlQuery = $pdo->prepare($query ." WHERE artist LIKE :searchQuery");
-        break;
-      case "album":
-        $sqlQuery = $pdo->prepare($query . " WHERE album LIKE :searchQuery");
-        break;
-      case "genre":
-        $sqlQuery = $pdo->prepare($query . " WHERE genre LIKE :searchQuery");
-        break;
-      default:
-        throw new Exception("InvalidSearchQueryType");
-    }
-    $sqlQuery->bindValue(":searchQuery", "%" . $Query . "%");
-
-    // Parameters were set above, so just execute the query.
-    $success = $sqlQuery->execute();
+    $query = $pdo->prepare("SELECT * FROM tracks NATURAL JOIN artists NATURAL JOIN albums WHERE genre = ?");
+    $success = $query->execute([$Genre]);
     if (!$success) throw new Exception("QueryFailed");
-    if ($sqlQuery->rowCount() == 0) throw new Exception("NoResults");
+    if ($query->rowCount() == 0) throw new Exception("InvalidGenre");
 
-    // Convert results into Track objects
     $Tracks = [];
-    foreach ($sqlQuery->fetchAll(PDO::FETCH_ASSOC) as $result) {
+    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $result) {
       array_push($Tracks, new Track($result));
     }
 
