@@ -49,9 +49,9 @@ The `src/php/vars.php` file contains settings for the platform, including databa
 - First (70%+)
   - [X] Playlist Function
     - Random selection of tracks
-  - [ ] Users can browse for music by album and artist
+  - [X] Users can browse for music by album and artist
   - [X] Album description page
-  - [ ] Search page
+  - [X] Search page
   - [X] Average review ratings displayed on
     - Tracks page
     - Track information page
