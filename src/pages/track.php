@@ -369,6 +369,7 @@ if (isset($_POST['playlistSelection']))
                 <div class="form-group">
                   <label>Rating (/10)</label>
                   <select class="custom-select" name="rating" id="rating" required>
+                    <option value="">Choose...</option>
                     <option value=1>1/10</option>
                     <option value=2>2/10</option>
                     <option value=3>3/10</option>
@@ -427,6 +428,7 @@ if (isset($_POST['playlistSelection']))
       ?>
     </div>
   </div>
+</div>
 </body>
 <script>
   // Validation scripts for review form
@@ -446,6 +448,12 @@ if (isset($_POST['playlistSelection']))
 
     if (form['reviewBody'].value.length < 10) {
       writeInfoLabel("Review too short, please write at least 10 characters.");
+      return false;
+    }
+
+    if (form['rating'].value === "")
+    {
+      writeInfoLabel("Please select a rating.")
       return false;
     }
 
