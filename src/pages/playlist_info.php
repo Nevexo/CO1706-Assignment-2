@@ -209,7 +209,4 @@ if (isset($_POST['deleteTrackId'])) {
 </div>
 
 </body>
-<script>
-
-</script>
 </html>

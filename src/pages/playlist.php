@@ -233,7 +233,7 @@ if (isset($_POST['playlistName'])) {
                   <div class="col-md-10">
                     <h5 class="card-title">' . $playlist->Name . '</h5>
                     <p class="card-text"><span class="fas fa-compact-disc"></span> 
-                    This playlist has ' . count($playlist->Tracks) . ' song(s).</br>
+                    This playlist has ' . count($playlist->Tracks) . ' song(s).<br>
                     <span class="fas fa-users"></span> This is a ' . $type . ' playlist.
                     </p>
                   </div>
@@ -286,7 +286,7 @@ if (isset($_POST['playlistName'])) {
                   <div class="col-md-10">
                     <h5 class="card-title">' . $playlist->Name . '</h5>
                     <p class="card-text"><span class="fas fa-compact-disc"></span> 
-                    This playlist has ' . count($playlist->Tracks) . ' song(s).</br>
+                    This playlist has ' . count($playlist->Tracks) . ' song(s).<br>
                     <span class="fas fa-user"></span> Created by: ' . $playlist->OwnerName . '
                     </p>
                   </div>

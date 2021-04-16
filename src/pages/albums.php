@@ -115,7 +115,4 @@ if (isset($_SESSION['User'])) $user = unserialize($_SESSION['User']);
 </div>
 
 </body>
-<script>
-
-</script>
 </html>

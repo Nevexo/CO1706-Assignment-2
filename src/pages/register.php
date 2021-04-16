@@ -100,7 +100,7 @@ if (isset($_POST['username'])) {
           require_once "../php/offers.php";
           $offers = Offers::getAllOffers();
           foreach ($offers as $offer) {
-            echo '<option value="' . $offer->Id . '">' . $offer->Name . " (£" . $offer->Price . "/mo)</option>";
+            echo '<option value="">Choose...</option><option value="' . $offer->Id . '">' . $offer->Name . " (£" . $offer->Price . "/mo)</option>";
           }
           ?>
         </select>
