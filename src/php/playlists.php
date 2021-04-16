@@ -5,6 +5,7 @@
 require_once 'database.php';
 require_once 'music.php';
 require_once 'auth.php';
+require_once 'recommend.php';
 
 class PlaylistEntry
 {
@@ -121,7 +122,8 @@ class Playlist
   public function randomPopulate(int $Count = 10)
   {
     // Populate this playlist with $Count random tracks.
-    $tracks = Tracks::random($Count);
+    $tracks = Recommendations::getForUser($this->OwnerId, $Count);
+    if (count($tracks) == 0) $tracks = Tracks::random($Count);
 
     foreach ($tracks as $track) {
       try {

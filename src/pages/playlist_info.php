@@ -151,6 +151,8 @@ if (isset($_POST['deleteTrackId'])) {
                       you can add them from the <a href="tracks.php">tracks page</a>. 
                     </p>
                     <form action="#" method="post">
+                      <label for="randomTracks" class="text-muted">
+                      We\'ll add tracks recommended for you if you have reviewed tracks on EcksMusic</label><br>
                       <button name="randomTracks" type="submit" class="btn btn-warning">Add 10 Random Tracks</button>                     
                     </form>
                   </div>

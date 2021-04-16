@@ -6,7 +6,6 @@ require_once 'database.php';
 require_once 'music.php';
 require_once 'reviews.php';
 require_once 'vars.php';
-require_once 'recommend.php';
 
 // -- Explanation --
 // EcksMusic recommendations are based on reviews the user has left on other tracks. To reduce server & database load
