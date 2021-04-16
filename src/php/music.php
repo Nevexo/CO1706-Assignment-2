@@ -6,6 +6,7 @@ require_once "database.php";
 require_once "reviews.php";
 
 class Artist {
+  // Represents an artist in the database, this only stores a name.
   public $Id;
   public $Name;
 
@@ -16,6 +17,7 @@ class Artist {
 }
 
 class Album {
+  // Represents an album, these contain an Artist object.
   public $Id;
   public $Name;
   public $Artist;
@@ -28,6 +30,8 @@ class Album {
 }
 
 class Track {
+  // Represents a track, this requires an album and artist and access to
+  // the reviews API for average ratings calculations.
   public $Id;
   public $Artist;
   public $Album;
@@ -44,6 +48,7 @@ class Track {
   {
     // Construct a Track from a MySQL query result
     $this->Id = $result['track_id'];
+    // Resolve the artist and album IDs into their respective objects
     $this->Artist = new Artist($result['artist_id'], $result['artist_name']);
     $this->Album = new Album($result['album_id'], $result['album_name'], $this->Artist);
     $this->Description = $result['description'];
@@ -52,10 +57,13 @@ class Track {
     $this->ImagePath = $result['image'];
     $this->ThumbPath = $result['thumbnail'];
     $this->SamplePath = $result['sample'];
+    // Create the tracks full name by combining Artist & Track Name.
     $this->FullName = $this->Artist->Name . ' - ' . $this->Name;
+    // Attempt to resolve the average rating for this track.
     try {
       $this->AverageRating = Reviews::averageRating($this->Id) . "/10";
     } catch (Exception $e) {
+      // Display N/A where this isn't available, either due to failure or because there are no reviews.
       $this->AverageRating = "N/A";
     }
   }
@@ -84,6 +92,7 @@ class Track {
       </div>
     ';
 
+    // The following sections replace "##" placeholders with the required text.
     if ($UserId != null)
     {
       // Check if the track is recommended for this user.

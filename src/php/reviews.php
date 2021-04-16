@@ -7,6 +7,7 @@ require_once 'auth.php';
 require_once 'music.php';
 
 class Review {
+  // Review object, used primarily by Track.php, stores the ID, owner and review data.
   public $Id;
   public $OwnerId;
   public $OwnerName;
@@ -18,13 +19,15 @@ class Review {
     $this->Id = $Id;
     $this->OwnerId = $OwnerId;
     $this->OwnerName = $Username;
+    // Using TrackId instead of the Track instance to reduce database reads, getTrack() will return the full
+    // Object should it be required.
     $this->Track_Id = $Track_Id;
     $this->Rating = $Rating;
     $this->Review = $Review;
   }
 
   public function getTrack() {
-    // Returns the track instance.
+    // Resolve the full Track object for this review.
     return Tracks::get($this->Track_Id);
   }
 
@@ -59,6 +62,8 @@ class Reviews {
     global $pdo;
 
     // Query for all reviews on this track, joining the username from the users table.
+    // This query selects all reviews for the track and resolves the username for the author.
+    // NATURAL JOIN is avoided here so the hashed password and other user information isn't returned.
     $q = $pdo->prepare("
     SELECT 
         reviews.*, users.username
@@ -73,6 +78,7 @@ class Reviews {
     if (!$result) throw new Exception("QueryFailed");
     if ($q->rowCount() == 0) throw new Exception("NoReviews");
 
+    // Convert MySQL returned rows into Review objects.
     $Reviews = [];
     foreach ($q->fetchAll(PDO::FETCH_ASSOC) as $review) {
       array_push($Reviews, Reviews::rowToReview($review));
