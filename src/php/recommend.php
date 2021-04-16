@@ -203,6 +203,20 @@ class Recommendations
     return $tracks;
   }
 
+  public static function isRecommended(int $UserId, int $TrackId): bool
+  {
+    // Returns whether or not a track is recommended for the specified user.
+    global $pdo;
+
+    $query = $pdo->prepare("SELECT * FROM recommendations
+                                  WHERE user_id = ? AND track_id = ?;");
+    $success = $query->execute([$UserId, $TrackId]);
+    if (!$success) throw new Exception("QueryFailed");
+
+    // Return true if the track appears in this users recommendations.
+    return ($query->rowCount() != 0);
+  }
+
   public static function update(User $User)
   {
     // Update the recommendations table
