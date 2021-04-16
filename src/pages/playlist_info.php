@@ -180,7 +180,7 @@ if (isset($_POST['deleteTrackId'])) {
                 <div class="col-md-3">
                   <div class="card">
                     <div class="card-body">
-                      ' . $Track->prettyPrint() . '
+                      ' . $Track->prettyPrint(true, $user->Id) . '
                       <form action="#" method="post">
                         <input type="hidden" name="deleteTrackId" id="deleteTrackId" value="' . $Track->Id . '"/>
                         <button type="submit" class="btn btn-outline-danger">Remove Track</button>
@@ -195,7 +195,7 @@ if (isset($_POST['deleteTrackId'])) {
               {
                 echo '
                 <div class="col-md-3">
-                  ' . $Track->prettyPrint() . '  
+                  ' . $Track->prettyPrint(true, $user->Id) . '  
                 </div>
                 ';
               }
