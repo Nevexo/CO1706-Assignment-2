@@ -26,7 +26,7 @@ The `src/php/vars.php` file contains settings for the platform, including databa
 - Third (40%+)
   - [X] Connects to database with PDO (php/database.php)
   - [X] Logon page (pages/login.php)
-  - [X] Homepage displays current subscriptions in the carousel
+  - [X] Homepage displays currently available subscriptions
   - [X] Tracks page (pages/tracks.php)
 - 2:2 (50%+)
   - [X] Session tracking
@@ -59,6 +59,55 @@ The `src/php/vars.php` file contains settings for the platform, including databa
   - [X] All HTML/CSS passes validation
 - 90%+
   - [X] Recommendation System
+
+## Testing Plan
+This plan can be followed to test all features of the platform.
+
+- Open the platform,
+  - https://vesta.uclan.ac.uk/~CPFleming/assignment-2/
+  - http://ecksmusic.ldn1.cpfleming.co.uk
+- Attempt to navigate to the Tracks information page
+- Create a new account,
+  - Use nav-bar register button or
+  - Select one of the offers from the carousel or offers card.
+- Test password match validation by entering two different passwords
+- Create the account, selecting the gold pricing plan
+- Scroll to the bottom of the landing page and select "Start using EcksMusic"
+- Navigate to the tracks page from the navigation bar
+- Filter the tracks by the `Indie` genre
+- Scroll to the bottom and navigate to page 2
+- Select `More Info` on the `Boppin Boots` track
+- Press play on the audio element to test to hear a sample of the track
+- Give the track a rating > 5, test the review box requires you to enter 10 characters to review a track.
+- Submit your review
+- Click the artist name, view the aritst information and navigate back to the track
+- Click the `More Info` button on the album information and navigate back to the track.
+- Select the `Add to Playlist` button 
+  - Leave `New Playlist...` as the selected option
+  - Press 'Add Track'
+- Give the playlist a name and tick the `Make this Playlist Public` checkbox
+- Select `Open Playlist` on the newly created playlist 
+  - Ensure the `Boppin Boots` track has appeared
+  - Remove the track
+  - Select `Add 10 Random Tracks` to repopulate the playlist with random tracks
+- Edit the playlist and uncheck the `Make this Playlist Public` button
+  - Oberserve the playlist being removed from the `Public Playlists` box
+- Delete the playlist (under the edit menu)
+- Navigate to the search page from the navbar
+- Enter `what` in the search-bar and leave the filter set to everything
+- Visit the Artist & album pages, then return back to the search page.
+- Select `More Info` on the track `Upon What Are You Pi`
+- Leave this track a negative (< 5) rating.
+- Select your username on the navigation bar and open the 'Recommended Tracks' page
+  - Tracks displayed here should favour the higher rated genres, albums and artists.
+  - Press refresh to get new recommendations.
+- Navigate back to the Tracks page and navigate through some of the pages
+  - Some tracks will be tagged as `Recommended for You`, and the tracks that were reviewed
+    will show a `Average Rating: N/10` tag.
+- Visit the `Upon What Are You Pi` page again, and delete the review
+- Log out or delete your account
+- Set the URL to an invalid page (see 404)
+- Resize the browser to demonstrate responsive design
 
 ## Users
 Registration is enabled on the Vesta server, so accounts can be created when needed,
