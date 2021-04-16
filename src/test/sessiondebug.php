@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once 'auth.php';
+require_once '../php/auth.php';
 
 print_r("<p>SERIALISED SESSION: " . $_SESSION['User'] . " </p>");
 $user = unserialize($_SESSION['User']);
