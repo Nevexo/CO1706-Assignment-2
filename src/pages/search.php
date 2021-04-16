@@ -62,6 +62,8 @@ function RunSearch(string $Query, string $Filter): array
   return $results;
 }
 
+$results = [];
+$Tracks = $Albums = $Artists = [];
 if (isset($_GET['search']))
 {
   // A search query is present, run the search system.
@@ -77,7 +79,6 @@ if (isset($_GET['search']))
   }
 
   // Split results into three arrays.
-  $Tracks = $Albums = $Artists = [];
   foreach ($results as $result)
   {
     if (is_a($result, "track")) array_push($Tracks, $result);
