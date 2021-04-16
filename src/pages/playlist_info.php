@@ -120,7 +120,7 @@ if (isset($_POST['deleteTrackId'])) {
   </div>
 </nav>
 <div class="jumbotron">
-  <h1 class="display-4"><? echo $playlist->Name; ?></h1>
+  <h1 class="display-4"><?php echo $playlist->Name; ?></h1>
   <p class="lead">A
     <?php
     echo ($playlist->Public ? 'public' : 'private') . ' playlist by ' .
