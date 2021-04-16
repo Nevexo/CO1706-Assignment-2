@@ -36,7 +36,10 @@ try {
 // Check for review POST data
 if (isset($_POST['reviewBody'])) {
   try {
+    // Create a new review
     Reviews::create($Track, $user, $_POST['rating'], htmlspecialchars($_POST['reviewBody']));
+    // Update recommendations for this user
+    Recommendations::update($user);
   } catch (Exception $e) {
     header('Location: ?id=' . $Track->Id . '&reviewError=' . $e->getMessage());
     die();
@@ -49,6 +52,8 @@ if (isset($_POST['deleteReview'])) {
     // Get the track for this user and attempt to delete it
     $r = Reviews::getForUserByTrack($Track->Id, $user->Id);
     $r->Delete();
+    // Update recommendations for this user
+    Recommendations::update($user);
   } catch (Exception $e) {
     header('Location: ?id=' . $Track->Id . '&reviewError=' . $e->getMessage());
     die();
