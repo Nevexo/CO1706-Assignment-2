@@ -5,34 +5,27 @@
 require_once 'database.php';
 require_once 'music.php';
 require_once 'reviews.php';
+require_once 'vars.php';
 
 // -- Explanation --
 // EcksMusic recommendations are based on reviews the user has left on other tracks. To reduce server & database load
 // recommendations are cached to the recommendations table and recalculated whenever the user creates/deletes
-// a review. The system will pick a random subset of tracks from the database and remove/prioritise certain
-// tracks by the following weightings.
+// a review. The system will pick a random subset of tracks from the database and sort them using the reviews the user
+// has given to tracks with the same genre, album or artist.
 
-// | Object Type | Weighting |
-// |-------------|-----------|
-// | Genre       | 50%       |
-// | Album       | 30%       |
-// | Artist      | 20%       |
 
 class Recommendation
 {
-  // A single track recommendation, stores the target track and "influence" track, which allows the user
-  // to see which review cause this recommendation.
+  // A single track recommendation, stores the target track and recommendation ID.
 
   public $Id;
   public $Track;
-  public $InfluenceTrack;
   public $User;
 
-  public function __construct(int $id, Track $track, Track $influenceTrack, User $user)
+  public function __construct(int $id, Track $track, User $user)
   {
     $this->Id = $id;
     $this->Track = $track;
-    $this->InfluenceTrack = $influenceTrack;
     $this->User = $user;
   }
 }
@@ -46,7 +39,6 @@ class RecommendationEngine
   {
     $this->User = $user;
     $this->Reviews = $this->getReviews();
-    print_r($this->Reviews);
   }
 
   private function getReviews(): Array
@@ -61,9 +53,9 @@ class RecommendationEngine
 
   private function getRandomTracks(): Array
   {
-    // Get 30 random tracks which will be used as the baseline for recommendations.
+    // Get N random tracks which will be used as the baseline for recommendations.
     try {
-      return Tracks::random(30);
+      return Tracks::random(RECOMMENDATION_TRACK_COUNT);
     } catch (Exception $e) {
       throw $e;
     }
@@ -128,14 +120,89 @@ class RecommendationEngine
     return [$genreAverages, $albumAverages, $artistAverages];
   }
 
+  private function orderTracksByAverages(): Array
+  {
+    // Get N random tracks.
+    $tracks = $this->getRandomTracks();
+
+    // Get average ratings of all meta-types.
+    $averages = $this->getAverageRatings();
+    $genreAvg = $averages[0];
+    $albumAvg = $averages[1];
+    $artistAvg = $averages[2];
+
+    // Go through each track and add a "weight" property using the ratings averages.
+    foreach($tracks as $track)
+    {
+      $track->RatingWeight = 0;
+      // Add average for genre
+      foreach($genreAvg as $genre) if ($genre[0] == $track->Genre) $track->RatingWeight += $genre[1];
+
+      // Add average for album
+      foreach($albumAvg as $album) if ($album[0] == $track->Album->Name) $track->RatingWeight += $album[1];
+
+      // Add average for artist
+      foreach($artistAvg as $artist) if ($artist[0] == $track->Artist->Name) $track->RatingWeight += $artist[1];
+    }
+
+    // Sort tracks by RatingWeight.
+    // Adapted from Stackoverflow answer by Scott Quinlan (April 15, 2012)
+    // https://stackoverflow.com/questions/4282413/sort-array-of-objects-by-object-fields
+    usort($tracks, function($a, $b)
+    {
+      return $a->RatingWeight < $b->RatingWeight;
+    });
+
+    return $tracks;
+  }
+
+  public function getRecommendations(): Array
+  {
+    // Getter function for returning active recommendations.
+    return $this->orderTracksByAverages();
+  }
+
 }
 
 class Recommendations
 {
   // Static functions for generating & accessing recommendations
 
-  public static function generate(User $User)
+  private static function clear(int $UserId): bool
   {
-    $e = new RecommendationEngine($User);
+    // Clear current recommendations for this user.
+    global $pdo;
+
+    $query = $pdo->prepare("DELETE FROM recommendations WHERE user_id = ?");
+    $success = $query->execute([$UserId]);
+    if (!$success) throw new Exception("QueryFailed");
+
+    return true;
+  }
+
+  public static function update(User $User)
+  {
+    // Update the recommendations table
+    global $pdo;
+
+    // Clear existing recommendations.
+    try {
+      Recommendations::clear($User->Id);
+    } catch (Exception $e) {
+      throw $e;
+    }
+
+    // Get updated recommendations for this user
+    $re = new RecommendationEngine($User);
+    $recommendations = $re->getRecommendations();
+
+    // Write the updated recommendations to the database
+    $query = $pdo->prepare("INSERT INTO recommendations (user_id, track_id) VALUES (?, ?)");
+
+    foreach($recommendations as $recommendation)
+    {
+      $query->execute([$User->Id, $recommendation->Id]);
+    }
+
   }
 }
