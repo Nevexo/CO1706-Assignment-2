@@ -56,7 +56,7 @@ The `src/php/vars.php` file contains settings for the platform, including databa
     - Tracks page
     - Track information page
     - Playlist page
-  - [ ] All HTML/CSS passes validation
+  - [X] All HTML/CSS passes validation
 - 90%+
   - [X] Recommendation System
 
