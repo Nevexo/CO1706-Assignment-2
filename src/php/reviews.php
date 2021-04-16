@@ -120,12 +120,25 @@ class Reviews {
     // Get all reviews by a specific user
     global $pdo;
 
-    $query = $pdo->prepare("SELECT * FROM reviews WHERE author_id = ?");
+    $query = $pdo->prepare("
+    SELECT 
+        reviews.*, users.username
+    FROM
+        musicstream.reviews
+            JOIN
+        users ON users.id = reviews.author_id
+    WHERE author_id = ?");
     $result = $query->execute([$UserId]);
 
     if (!$result) throw new Exception("QueryFailed");
 
-    return $query->fetchAll(PDO::FETCH_ASSOC);
+    $reviews = [];
+    foreach($query->fetchAll(PDO::FETCH_ASSOC) as $review)
+    {
+      array_push($reviews, Reviews::rowToReview($review));
+    }
+
+    return $reviews;
   }
 
   public static function create(Track $Track, User $User, int $Rating, string $Review) {
