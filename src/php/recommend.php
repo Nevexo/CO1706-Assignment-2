@@ -59,6 +59,74 @@ class RecommendationEngine
     }
   }
 
+  private function getRandomTracks(): Array
+  {
+    // Get 30 random tracks which will be used as the baseline for recommendations.
+    try {
+      return Tracks::random(30);
+    } catch (Exception $e) {
+      throw $e;
+    }
+  }
+
+  private function getAverageRatings(): Array
+  {
+    // Get average ratings for genres, albums & artists.
+
+    // Stage 1 - Get all ratings for each genre, album and artist.
+    $genres = new stdClass(); // Using an empty class here to track the different data without enumerating arrays.
+    $albums = new stdClass();
+    $artists = new stdClass();
+
+    foreach($this->Reviews as $review)
+    {
+      // Resolve the reviewed track
+      $track = $review->getTrack();
+
+      // Add all elements of this review to their respective arrays.
+      // If this type hasn't been reviewed yet, initialise it with a new array.
+      if (!property_exists($genres, $track->Genre)) $genres->{$track->Genre} = [];
+      if (!property_exists($albums, $track->Album->Name)) $albums->{$track->Album->Name} = [];
+      if (!property_exists($artists, $track->Artist->Name)) $artists->{$track->Artist->Name} = [];
+
+      // Push this review to every array
+      array_push($genres->{$track->Genre}, $review->Rating);
+      array_push($albums->{$track->Album->Name}, $review->Rating);
+      array_push($artists->{$track->Artist->Name}, $review->Rating);
+    }
+
+    // Stage 2 - Calculate averages
+    $genreAverages = $albumAverages = $artistAverages = [];
+
+    // Average genres
+    foreach($genres as $genre => $ratings)
+    {
+      array_push($genreAverages, [
+        $genre,
+        round(array_sum($ratings) / count($ratings))
+      ]);
+    }
+
+    // Average albums
+    foreach($albums as $album => $ratings)
+    {
+      array_push($albumAverages, [
+        $album,
+        round(array_sum($ratings) / count($ratings))
+      ]);
+    }
+
+    // Average artists
+    foreach($artists as $artist => $ratings)
+    {
+      array_push($artistAverages, [
+        $artist,
+        round(array_sum($ratings) / count($ratings))
+      ]);
+    }
+
+    return [$genreAverages, $albumAverages, $artistAverages];
+  }
 
 }
 
