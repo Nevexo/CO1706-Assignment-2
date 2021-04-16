@@ -94,8 +94,7 @@ class Reviews {
       array_push($Ratings, $Review->Rating);
     }
 
-    // Taken from Stackoverflow response by user 'Mubin' (2015)
-    // https://stackoverflow.com/questions/33461430/how-to-find-average-from-array-in-php
+    // Calculate average for array.
     return round(array_sum($Ratings) / count($Ratings));
   }
 
