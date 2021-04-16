@@ -189,8 +189,9 @@ if (isset($_POST['deleteAccountPassword'])) {
                 <?php
                 require_once "../php/offers.php";
                 $offers = Offers::getAllOffers();
+                echo '<option value="">Choose...</option>';
                 foreach ($offers as $offer) {
-                  echo '<option value="">Choose...</option><option value="' . $offer->Id . '">' . $offer->Name . " (£" .$offer->Price . "/mo)</option>";
+                  echo '<option value="' . $offer->Id . '">' . $offer->Name . " (£" .$offer->Price . "/mo)</option>";
                 }
                 ?>
               </select>
