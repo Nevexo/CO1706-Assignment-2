@@ -59,11 +59,6 @@ if (isset($_SESSION['User'])) $user = unserialize($_SESSION['User']);
             <a class="nav-link" href="pages/playlist.php">Playlists</a>
           </li>
         </ul>
-        <!--Search Bar-->
-<!--        <form class="form-inline my-2 my-lg-0">-->
-<!--          <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">-->
-<!--          <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>-->
-<!--        </form>-->
         <ul class="navbar-nav ml-auto">
         <?php
           if (isset($_SESSION['User'])) {
@@ -93,6 +88,8 @@ if (isset($_SESSION['User'])) $user = unserialize($_SESSION['User']);
     $offers = Offers::getAllOffers();
   ?>
 
+  <!-- Adapted from bootstrap documentation examples -->
+  <!-- https://getbootstrap.com/docs/4.0/components/carousel/ -->
   <div id="carouselIndicators" class="carousel slide" data-ride="carousel">
     <ol class="carousel-indicators">
       <?php
@@ -150,55 +147,90 @@ if (isset($_SESSION['User'])) $user = unserialize($_SESSION['User']);
   </div>
 
   <!-- Jumbotron showing a random track or recommended track (if signed in -->
-  <!--  TODO: Show track from recommendation engine if user is logged in-->
-<!--  <div class="jumbotron">-->
-<!--    <div class="row">-->
-<!--      <div class="col-md-2">-->
-<!--        <img src="images/getabraded.jpg" class="img-thumbnail img-fluid">-->
-<!--      </div>-->
-<!--      <div class="col-md-10">-->
-<!--        <span class="lead font-italic">Track of The Day</span>-->
-<!--        <h1 class="display-4">8 Binary Digits</h1>-->
-<!--        <span class="lead">Deceased Rod3nt | Get Abraded</span>-->
-<!--        <p class="text-muted font-italic">Login to see recommended tracks for you</p>-->
-<!--      </div>-->
-<!--    </div>-->
-<!--  </div>-->
-<!--  <div class="row">-->
-<!--    <div class="col-md-3 card">-->
-<!--      <img class="card-img-top" src="images/offers/SilverOffer.png" alt="Card image cap">-->
-<!--      <div class="card-body">-->
-<!--        <h5 class="card-title">Silver Offer</h5>-->
-<!--        <p class="card-text">Silver level subscribers receive unlimited usage with ad support</p>-->
-<!--        <a href="#" class="btn btn-warning">Register Now</a>-->
-<!--      </div>-->
-<!--    </div>-->
-<!--    <div class="col-md card">-->
-<!--      <img class="card-img-top" src="images/offers/SilverOffer.png" alt="Card image cap">-->
-<!--      <div class="card-body">-->
-<!--        <h5 class="card-title">Silver Offer</h5>-->
-<!--        <p class="card-text">Silver level subscribers receive unlimited usage with ad support</p>-->
-<!--        <a href="#" class="btn btn-warning">Register Now</a>-->
-<!--      </div>-->
-<!--    </div>-->
-<!--    <div class="col-md card">-->
-<!--      <img class="card-img-top" src="images/offers/SilverOffer.png" alt="Card image cap">-->
-<!--      <div class="card-body">-->
-<!--        <h5 class="card-title">Silver Offer</h5>-->
-<!--        <p class="card-text">Silver level subscribers receive unlimited usage with ad support</p>-->
-<!--        <a href="#" class="btn btn-warning">Register Now</a>-->
-<!--      </div>-->
-<!--    </div>-->
-<!--    <div class="col-md card">-->
-<!--      <img class="card-img-top" src="images/offers/SilverOffer.png" alt="Card image cap">-->
-<!--      <div class="card-body">-->
-<!--        <h5 class="card-title">Silver Offer</h5>-->
-<!--        <p class="card-text">Silver level subscribers receive unlimited usage with ad support</p>-->
-<!--        <a href="#" class="btn btn-warning">Register Now</a>-->
-<!--      </div>-->
-<!--    </div>-->
-<!--  </div>-->
+  <div class="jumbotron">
+    <?php
+      // If the user is logged in, get a recommended track for them
+      if (isset($user))
+      {
+        $Recom = Recommendations::getForUser($user->Id);
+        if (count($Recom) != 0) {
+          // Recommendations are available, get a random track
+          $track = $Recom[random_int(0, count($Recom) - 1)];
+        } else {
+          // No recommendations available, use a random track.
+          $track = Tracks::random(1)[0];
+        }
+      } else {
+        // The user isn't logged in, display a random track.
+        $track = Tracks::random(1)[0];
+      }
+    ?>
+    <div class="row">
+      <div class="col-md-2">
+        <img src="<?php echo $track->ImagePath; ?>" class="img-thumbnail img-fluid">
+      </div>
+      <div class="col-md-10">
+        <span class="lead font-italic">
+          <?php
+            if (isset($user)) echo "Recommended Track for You"; else echo "Random Track of the Day";
+          ?>
+        </span>
+        <h1 class="display-4">
+          <a href="pages/track.php?id=<?php echo $track->Id; ?>">
+            <?php echo $track->Name; ?>
+          </a>
+        </h1>
+        <span class="lead">
+          <span title="Artist" class="fas fa-users"></span>
+          <?php echo $track->Artist->Name ?>
+           |
+          <span title="Album" class="fas fa-compact-disc"></span>
+          <?php echo $track->Album->Name ?>
+        </span>
+        <?php
+          if (!isset($user))
+            echo '<p><span class="text-muted">Login to see tracks recommended for you.</span></p>';
+          else if (count($Recom) == 0)
+            echo '<p><span class="text-muted">Review some tracks to customise this area.</span></p>';
+        ?>
+      </div>
+    </div>
+  </div>
 
-<!--TODO: Add cards for all levels with more detail (include price!)-->
+<!-- Offer information cards -->
+  <div class="container-fluid">
+    <div class="card">
+      <div class="card-header">
+        Available Platform Offers
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <?php
+          foreach($offers as $offer)
+          {
+            echo '
+            <div class="col-md-4">
+              <div class="card">
+                <img class="card-img-top" src=' . $offer->ImagePath . ' alt="' . $offer->Name . ' Offer Image">
+                <div class="card-body">
+                  <h5 class="card-title">' . $offer->Name . ' - £' . $offer->Price . '/mo</h5>
+                  <p class="card-text">' . $offer->Description . '</p>';
+
+            // Display join/change plan buttons
+            if (isset($user)){
+              if ($user->PricingPlanId != $offer->Id)
+                echo '<a class="btn btn-secondary" 
+                      href="pages/account.php?newPricingPlan=' . $offer->Id . '">Switch to This Plan</a>';
+            }else {
+              echo '<a class="btn btn-warning" 
+                      href="pages/register.php?setOfferId=' . $offer->Id . '">Register</a>';
+            }
+            echo '</div></div></div>';
+          }
+          ?>
+        </div>
+      </div>
+    </div>
+  </div>
 </body>
 </html>
