@@ -63,7 +63,7 @@ class Reviews {
     SELECT 
         reviews.*, users.username
     FROM
-        musicstream.reviews
+        reviews
             JOIN
         users ON users.id = reviews.author_id
     WHERE
@@ -124,7 +124,7 @@ class Reviews {
     SELECT 
         reviews.*, users.username
     FROM
-        musicstream.reviews
+        reviews
             JOIN
         users ON users.id = reviews.author_id
     WHERE author_id = ?");
