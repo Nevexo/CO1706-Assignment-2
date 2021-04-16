@@ -5,5 +5,5 @@
 session_start();
 $_SESSION['User'] = "";
 session_destroy();
-header('Location: /');
+header('Location: ../');
 die();

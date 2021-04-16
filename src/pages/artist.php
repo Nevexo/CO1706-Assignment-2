@@ -29,7 +29,6 @@ try {
   die();
 }
 ?>
-<!--TODO: CLEANUP-->
 <!DOCTYPE html>
 <html lang="en">
 <head>

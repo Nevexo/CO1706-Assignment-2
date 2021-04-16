@@ -154,8 +154,6 @@ class Reviews {
     // Initialise the insert query for this review
     $q = $pdo->prepare("INSERT INTO reviews (track_id, author_id, rating, review) VALUES (?, ?, ?, ?)");
 
-    // TODO: Check the user hasn't created a review before for this track
-
     // Insert the review
     $result = $q->execute([$Track->Id, $User->Id, $Rating, $Review]);
     if (!$result) throw New Exception("QueryFailed");
