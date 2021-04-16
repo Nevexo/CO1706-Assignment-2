@@ -215,7 +215,7 @@ class Playlists
 
   static function create(User $User, string $Name): Playlist
   {
-    // Pro
+    // Disallow playlist names that may interfere with other systems.
     if ($Name == "CreateNewPlaylist") throw new Exception("InvalidName");
 
     // Create a new playlist
