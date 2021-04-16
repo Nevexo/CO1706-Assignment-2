@@ -6,6 +6,7 @@ require_once 'database.php';
 require_once 'music.php';
 require_once 'reviews.php';
 require_once 'vars.php';
+require_once 'recommend.php';
 
 // -- Explanation --
 // EcksMusic recommendations are based on reviews the user has left on other tracks. To reduce server & database load
@@ -180,15 +181,18 @@ class Recommendations
     return true;
   }
 
-  public static function getForUser(int $UserId): array
+  public static function getForUser(int $UserId, int $limit = RECOMMENDATION_TRACK_COUNT): array
   {
     // Get recommendations for a user.
     global $pdo;
 
     $query = $pdo->prepare("SELECT * FROM recommendations
                                   NATURAL JOIN tracks NATURAL JOIN artists NATURAL JOIN albums 
-                                  WHERE user_id = ?");
-    $success = $query->execute([$UserId]);
+                                  WHERE user_id = :user
+                                  LIMIT :limit");
+    $query->bindParam("user", $UserId, PDO::PARAM_INT);
+    $query->bindParam("limit", $limit, PDO::PARAM_INT);
+    $success = $query->execute();
     if (!$success) throw new Exception("QueryFailed");
 
     $tracks = [];
