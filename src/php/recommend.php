@@ -13,23 +13,6 @@ require_once 'vars.php';
 // a review. The system will pick a random subset of tracks from the database and sort them using the reviews the user
 // has given to tracks with the same genre, album or artist.
 
-
-class Recommendation
-{
-  // A single track recommendation, stores the target track and recommendation ID.
-
-  public $Id;
-  public $Track;
-  public $User;
-
-  public function __construct(int $id, Track $track, User $user)
-  {
-    $this->Id = $id;
-    $this->Track = $track;
-    $this->User = $user;
-  }
-}
-
 class RecommendationEngine
 {
   // Functions for generating recommendations for a user
