@@ -125,3 +125,18 @@ from the root directory and navigate to http://localhost
 
 If testing through some other means, it may be necessary to alter the database connection details, these can be found in 
 `src/php/vars.php` file. 
+
+## References
+All references are cited where they are used.
+
+### Bootstrap (CSS Framework)
+Used in: `All Frontend Pages`
+
+Link: https://getbootstrap.com/ 
+
+### Object Sorting with `usort` - Stackoverflow Answer
+Used in: `src/php/recommend.php` (line 135)
+
+Author: Scott Quinlan
+
+Link: https://stackoverflow.com/questions/4282413/sort-array-of-objects-by-object-fields
