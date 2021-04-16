@@ -96,9 +96,10 @@ class User
       $playlist->Delete();
     }
 
-    // Delete reviews first, and then remove the user.
+    // Delete reviews, playlists and recommendations then remove the user.
     // Reviews have the user_id as an FK so this would fail without deleting them first.
-    $query = $pdo->prepare("DELETE FROM reviews WHERE author_id = :userid; 
+    $query = $pdo->prepare("DELETE FROM reviews WHERE author_id = :userid;
+                                  DELETE FROM recommendations WHERE user_id = :userid;
                                   DELETE FROM users WHERE id = :userid;");
     $query->bindValue("userid", $this->Id);
     $result = $query->execute();
