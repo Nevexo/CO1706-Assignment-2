@@ -21,7 +21,7 @@ if (isset($_POST['username'])) {
 
     // $user is now an instance of auth->User, add it to _SESSION and redirect.
     $_SESSION['User'] = serialize($user);
-    header('Location: ../');
+    header('Location: landing.php');
     die();
   } catch (Exception $e) {
     // Something went wrong, reload the page with an error displayed.
