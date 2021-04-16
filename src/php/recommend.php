@@ -122,6 +122,8 @@ class RecommendationEngine
 
   private function orderTracksByAverages(): Array
   {
+    // Return empty array if the user hasn't reviewed anything.
+    if (count($this->Reviews) == 0) return [];
     // Get N random tracks.
     $tracks = $this->getRandomTracks();
 
