@@ -89,6 +89,7 @@ try {
         echo '<a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown">';
         echo $user->Username . ' <span class="badge badge-secondary">' . $user->PricingPlan->Name . '</span></a>';
         echo '<div class="dropdown-menu dropdown-menu-right">';
+        echo '<a class="dropdown-item" href="#">Recommended Tracks</a>';
         echo '<a class="dropdown-item" href="account.php">Account Settings</a>';
         echo '<a class="dropdown-item" href="../php/logout.php">Logout</a>';
         echo '</div></li>';
