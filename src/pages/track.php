@@ -13,6 +13,8 @@ require_once '../php/auth.php';
 require_once '../php/music.php';
 require_once "../php/reviews.php";
 require_once '../php/playlists.php';
+require_once '../php/recommend.php';
+
 if (isset($_SESSION['User'])) $user = unserialize($_SESSION['User']);
 // Redirect user if there's no track ID selected
 if (!isset($_GET['id'])) {
@@ -23,6 +25,8 @@ if (!isset($_GET['id'])) {
 // Get the track and place it in the $Track variable
 try {
   $Track = Tracks::get($_GET['id']);
+  // Check if the track is recommended for this user
+  $Recommended = Recommendations::isRecommended($user->Id, $Track->Id);
 } catch (Exception $e) {
   // Cannot find this track, take the user back to the track listl
   header('Location: tracks.php');
@@ -242,7 +246,12 @@ if (isset($_POST['playlistSelection']))
               Track Information
             </div>
             <div class="card-body">
-              <span class="badge badge-warning"><span class="fas fa-star"></span> Recommended for You</span>
+              <?php
+              // Display recommended for you tag if the user has a recommendation for this track.
+                if ($Recommended) {
+                  echo '<span class="badge badge-warning"><span class="fas fa-star"></span> Recommended for You</span>';
+                }
+              ?>
               <p class="card-text">
                 <span title="Album" class="fas fa-music"></span>
                   Genre: <a href="tracks.php?genre=<?php echo $Track->Genre; ?>"><i><?php echo $Track->Genre; ?>

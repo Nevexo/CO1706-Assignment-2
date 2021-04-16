@@ -226,7 +226,7 @@ if (isset($_GET['search']))
       {
         echo '
           <div class="col-md-3">
-            ' . $Track->prettyPrint(true) . '
+            ' . $Track->prettyPrint(true, $user->Id) . '
           </div>
         ';
       }

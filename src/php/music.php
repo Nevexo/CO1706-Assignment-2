@@ -60,10 +60,10 @@ class Track {
     }
   }
 
-  public function prettyPrint(bool $hyperlinks = false) {
+  public function prettyPrint(bool $hyperlinks = false, int $UserId = null) {
     // Pretty-print this track as HTML.
     // Set hyperlinks to true to enable links for artist/album
-    // TODO: Recommended for you labels.
+    // If $UserId is specified, the function will check if the track is recommended for that user, and tag it as such.
     $html = '
       <div class="card">
         <img class="card-img-top" src="../' . $this->ImagePath . '" alt="Track image">
@@ -72,6 +72,7 @@ class Track {
             ' . $this->Name . '
           </h5>
           <p>
+            ##RECOMM_TAG##
             <!--<span class="badge badge-warning"><span class="fas fa-star"></span> Recommended for You</span>-->
             <span class="badge badge-info"><span class="fas fa-music"></span> Genre: ' . $this->Genre . '</span>
             ##AVG_RATING##
@@ -82,6 +83,18 @@ class Track {
         </div>
       </div>
     ';
+
+    if ($UserId != null)
+    {
+      // Check if the track is recommended for this user.
+      if (Recommendations::isRecommended($UserId, $this->Id))
+      {
+        $html = str_replace("##RECOMM_TAG##",
+                            '<span class="badge badge-warning">
+                                    <span class="fas fa-star"></span> Recommended for You</span>',
+        $html);
+      } else $html = str_replace("##RECOMM_TAG##", "", $html);
+    } else $html = str_replace("##RECOMM_TAG##", "", $html);
 
     if ($this->AverageRating != "N/A") {
       // Only display average rating tag if there are reviews on this track.

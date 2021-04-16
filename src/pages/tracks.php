@@ -155,7 +155,7 @@ if (isset($_SESSION['User'])) $user = unserialize($_SESSION['User']);
     foreach($tracks as $track) {
         echo '
           <div class="col-md-3">
-            ' . $track->prettyPrint(true) . '
+            ' . $track->prettyPrint(true, $user->Id) . '
           </div>
         ';
       }
