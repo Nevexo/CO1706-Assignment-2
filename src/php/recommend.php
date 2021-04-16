@@ -180,6 +180,26 @@ class Recommendations
     return true;
   }
 
+  public static function getForUser(int $UserId): array
+  {
+    // Get recommendations for a user.
+    global $pdo;
+
+    $query = $pdo->prepare("SELECT * FROM recommendations
+                                  NATURAL JOIN tracks NATURAL JOIN artists NATURAL JOIN albums 
+                                  WHERE user_id = ?");
+    $success = $query->execute([$UserId]);
+    if (!$success) throw new Exception("QueryFailed");
+
+    $tracks = [];
+    foreach($query->fetchAll(PDO::FETCH_ASSOC) as $track)
+    {
+      array_push($tracks, new Track($track));
+    }
+
+    return $tracks;
+  }
+
   public static function update(User $User)
   {
     // Update the recommendations table
