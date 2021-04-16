@@ -75,7 +75,7 @@ try {
           <a class="nav-link" href="albums.php">Albums</a>
         </li>
         <li class="navbar-item">
-          <a class="nav-link" href="#">Search</a>
+          <a class="nav-link" href="search.php">Search</a>
         </li>
         <li class="navbar-item">
           <a class="nav-link" href="playlist.php">Playlists</a>
