@@ -58,7 +58,7 @@ The `src/php/vars.php` file contains settings for the platform, including databa
     - Playlist page
   - [ ] All HTML/CSS passes validation
 - 90%+
-  - [ ] Recommendation System
+  - [X] Recommendation System
 
 ## Users
 Registration is enabled on the Vesta server, so accounts can be created when needed,
