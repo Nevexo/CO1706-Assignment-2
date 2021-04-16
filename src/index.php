@@ -167,7 +167,7 @@ if (isset($_SESSION['User'])) $user = unserialize($_SESSION['User']);
     ?>
     <div class="row">
       <div class="col-md-2">
-        <img src="<?php echo $track->ImagePath; ?>" class="img-thumbnail img-fluid">
+        <img src="<?php echo $track->ImagePath; ?>" class="img-thumbnail img-fluid" alt="<?php echo $track->Name; ?> Cover Art">
       </div>
       <div class="col-md-10">
         <span class="lead font-italic">
