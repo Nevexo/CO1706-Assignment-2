@@ -168,7 +168,7 @@ if (isset($_GET['search']))
       <div class="alert alert-danger" role="alert" id="searchFailedAlert" hidden>
         Search failed, please try again later.
       </div>
-      <form action="#" method="get" id="searchForm">
+      <form action="#" method="get" id="searchForm" onsubmit="return validateForm();">
         <div class="form-group row">
           <div class="col-md-8">
             <input
@@ -315,6 +315,16 @@ if (isset($_GET['search']))
       form['filter'].value = queryParams.get("filter");
     else
       form['filter'].value = "all";
+  }
+
+  const validateForm = () => {
+    const form = document.forms['searchForm'];
+
+    if (form['search'].value.length === 0) {
+      document.getElementById("searchFailedAlert").innerText = "Please enter a search term."
+      document.getElementById("searchFailedAlert").hidden = false
+      return false;
+    }
   }
 </script>
 </html>
